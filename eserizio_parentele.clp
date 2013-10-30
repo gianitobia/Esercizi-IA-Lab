@@ -1,4 +1,14 @@
 ;; definizione regole
+(defrule goal-achieved
+
+(declare (salience 100))
+	(goal S ?x ?y)
+        (S ?x ?y)
+          =>
+	(printout t crlf ?x "  sibling of " ?y crlf)
+        (halt)
+)
+
 (defrule R1
 	(A ?x ?y) => (assert (S ?y ?x))
 )
@@ -59,4 +69,6 @@
 	(HC P7 P8)
 	(HC P7 P9)
 	(HC P10 P6)
-	)
+)
+
+(deffacts final (goal S P2 P6))
