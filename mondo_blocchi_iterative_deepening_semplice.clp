@@ -2,7 +2,7 @@
 
 (deftemplate solution (slot value (default no))) 
 (deffacts param
-       (solution (value no)) (maxdepth 6))
+       (solution (value no)) (maxdepth 2))
 
 (deffacts S0
       (status 0 clear a NA) (status 0 on a b ) (status 0 ontable b NA) 
@@ -15,7 +15,40 @@
 
 (defrule got-solution
 (declare (salience 100))
-(solution (value yes)) => (halt))
+(solution (value yes)) 
+(maxdepth ?n)
+        => (assert (stampa (- ?n 1)))
+           )
+
+
+
+(defrule stampaSol
+(declare (salience 101))
+?f<-(stampa ?n)
+(exec ?n ?k ?a ?b)
+=> (printout t " PASSO: "?n " " ?k " " ?a " " ?b crlf)
+   (assert (stampa (- ?n 1)))
+   (retract ?f)
+)
+
+(defrule stampaSol0
+(declare (salience 102))
+(stampa -1)
+=> (halt)
+)
+
+
+
+(defrule no-solution
+(declare (salience -1))
+(solution (value no))
+?f <-  (maxdepth ?d)
+ => (reset) (retract ?f) 
+    (assert(maxdepth (+ ?d 1))) 
+    (printout t " fail with Maxdepth:" ?d crlf)
+    )
+
+
 
 (defrule pick
    (status ?s on ?x ?y)
@@ -182,14 +215,14 @@
     (not (status ?a ?op ?x ?y)) 
     =>
     (assert (ancestor (- ?a 1)))
-    (retract ?f1))
+    (retract ?f1)
+    (assert (diff ?a)))
 
 (defrule all-checked
        (declare (salience 25))
-?f1 <- (ancestor -1) 
+       (diff 0) 
 ?f2 <- (news ?n)
 ?f3 <- (task go-on) =>
-	   (retract ?f1)
        (retract ?f2)
        (retract ?f3)
        (focus DEL))
@@ -205,6 +238,11 @@
 (defrule del1
 (declare (salience 50))
 ?f <- (delete $?)
+=> (retract ?f))
+
+(defrule del2
+(declare (salience 100))
+?f <- (diff ?)
 => (retract ?f))
 
 (defrule del3
@@ -227,7 +265,3 @@
 (pop-focus)
 (pop-focus)
 (pop-focus))
-
-
-
-
