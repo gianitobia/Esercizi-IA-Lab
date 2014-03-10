@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/bin/bash
+
+esc () {
+STR="$1" /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby &lt;&lt;"RUBY"
+   str = ENV['STR']
+   str = str.gsub(/'/, "'\\\\''")
+   str = str.gsub(/[\\"]/, '\\\\\\0')
+   print "'#{str}'"
+RUBY
+}
+
+osascript &lt;&lt;- APPLESCRIPT
+tell application "Terminal"
+	launch
+	activate
+	do script "clear; cd $(esc "${TM_DIRECTORY}"); \"${TM_PROLOG:-gprolog}\" --entry-goal \"consult('${TM_FILEPATH}')\""
+	set position of first window to {100, 100}
+end tell
+APPLESCRIPT
+
+
+</string>
+	<key>input</key>
+	<string>none</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>keyEquivalent</key>
+	<string>@r</string>
+	<key>name</key>
+	<string>Run</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>text</string>
+	<key>outputLocation</key>
+	<string>discard</string>
+	<key>requiredCommands</key>
+	<array>
+		<dict>
+			<key>command</key>
+			<string>gprolog</string>
+			<key>locations</key>
+			<array>
+				<string>/opt/local/bin/gprolog</string>
+				<string>/usr/local/bin/gprolog</string>
+			</array>
+			<key>variable</key>
+			<string>TM_PROLOG</string>
+		</dict>
+	</array>
+	<key>scope</key>
+	<string>source.prolog</string>
+	<key>semanticClass</key>
+	<string>process.run.prolog</string>
+	<key>uuid</key>
+	<string>38D17DB7-C0D3-4C05-BD10-A7F78D67DF03</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>
