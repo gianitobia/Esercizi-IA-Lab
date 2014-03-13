@@ -16,20 +16,6 @@
 	(at p2 Vienna)
 )
 
-(deffacts goal
-	(goal p2 Roma c1)
-)
-
-(defrule soluzione (declare (salience 1))
-	(goal ?p ?a ?c)
-	(at ?p ?a)
-	(empty ?p)
-	(is-in ?c ?a)
-	=>
-	(printout t "aereo" ?p " scarica " ?c " a " ?a crlf)
-	(halt)
-)
-
 (defrule move
 	(plane ?p)
 	(airport ?s)
@@ -65,3 +51,8 @@
 	(retract ?f1)
 	(assert (is-in ?c ?a) (empty ?p))
 )
+
+;questo script genera dei loop xke io posso fare due volte la stessa
+;mossa [roma -> parigi -> roma -> parigi ecc...]
+;devo modificare la rappresentazione del mondo:
+;(stato id_stato azione) ===> (stato 1 is_in C2 Roma)
