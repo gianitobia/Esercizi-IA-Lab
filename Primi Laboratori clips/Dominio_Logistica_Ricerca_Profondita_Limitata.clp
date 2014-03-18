@@ -51,7 +51,7 @@
 
 (defrule apply-move2
        (apply ?s move $?)
-?f <-  (exec ?t $?)
+?f <-  (exec ?t $?)				;Se e' una operazione e' stata gia' eseguita ad un livello t > s
        (test (> ?t ?s))
  =>    (retract ?f))
 
@@ -185,7 +185,29 @@
  ?f <-  (solution (value no))
          => 
         (modify ?f (value yes))
-        (pop-focus))
+		(focus STAMPA)
+)
+
+
+(defmodule STAMPA (import CHECK ?ALL) (export ?ALL))
+
+(defrule stampaStrada (declare (salience 10))
+	(solution (value yes))
+	(news ?s)
+	?f <- (exec =(- ?s 1) $?ex)
+	=>
+	(printout t "stato " ?s " " ?ex  crlf)
+	(assert (prec =(- ?s 1)))	
+)
+
+(defrule stampaSucc
+	?p <- (prec ?s)
+	?f <- (exec ?s $?ex)
+	=>
+	(printout t "stato " ?s " " ?ex  crlf)
+	(retract ?p)
+	(assert (prec =(- ?s 1)))
+)
 
 (defmodule NEW (import CHECK ?ALL) (export ?ALL))
 ;Serve per capire se lo stato generato e' effettivamenete nuovo
@@ -249,3 +271,22 @@
 (pop-focus)
 (pop-focus)
 (pop-focus))
+
+
+;Come faccio a trovare i passi che mi han portato alla soluzione:
+
+;Posso usare le exect???
+;SO
+;exec  0  move a1 parigi Roma  ---- apply 0 load a2 c2 roma
+;S1
+;exec 1 load a1 c1 roma
+;S2
+;exec 2 move a1 roma parigi
+;S3
+;non lo posso usare xke mi servono per memorizzare le operazioni gia' fatte
+;per il backtraking, in modo da non rifare le strade che so per certo
+;non funzionare
+
+;Ma possiamo considerare gli indici degli exect per ciascun livello
+;il fatto exect con un valore di indice piu' alto ad ogni livello
+;e' quello eseguito nell'ultimo cammino che ci ha portato alla soluzione
