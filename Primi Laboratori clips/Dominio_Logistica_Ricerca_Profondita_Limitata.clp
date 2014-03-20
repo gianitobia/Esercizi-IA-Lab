@@ -2,7 +2,7 @@
 
 (deftemplate solution (slot value (default no))) 
 (deffacts param
-       (solution (value no)) (maxdepth 1))
+       (solution (value no)) (maxdepth 1)))
 
 (deffacts S0
       (cargo c1) (cargo c2) (cargo c3)
@@ -159,9 +159,6 @@
 )
 
 (defmodule CHECK (import MAIN ?ALL) (export ?ALL))
-
-
-
 
 ;in questo modulo voglio controllare lo stato del sistema
 ;controllo la soluzione con la regola solution-exist
