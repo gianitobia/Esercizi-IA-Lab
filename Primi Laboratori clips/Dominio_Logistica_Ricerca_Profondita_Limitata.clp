@@ -2,22 +2,24 @@
 
 (deftemplate solution (slot value (default no))) 
 (deffacts param
-       (solution (value no)) (maxdepth 3))
+       (solution (value no)) (maxdepth 1))
 
 (deffacts S0
-      (cargo c1) (cargo c2) 
-      (place Parigi) (place Roma)
-      (airplane a1) (airplane a2)
-      (status 0 is-in c1  Parigi)
+      (cargo c1) (cargo c2) (cargo c3)
+      (place Parigi) (place Roma) (place Vienna)
+      (airplane a1) (airplane a2) (airplane a3) 
+      (status 0 is-in c1  Roma)
+      (status 0 is-in c2  Roma)	  
       (status 0 is-in c2  Roma)
       (status 0 empty a2 NA)
       (status 0 empty a1 NA)  
       (status 0 at a1 Roma) 
       (status 0 at a2 Parigi)
+      (status 0 at a3 Parigi)	  
       )
 
 (deffacts final
-      (goal is-in c1  Parigi) (goal is-in c2  Parigi))
+      (goal is-in c1  Parigi) (goal is-in c2  Parigi) (goal is-in c3  Parigi))
 
 
 
@@ -26,8 +28,16 @@
 (solution (value yes)) 
 => (halt))
 
-
-
+(defrule no-solution
+	(declare (salience -2))
+	(solution (value no))
+	?f <- (maxdepth ?d)
+	=>
+	(printout t "non c'e' la soluzione al livello di profondita' " ?d crlf)
+	(reset)
+	(retract ?f)
+	(assert (maxdepth =(+ ?d 1)))
+)
 
 (defrule move
    (airplane ?a)
@@ -145,10 +155,14 @@
       (assert (current ?s))
       (assert (news (+ ?s 1)))
       (focus CHECK)
-      (assert (exec ?s unload ?a ?c ?p)))
-	  
+      (assert (exec ?s unload ?a ?c ?p))
+)
 
 (defmodule CHECK (import MAIN ?ALL) (export ?ALL))
+
+
+
+
 ;in questo modulo voglio controllare lo stato del sistema
 ;controllo la soluzione con la regola solution-exist
 
@@ -177,36 +191,79 @@
       (not (status ?s ?op ?x ?y))
       => (assert (task go-on)) 
          (assert (ancestor (- ?s 1)))
-         (focus NEW))
-		 
+         (focus NEW)
+)
+
 ;regola di default che viene attivata solo se entriamo in check
 ;e non c'e' nulla da attivare con prioprita' maggiore 
-(defrule solution-exist
- ?f <-  (solution (value no))
+(defrule solution-exist 
+ 		?f <-  (solution (value no))
          => 
         (modify ?f (value yes))
 		(focus STAMPA)
 )
 
-
 (defmodule STAMPA (import CHECK ?ALL) (export ?ALL))
 
-(defrule stampaStrada (declare (salience 10))
-	(solution (value yes))
-	(news ?s)
-	?f <- (exec =(- ?s 1) $?ex)
-	=>
-	(printout t "stato " ?s " " ?ex  crlf)
-	(assert (prec =(- ?s 1)))	
+;(defrule stampaStrada_ordinata (declare (salience 10))
+;	(solution (value yes))
+;	(exec 0 $?ex)
+;	(news ?s)
+;	=>
+;	(printout t "stato 0 " ?ex  crlf))
+;	(assert (succ 1))
+;	(assert (level_max ?s))
+;)
+
+;(defrule stampaSucc_ordinata
+;	?succ <- (succ ?s)
+;	(level_max ?m)
+;	(exec ?s $?ex)
+;	(test (>= ?m ?s))
+;	=>
+;	(printout t "stato " ?s " " ?ex  crlf)
+;	(retract ?succ)
+;	(assert (succ =(+ ?s 1)))
+;)
+
+
+
+;(defrule stampaStrada (declare (salience 10))
+;	(solution (value yes))
+;	(news ?s)
+;	?f <- (exec =(- ?s 1) $?ex)
+;	=>
+;	(printout t "stato " ?s " " ?ex  crlf)
+;	(assert (prec =(- ?s 1)))	
+;)
+
+;(defrule stampaSucc
+;	?p <- (prec ?s)
+;	?f <- (exec ?s $?ex)
+;	=>
+;	(printout t "stato " ?s " " ?ex  crlf)
+;	(retract ?p)
+;	(assert (prec =(- ?s 1)))
+;)
+
+(defrule stato-corrente
+  (declare (salience -1))
+  => (assert (current-view 0))
+)
+  
+(defrule stampa
+  ?v <- (current-view ?s)
+  ?f <- (exec ?s $?y)
+  (maxdepth ?d)
+  (test (<= ?s ?d))
+  => (printout t "e'stata eseguita l'azione " $?y " nello stato " ?s " con id "?f crlf) (retract ?v) (assert (current-view (+ ?s 1)))
 )
 
-(defrule stampaSucc
-	?p <- (prec ?s)
-	?f <- (exec ?s $?ex)
-	=>
-	(printout t "stato " ?s " " ?ex  crlf)
-	(retract ?p)
-	(assert (prec =(- ?s 1)))
+(defrule popmodule
+   (current-view ?s)
+   (maxdepth ?d)
+   (test (> ?s ?d))
+   => (pop-focus)
 )
 
 (defmodule NEW (import CHECK ?ALL) (export ?ALL))
