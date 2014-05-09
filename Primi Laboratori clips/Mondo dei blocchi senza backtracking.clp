@@ -25,16 +25,22 @@
 
 
  (deffacts S0
-      (clear d) (on d a) (on a b ) (ontable b) 
-      (ontable c) (clear c)
-      (ontable e) (on f e) (clear f)
-      (ontable g) (on h g) (on i h) (on j i) (on m j) (clear m)
-      (handempty))
+	 
+	 (ontable e)
+	 (on g e)
+	 (on f g)
+	 (on b f)
+	 (clear b)
+     (handempty))
  
  
 (deffacts final
-     (goal ontable e) (goal on b e) (goal on a b)  (goal on j a) (goal on f j) (goal on d f) 
-     (goal clear d) 
+	(goal clear b)
+	(goal on b f)
+	(goal on f g)
+	(goal ontable g)
+	(goal ontable e)
+	(goal clear e)
      )
  
 
