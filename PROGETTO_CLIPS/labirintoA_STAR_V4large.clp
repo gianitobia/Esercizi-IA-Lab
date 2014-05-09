@@ -27,8 +27,6 @@
       (slot contains (allowed-values  wall gate empty))
 )
 
-
-
 ;   Rappresentazione grafica del labirinto
 ;   - - - - - - - -
 
@@ -55,10 +53,6 @@
 ;   |W|W|W|W|G|W|W|W|W|W|W|W|G|W|W|W|	0
 ;    - - - - - - - - - - - - - - - -
 ;    0 1 2 3 4 5 6 7 8 9 101112131415
-
-
-
-
 
 (deffacts domain
 	
@@ -391,137 +385,80 @@
 )
 
 (defrule change-current
-
-         (declare (salience 49))
-
-?f1 <-   (current ?curr)
-
-?f2 <-   (node (ident ?curr))
-
-         (node (ident ?best&:(neq ?best ?curr)) (fcost ?bestcost) (open yes))
-
-         (not (node (ident ?id&:(neq ?id ?curr)) (fcost ?gg&:(< ?gg ?bestcost)) (open yes)))
-
-?f3 <-   (lastnode ?last)
-
-   =>    (assert (current ?best) (lastnode (+ ?last 5)))
-
-         (retract ?f1 ?f3)
-
-         (modify ?f2 (open no))) 
+	(declare (salience 49))
+	?f1 <- (current ?curr)
+	?f2 <- (node (ident ?curr))
+	(node (ident ?best&:(neq ?best ?curr)) (fcost ?bestcost) (open yes))
+	(not (node (ident ?id&:(neq ?id ?curr)) (fcost ?gg&:(< ?gg ?bestcost)) (open yes)))
+	?f3 <- (lastnode ?last)
+	=>
+	(assert (current ?best) (lastnode (+ ?last 5)))
+	(retract ?f1 ?f3)
+	(modify ?f2 (open no))
+) 
 
 
 
 (defrule close-empty
-
-         (declare (salience 49))
-
-?f1 <-   (current ?curr)
-
-?f2 <-   (node (ident ?curr))
-
-         (not (node (ident ?id&:(neq ?id ?curr))  (open yes)))
-
-     => 
-
-         (retract ?f1)
-
-         (modify ?f2 (open no))
-
-         (printout t " fail (last  node expanded " ?curr ")" crlf)
-
-         (halt))                
+	(declare (salience 49))
+	?f1 <- (current ?curr)
+	?f2 <- (node (ident ?curr))
+	(not (node (ident ?id&:(neq ?id ?curr))  (open yes)))
+	=> 
+	(retract ?f1)
+	(modify ?f2 (open no))
+	(printout t " fail (last  node expanded " ?curr ")" crlf)
+	(halt)
+)                
 
 
+
+############################################ MODULO NEW
 
 (defmodule NEW (import MAIN ?ALL) (export ?ALL))
 
+(defrule check-closed (declare (salience 50))
+	?f1 <- (newnode (ident ?id) (pos-r ?r) (pos-c ?c))
+	(node (ident ?old) (pos-r ?r) (pos-c ?c) (open no))
+	?f2 <- (alreadyclosed ?a)
+	=>
+	(assert (alreadyclosed (+ ?a 1)))
+	(retract ?f1)
+	(retract ?f2)
+	(pop-focus)
+)
 
-
-(defrule check-closed
-
-(declare (salience 50)) 
-
- ?f1 <-    (newnode (ident ?id) (pos-r ?r) (pos-c ?c))
-
-           (node (ident ?old) (pos-r ?r) (pos-c ?c) (open no))
-
- ?f2 <-    (alreadyclosed ?a)
-
+(defrule check-open-worse (declare (salience 50))
+	?f1 <- (newnode (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (father ?anc))
+    (node (ident ?old) (pos-r ?r) (pos-c ?c) (gcost ?g-old) (open yes))
+	(test (or (> ?g ?g-old) (= ?g-old ?g)))
+	?f2 <- (open-worse ?a)
     =>
+	(assert (open-worse (+ ?a 1)))
+	(retract ?f1)
+	(retract ?f2)
+	(pop-focus)
+)
 
-           (assert (alreadyclosed (+ ?a 1)))
-
-           (retract ?f1)
-
-           (retract ?f2)
-
-           (pop-focus))
-
-
-
-(defrule check-open-worse
-
-(declare (salience 50)) 
-
- ?f1 <-    (newnode (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (father ?anc))
-
-           (node (ident ?old) (pos-r ?r) (pos-c ?c) (gcost ?g-old) (open yes))
-
-           (test (or (> ?g ?g-old) (= ?g-old ?g)))
-
- ?f2 <-    (open-worse ?a)
-
+(defrule check-open-better (declare (salience 50))
+	?f1 <- (newnode (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (fcost ?f) (father ?anc))
+ 	?f2 <- (node (ident ?old) (pos-r ?r) (pos-c ?c) (gcost ?g-old) (open yes))
+    (test (<  ?g ?g-old))
+	?f3 <- (open-better ?a)
     =>
-
-           (assert (open-worse (+ ?a 1)))
-
-           (retract ?f1)
-
-           (retract ?f2)
-
-           (pop-focus))
-
-
-
-(defrule check-open-better
-
-(declare (salience 50)) 
-
- ?f1 <-    (newnode (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (fcost ?f) (father ?anc))
-
- ?f2 <-    (node (ident ?old) (pos-r ?r) (pos-c ?c) (gcost ?g-old) (open yes))
-
-           (test (<  ?g ?g-old))
-
- ?f3 <-    (open-better ?a)
-
-    =>     (assert (node (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (fcost ?f) (father ?anc) (open yes))
-
-                   )
-
-           (assert (open-better (+ ?a 1)))
-
-           (retract ?f1 ?f2 ?f3)
-
-           (pop-focus))
-
-
+	(assert (node (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (fcost ?f) (father ?anc) (open yes)))
+	(assert (open-better (+ ?a 1)))
+	(retract ?f1 ?f2 ?f3)
+	(pop-focus)
+)
 
 (defrule add-open
-
        (declare (salience 49))
-
- ?f1 <-    (newnode (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (fcost ?f)(father ?anc))
-
- ?f2 <-    (numberofnodes ?a)
-
-    =>     (assert (node (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (fcost ?f)(father ?anc) (open yes))
-
-                   )
-
-           (assert (numberofnodes (+ ?a 1)))
-
-           (retract ?f1 ?f2)
-
-           (pop-focus))
+ 	   ?f1 <- (newnode (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (fcost ?f)(father ?anc))
+	   ?f2 <- (numberofnodes ?a)
+       =>
+	   (assert (node (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (fcost ?f)(father ?anc) (open yes)))
+	   (assert (numberofnodes (+ ?a 1)))
+	   (retract ?f1 ?f2)
+	   (pop-focus)
+)
