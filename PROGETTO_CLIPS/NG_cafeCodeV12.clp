@@ -3100,408 +3100,208 @@
 ?f2<-	(status (step ?i) (time ?t)) 
 
 	(exec (step ?i) (action  Turnright))
-
-?f1<-	(agentstatus (step ?i) (pos-r ?r) (pos-c ?c)(direction west))
-
+	?f1 <- (agentstatus (step ?i) (pos-r ?r) (pos-c ?c)(direction west))
 	(cell (pos-r ?r) (pos-c ?c))
-
-=> 
-
+	=> 
 	(modify  ?f1 (direction north) (step (+ ?i 1))  (time (+ ?t 1)))
-
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 1)))		
-
 ;	(printout t " ENVIRONMENT:" crlf)
-
-;	(printout t " - azione eseguita: turnright" crlf)	
-
+;	(printout t " - azione eseguita: turnright" crlf)		
 ;	(printout t " - nuova direzione dell'agente: north" crlf)
-
 )
 
-
-
-(defrule turnright2
-
-	(declare (salience 20))      
-
-?f2<-	(status (step ?i) (time ?t)) 
-
+(defrule turnright2 (declare (salience 20))      
+	?f2 <- (status (step ?i) (time ?t)) 
 	(exec (step ?i) (action  Turnright))
-
-?f1<-	(agentstatus (step ?i) (pos-r ?r) (pos-c ?c)(direction south))
-
+	?f1 <- (agentstatus (step ?i) (pos-r ?r) (pos-c ?c)(direction south))
 	(cell (pos-r ?r) (pos-c ?c))
-
-=> 
-
+	=> 
 	(modify  ?f1 (direction west) (step (+ ?i 1)) (time (+ ?t 1)))
-
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 1)))		
-
 ;	(printout t " ENVIRONMENT:" crlf)
-
 ;	(printout t " - azione eseguita: turnright" crlf)	
-
 ;	(printout t " - nuova direzione dell'agente: west" crlf)
-
 )
 
-
-
-(defrule turnright3
-
-	(declare (salience 20))      
-
-?f2<-	(status (step ?i) (time ?t)) 
-
+(defrule turnright3	(declare (salience 20))      
+	?f2 <- (status (step ?i) (time ?t)) 
 	(exec (step ?i) (action  Turnright))
-
-?f1<-	(agentstatus (step ?i) (pos-r ?r) (pos-c ?c) (direction east))
-
+	?f1 <- (agentstatus (step ?i) (pos-r ?r) (pos-c ?c) (direction east))
 	(cell (pos-r ?r) (pos-c ?c))
-
-=> 
-
+	=> 
 	(modify ?f1 (direction south) (step (+ ?i 1)) (time (+ ?t 1)))
-
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 1)))		
-
 ;	(printout t " ENVIRONMENT:" crlf)
-
 ;	(printout t " - azione eseguita: turnright" crlf)	
-
 ;	(printout t " - nuova direzione dell'agente: south" crlf)
-
 )
 
-
-
-(defrule turnright4
-
-	(declare (salience 20))      
-
-?f2<-	(status (step ?i) (time ?t)) 
-
+(defrule turnright4	(declare (salience 20))      
+	?f2 <- (status (step ?i) (time ?t)) 
 	(exec (step ?i) (action  Turnright))
-
-?f1<-	(agentstatus (step ?i) (pos-r ?r) (pos-c ?c)(direction north))
-
+	?f1 <- (agentstatus (step ?i) (pos-r ?r) (pos-c ?c)(direction north))
 	(cell (pos-r ?r) (pos-c ?c))
-
-=> 
-
+	=> 
 	(modify ?f1 (direction east) (step (+ ?i 1)) (time (+ ?t 1)))
-
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 1)))		
-
 ;	(printout t " ENVIRONMENT:" crlf)
-
 ;	(printout t " - azione eseguita: turnright" crlf)	
-
 ;	(printout t " - nuova direzione dell'agente: east" crlf)
-
 )
-
-
 
 ;// __________________________________________________________________________________________
-
 ;// REGOLE PER PERCEZIONI VISIVE (N,S,E,O)          
-
 ;// ������������������������������������������������������������������������������������������ 
 
-(defrule percept-north
-
-	(declare (salience 5))
-
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction north)) 
-
-	(cell (pos-r =(+ ?r 1))	(pos-c =(- ?c 1)) (contains ?x1))
-
-	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x2))
-
-	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x3))
-
-	(cell (pos-r ?r) 		(pos-c =(- ?c 1)) (contains ?x4))
-
-	(cell (pos-r ?r) 		(pos-c ?c)  	(contains ?x5))
-
-	(cell (pos-r ?r) 		(pos-c =(+ ?c 1)) (contains ?x6))
-
-	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x7))
-
-	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x8))
-
-	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x9))
-
-=> 
-
+(defrule percept-north (declare (salience 5))
+	?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction north)) 
+	(cell (pos-r =(+ ?r 1))	(pos-c =(- ?c 1)) 	(contains ?x1))
+	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  		(contains ?x2))
+	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x3))
+	(cell (pos-r ?r) 		(pos-c =(- ?c 1)) 	(contains ?x4))
+	(cell (pos-r ?r) 		(pos-c ?c)  		(contains ?x5))
+	(cell (pos-r ?r) 		(pos-c =(+ ?c 1)) 	(contains ?x6))
+	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x7))
+	(cell (pos-r =(- ?r 1)) (pos-c ?c)  		(contains ?x8))
+	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x9))
+	=> 
 	(assert 	
-
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction north) 
-
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-
 			(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-
 			(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
-
 		)
-
 	)
-
 	(focus MAIN)
-
 )
 
 
 
-(defrule percept-south
-
-	(declare (salience 5))
-
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction south)) 
-
-	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x1))
-
-	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x2))
-
-	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x3))
-
-	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x4))
-
-	(cell (pos-r ?r)  	(pos-c ?c)  	(contains ?x5))
-
-	(cell (pos-r ?r)  	(pos-c =(- ?c 1)) (contains ?x6))
-
-	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x7))
-
-	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x8))
-
-	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)) (contains ?x9))
-
+(defrule percept-south (declare (salience 5))
+	?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction south)) 
+	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x1))
+	(cell (pos-r =(- ?r 1)) (pos-c ?c)  		(contains ?x2))
+	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x3))
+	(cell (pos-r ?r)  		(pos-c =(+ ?c 1)) 	(contains ?x4))
+	(cell (pos-r ?r)  		(pos-c ?c)  		(contains ?x5))
+	(cell (pos-r ?r)  		(pos-c =(- ?c 1)) 	(contains ?x6))
+	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x7))
+	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  		(contains ?x8))
+	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x9))
 => 
-
 	(assert 	
-
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction south) 
-
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-
 			(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-
 			(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
-
 		)
-
 	)
-
 	(focus MAIN)
-
 )
 
 
 
-(defrule percept-east
-
-	(declare (salience 5))
-
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction east)) 
-
-	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x1))
-
-	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x2))
-
-	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x3))
-
-	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x4))
-
-	(cell (pos-r ?r)  	(pos-c ?c)  	(contains ?x5))	
-
-	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x6))
-
+(defrule percept-east (declare (salience 5))
+	?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction east)) 
+	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x1))
+	(cell (pos-r ?r)  		(pos-c =(+ ?c 1)) 	(contains ?x2))
+	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x3))
+	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  		(contains ?x4))
+	(cell (pos-r ?r)  		(pos-c ?c)  		(contains ?x5))	
+	(cell (pos-r =(- ?r 1)) (pos-c ?c)  		(contains ?x6))
 	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1))	(contains ?x7))
-
-	(cell (pos-r ?r)		(pos-c =(- ?c 1)) (contains ?x8))
-
-	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x9))
-
-=> 	
-
+	(cell (pos-r ?r)		(pos-c =(- ?c 1)) 	(contains ?x8))
+	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x9))
+	=> 	
 	(assert 	
-
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction east) 
-
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-
 			(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-
 			(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
-
 		)
-
 	)
-
 	(focus MAIN)
-
 )
 
 
 
-(defrule percept-west
-
-	(declare (salience 5))
-
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction west)) 
-
-	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x1))
-
-	(cell (pos-r ?r)  	(pos-c =(- ?c 1)) (contains ?x2))
-
-	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)) (contains ?x3))
-
-	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x4))
-
-	(cell (pos-r ?r)  	(pos-c ?c)  	(contains ?x5))
-
-	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x6))
-
-	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x7))	
-
-	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x8))	
-
-	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x9))
-
-=> 
-
+(defrule percept-west (declare (salience 5))
+	?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction west)) 
+	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x1))
+	(cell (pos-r ?r)  		(pos-c =(- ?c 1)) 	(contains ?x2))
+	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1))	(contains ?x3))
+	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	  	(contains ?x4))
+	(cell (pos-r ?r)  		(pos-c ?c)  	  	(contains ?x5))
+	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	  	(contains ?x6))
+	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x7))	
+	(cell (pos-r ?r)  		(pos-c =(+ ?c 1)) 	(contains ?x8))	
+	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x9))
+	=> 
 	(assert 	
-
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction west) 
-
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-
 			(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-
 			(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
-
 		)
-
 	)
-
 	(focus MAIN)
-
 )
-
-
-
-
-
-
-
-
-
-
 
 ;// AGENT
 
-
-
-
-
 (defmodule AGENT (import MAIN ?ALL))
 
-
-
-
-
-(deftemplate K-cell  (slot pos-r) (slot pos-c) 
-                   (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser)))
-
-
+(deftemplate K-cell  
+	(slot pos-r) 
+	(slot pos-c) 
+	(slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket RecyclableBasket DrinkDispenser FoodDispenser))
+)
 
 (deftemplate K-agent
-
 	(slot step)
-        (slot time) 
-
+    (slot time) 
 	(slot pos-r) 
-
 	(slot pos-c) 
-
 	(slot direction) 
-
 	(slot l-drink)
-        (slot l-food)
-        (slot l_d_waste)
-        (slot l_f_waste)
-
-)
-
-
-
-
-        
+    (slot l-food)
+    (slot l_d_waste)
+    (slot l_f_waste)
+)    
 
 (defrule  beginagent1
-
     (declare (salience 11))
-
     (status (step 0))
-
     (not (exec (step 0)))
     (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
-
-=>
-
-     (assert (K-cell (pos-r ?r) (pos-c ?c) (contains ?x)))
+	=>
+    (assert (K-cell (pos-r ?r) (pos-c ?c) (contains ?x)))
 )
-
-            
-
-
-
-
-
  
 (defrule  beginagent2
-
-    (declare (salience 11))
-
-    (status (step 0))
-
-    (not (exec (step 0)))
-    (initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
-=> 
-    (assert (K-agent (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d)
-                              (l-drink 0) (l-food 0) (l_d_waste no) (l_f_waste no)))
+	(declare (salience 11))
+	(status (step 0))
+	(not (exec (step 0)))
+	(initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
+	=> 
+	(assert (K-agent (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d) (l-drink 0) (l-food 0) (l_d_waste no) (l_f_waste no)))
 )
 
-
 (defrule ask_act
-
- ?f <-   (status (step ?i))
-
-    =>  (printout t crlf crlf)
-
-        (printout t "action to be executed at step:" ?i)
-
-        (printout t crlf crlf)
-
-        (modify ?f (result no)))
-
-
-
-
+	?f <- (status (step ?i))
+	=>  
+	(printout t crlf crlf)
+	(printout t "action to be executed at step:" ?i)
+	(printout t crlf crlf)
+	(modify ?f (result no))
+)
 
 (defrule exec_act
-
-    (status (step ?i))
-
-    (exec (step ?i))
-
- => (focus MAIN))
+	(status (step ?i))
+	(exec (step ?i))
+	=> 
+	(focus MAIN)
+)
 
 
 ; alcune azioni per testare il sistema
