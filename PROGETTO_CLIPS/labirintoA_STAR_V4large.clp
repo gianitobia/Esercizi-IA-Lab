@@ -383,7 +383,7 @@
   	(retract ?f1)
   	(focus NEW)
 )
-
+;la fenomenale
 (defrule change-current
 	(declare (salience 49))
 	?f1 <- (current ?curr)
