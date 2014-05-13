@@ -22,25 +22,30 @@
 
 (defmodule MAIN (export ?ALL))
 
-
-
 ;// DEFTEMPLATE
-
-
-
 (deftemplate exec 
 
 	(slot step) 	;// l'environment incrementa il passo 
-
-	(slot action  (allowed-values Forward Turnright Turnleft Wait 
-                                      LoadDrink LoadFood DeliveryFood DeliveryDrink 
-                                      CleanTable EmptyFood Release CheckFinish Inform))
-        (slot param1)
-        (slot param2)
-        (slot param3))
-
-
-
+	(slot action  (allowed-values 
+									Forward 
+									Turnright
+									Turnleft
+									Wait 
+				                    LoadDrink
+									LoadFood
+									DeliveryFood
+									DeliveryDrink 
+				                    CleanTable
+									EmptyFood
+									Release
+									CheckFinish
+									Inform
+					)
+	)	
+	(slot param1)
+    (slot param2)
+    (slot param3)
+)
 
 (deftemplate msg-to-agent 
            (slot request-time)
@@ -48,395 +53,247 @@
            (slot sender)
            (slot type (allowed-values order finish))
            (slot  drink-order)
-           (slot food-order))
-
-
-
-        
+           (slot food-order)
+)
 
 (deftemplate status (slot step) (slot time) (slot result))	;//struttura interna
-
 
 
 (deftemplate perc-vision	;// la percezione di visione avviene dopo ogni azione, fornisce informazioni sullo stato del sistema
 
 	(slot step)
-        (slot time)	
-
+    (slot time)
 	(slot pos-r)		;// informazioni sulla posizione del robot (riga)
-
 	(slot pos-c)		;// (colonna)
-
-	(slot direction)		;// orientamento del robot
+	(slot direction)	;// orientamento del robot
 
 	;// percezioni sulle celle adiacenti al robot: (il robot � nella 5 e punta sempre verso la 2):		        
+    (slot perc1  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket	RecyclableBasket DrinkDispenser FoodDispenser))
+    (slot perc2  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket	RecyclableBasket DrinkDispenser FoodDispenser))
+	(slot perc3  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket	RecyclableBasket DrinkDispenser FoodDispenser))
+	(slot perc4  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket	RecyclableBasket DrinkDispenser FoodDispenser))
+	(slot perc5  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket	RecyclableBasket DrinkDispenser FoodDispenser))
+	(slot perc6  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket	RecyclableBasket DrinkDispenser FoodDispenser))
+	(slot perc7  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket	RecyclableBasket DrinkDispenser FoodDispenser))
+	(slot perc8  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket	RecyclableBasket DrinkDispenser FoodDispenser))
+	(slot perc9  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket	RecyclableBasket DrinkDispenser FoodDispenser))
+)
 
-	         
-        (slot perc1  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser))
-        (slot perc2  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser))
-        (slot perc3  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser))
-        (slot perc4  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser))
-        (slot perc5  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser))
-        (slot perc6  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser))
-        (slot perc7  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser))
-        (slot perc8  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser))
-        (slot perc9  (allowed-values  Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser))
-        )
-
-
-
-
-
-
-(deftemplate perc-bump  	;// percezione di urto contro persone o ostacoli
+(deftemplate perc-bump  				;// percezione di urto contro persone o ostacoli
 
 	(slot step)
-        (slot time)		
-
-	(slot pos-r)		;// la posizione in cui si trova (la stessa in cui era prima dell'urto)
-
+    (slot time)
+	(slot pos-r)						;// la posizione in cui si trova (la stessa in cui era prima dell'urto)
 	(slot pos-c)
-
 	(slot direction)
-
 	(slot bump (allowed-values no yes)) ;//restituisce yes se sbatte
-
 )
-
-
-
 
 (deftemplate perc-load
-                      (slot step)
-                      (slot time)
-                      (slot load  (allowed-values yes no)) ) 
-
-
-
+	(slot step)
+	(slot time)
+	(slot load  (allowed-values yes no))
+) 
 
 (deftemplate perc-finish  
-         (slot step)
-         (slot time)
-         (slot finish (allowed-values no yes)))
-
-
-
-
-
-(deftemplate Table (slot table-id) (slot pos-r) (slot pos-c))
-(deftemplate TrashBasket (slot TB-id) (slot pos-r) (slot pos-c))
-(deftemplate RecyclableBasket (slot  RB-id) (slot pos-r) (slot pos-c))
-(deftemplate FoodDispenser  (slot FD-id) (slot pos-r) (slot pos-c))
-(deftemplate DrinkDispenser (slot DD-id) (slot pos-r) (slot pos-c))
-
-
-
-(deftemplate initial_agentposition (slot pos-r)  (slot pos-c) (slot direction))
-
-
-
-(deftemplate prior-cell  (slot pos-r) (slot pos-c) 
-                         (slot contains (allowed-values Wall Person  Empty Parking Table Seat TB
-                                                      RB DD FD)))
-
-
-
-
-(deffacts init 
-
-	(create)
-
+     (slot step)
+     (slot time)
+     (slot finish (allowed-values no yes))
 )
 
+(deftemplate Table 
+	(slot table-id) 
+	(slot pos-r) 
+	(slot pos-c)
+)
 
+(deftemplate TrashBasket
+	(slot TB-id) 
+	(slot pos-r) 
+	(slot pos-c)
+)
 
+(deftemplate RecyclableBasket 
+	(slot  RB-id) 
+	(slot pos-r) 
+	(slot pos-c)
+)
 
+(deftemplate FoodDispenser
+	(slot FD-id)
+	(slot pos-r)
+	(slot pos-c)
+)
+
+(deftemplate DrinkDispenser 
+	(slot DD-id) 
+	(slot pos-r) 
+	(slot pos-c)
+)
+
+(deftemplate initial_agentposition 
+	(slot pos-r)  
+	(slot pos-c) 
+	(slot direction)
+)
+
+(deftemplate prior-cell  
+	(slot pos-r) 
+	(slot pos-c) 
+    (slot contains (allowed-values Wall Person Empty Parking Table Seat TB RB DD FD))
+)
+
+(deffacts init
+	(create)
+)
 
 ;; regola per inizializzazione
 ;; legge anche initial map (prior cell), initial agent status e durata simulazione (in numero di passi)
 
-
-
-(defrule createworld 
-
-    ?f<-   (create) =>
-           (load-facts "InitMap.txt")
-
-           (assert (create-map) (create-initial-setting)
-
-                   (create-history))  
-
-           (retract ?f)
-
-           (focus ENV))
-
-
+(defrule createworld
+    ?f <- (create) 
+	=>
+	(load-facts "InitMap.clp")
+	(assert (create-map) (create-initial-setting) (create-history))  
+    (retract ?f)
+	(focus ENV)
+)
 
 ;// SI PASSA AL MODULO AGENT SE NON  E' ESAURITO IL TEMPO (indicato da maxduration)
-
 (defrule go-on-agent		
-
 	(declare (salience 20))
-
 	(maxduration ?d)
-
 	(status (step ?t&:(< ?t ?d)))	;// controllo sul tempo
-
- => 
-
-;	(printout t crlf)
-
-	(focus AGENT)		;// passa il focus all'agente, che dopo un'azione lo ripassa al main.
-
+ 	=>
+	;(printout t crlf)
+	(focus AGENT)					;// passa il focus all'agente, che dopo un'azione lo ripassa al main.
 )
-
-
 
 ;// SI PASSA AL MODULO ENV DOPO CHE AGENTE HA DECISO AZIONE DA FARE
-
-(defrule go-on-env	
-
+(defrule go-on-env
 	(declare (salience 21))
-
-?f1<-	(status (step ?t))
-
+	?f1<-	(status (step ?t))
 	(exec (step ?t)) 	;// azione da eseguire al al passo T, viene simulata dall'environment
-
-=>
-
-;	(printout t crlf)
-
+	=>
+	;	(printout t crlf)
 	(focus ENV)
-
 )
-
-
 
 ;// quando finisce il tempo l'esecuzione si interrompe e vengono stampate le penalit�
-
-(defrule game-over	
-
-	(declare (salience 10))
-
+(defrule game-over		(declare (salience 10))
 	(maxduration ?d)
-
 	(status (step ?d))
-
 	(penalty ?p)
-
-=> 
-
+	=> 
 	(printout t crlf " TIME OVER - Penalit� accumulate: " ?p crlf crlf)
-
 	(halt)
-
 )
 
-
-
-
-
-
-
-
-
-
-
-
-
 ;// _______________________________________________________________________________________________________________________
-
 ;// ENV                                                                                                                   
-
 ;// �����������������������������������������������������������������������������������������������������������������������
-
-
 
 (defmodule ENV (import MAIN ?ALL))
 
-
-
-
-
 ;// DEFTEMPLATE
-
-
-
-
-(deftemplate cell  (slot pos-r) (slot pos-c) 
-                   (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser)))
-
-
+(deftemplate cell  
+	(slot pos-r)
+	(slot pos-c) 
+    (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket RecyclableBasket DrinkDispenser FoodDispenser))
+)
 
 (deftemplate agentstatus 
-
 	(slot step)
-        (slot time) 
-
+    (slot time)
 	(slot pos-r) 
-
 	(slot pos-c) 
-
 	(slot direction) 
-
 	(slot l-drink)
-        (slot l-food)
-        (slot l_d_waste)
-        (slot l_f_waste)
-
+    (slot l-food)
+    (slot l_d_waste)
+    (slot l_f_waste)
 )
-
-
-
-
 
 (deftemplate tablestatus	
-
 	(slot step)
-        (slot time)
-
+    (slot time)
 	(slot table-id)
-
 	(slot clean (allowed-values yes no))
-
 	(slot l-drink)
-        (slot l-food))
-
+    (slot l-food)
+)
 
 (deftemplate orderstatus	;// tiente traccia delle ordinazioni
-
 	(slot step)
-        (slot time)			;// tempo corrente
-
-	(slot arrivaltime)	;// momento in cui � arrivata l'ordinazione
-
-	(slot requested-by)	;// tavolo richiedente
-
+    (slot time)				;// tempo corrente
+	(slot arrivaltime)		;// momento in cui � arrivata l'ordinazione
+	(slot requested-by)		;// tavolo richiedente
 	(slot drink-order)
-        (slot food-order)
-        (slot drink-deliv)
-        (slot food-deliv)
-        (slot answer (allowed-values pending accepted delayed rejected))	
-
+    (slot food-order)
+    (slot drink-deliv)
+    (slot food-deliv)
+    (slot answer (allowed-values pending accepted delayed rejected))	
 )
-
-
 
 (deftemplate cleanstatus
-
 	(slot step)
-        (slot time)
-
-	(slot arrivaltime)	
-
+    (slot time)
+	(slot arrivaltime)
 	(slot requested-by)	;// tavolo richiedente	
-
 )
-
-
 
 (deftemplate personstatus 	;// informazioni sulla posizione delle persone
-
 	(slot step)
-        (slot time)
-
+    (slot time)
 	(slot ident)
-
 	(slot pos-r)
-
 	(slot pos-c)
-
 	(slot activity)   ;// activity seated se cliente seduto, stand se in piedi, oppure path  		
-        (slot move)			
-
+    (slot move)			
 )
 
-
-
-(deftemplate personmove		;// modella i movimenti delle persone. l'environment deve tenere conto dell'interazione di tanti agenti. Il mondo cambia sia per le azioni del robot, si per le azioni degli operatori. Il modulo environment deve gestire le interazioni. 
-
+(deftemplate personmove		
+	;// modella i movimenti delle persone. l'environment deve tenere conto dell'interazione di tanti agenti. 
+	;//Il mondo cambia sia per le azioni del robot, si per le azioni degli operatori. Il modulo environment deve gestire le interazioni. 
 	(slot step)
-
 	(slot ident)
-
 	(slot path-id)
-
 )
-
-
 
 (deftemplate event   		;// gli eventi sono le richieste dei tavoli: ordini e finish
-
 	(slot step)
-
 	(slot type (allowed-values request finish))
-
 	(slot source)
-
 	(slot food)
-        (slot drink)
-
+    (slot drink)
 )
-
-
-
-
 
 ;// DEFRULE
 
-
-
 ;//imposta il valore iniziale di ciascuna cella 
 
-(defrule creation1	
-
+(defrule creation1
      (declare (salience 25))
-
      (create-map)
      (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
-
-=>
-
+	 =>
      (assert (cell (pos-r ?r) (pos-c ?c) (contains ?x)))
-
-            
-
 )
 
-
-
-
-
-
-
 (defrule creation2	
-
 	(declare (salience 24))
-
-?f1<-	(create-history) 
-
-=>
-
-   	(load-facts "history.txt")
-        (retract ?f1)
+	?f1 <- (create-history) 
+	=>
+   	(load-facts "historyDom1.clp")
+    (retract ?f1)
 )
 
 (defrule creation3
-         (declare (salience 23))
-         (create-initial-setting)
-         (Table (table-id ?tb) (pos-r ?r) (pos-c ?c))
-=> 
-         (assert (tablestatus (step 0) (time 0) (table-id ?tb) (clean yes) (l-drink 0) (l-food 0)))
+	(declare (salience 23))
+	(create-initial-setting)
+	(Table (table-id ?tb) (pos-r ?r) (pos-c ?c))
+	=> 
+	(assert (tablestatus (step 0) (time 0) (table-id ?tb) (clean yes) (l-drink 0) (l-food 0)))
 )
    
 
@@ -586,8 +443,6 @@
          (assert (serviceFD ?fd ?r (+ ?c 1)))
 )
 
-
-
 (defrule creation451
          (declare (salience 22))
          (create-initial-setting)
@@ -626,17 +481,17 @@
 
 
 (defrule creation5
-         (declare (salience 21))
-?f1 <-   (create-initial-setting)
-?f2 <-   (create-map)
-
-         (initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
-=> 
-         (assert (agentstatus (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d)
-                              (l-drink 0) (l-food 0) (l_d_waste no) (l_f_waste no))
-                 (status (step 0) (time 0))
-                 (penalty 0))
-         (retract ?f1 ?f2)
+	(declare (salience 21))
+	?f1 <- (create-initial-setting)
+	?f2 <- (create-map)
+    (initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
+	=> 
+    (assert (agentstatus (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d)
+                         (l-drink 0) (l-food 0) (l_d_waste no) (l_f_waste no))
+            (status (step 0) (time 0))
+            (penalty 0)
+	)
+    (retract ?f1 ?f2)
 )
 
 
