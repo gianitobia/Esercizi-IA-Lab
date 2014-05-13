@@ -37,7 +37,7 @@ public class Scene
   
   public void drawScene(Graphics2D g)
   {
-    g.setColor(Color.WHITE);
+    g.setColor(Color.BLACK);
     float x0 = (w_width-c_width*num_x)/2;
     float y0 = (w_height-c_height*num_y)/2;
     for(int i=0;i<scene.length;i++){

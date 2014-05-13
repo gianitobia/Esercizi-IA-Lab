@@ -27,16 +27,31 @@ public class Finestra extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        scenePanel = new ScenePanel();
         menuPanel2 = new MenuPanel();
         jTextField2 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        scenePanel = new ScenePanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SceneGenerator");
+        setPreferredSize(new java.awt.Dimension(1280, 720));
+        setResizable(false);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
+
+        javax.swing.GroupLayout scenePanelLayout = new javax.swing.GroupLayout(scenePanel);
+        scenePanel.setLayout(scenePanelLayout);
+        scenePanelLayout.setHorizontalGroup(
+            scenePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1421, Short.MAX_VALUE)
+        );
+        scenePanelLayout.setVerticalGroup(
+            scenePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 919, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(scenePanel);
 
         jTextField2.setText("5");
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
@@ -70,7 +85,7 @@ public class Finestra extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(557, Short.MAX_VALUE))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
         menuPanel2Layout.setVerticalGroup(
             menuPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -82,23 +97,10 @@ public class Finestra extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(846, Short.MAX_VALUE))
         );
 
         getContentPane().add(menuPanel2);
-
-        javax.swing.GroupLayout scenePanelLayout = new javax.swing.GroupLayout(scenePanel);
-        scenePanel.setLayout(scenePanelLayout);
-        scenePanelLayout.setHorizontalGroup(
-            scenePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 548, Short.MAX_VALUE)
-        );
-        scenePanelLayout.setVerticalGroup(
-            scenePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 720, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(scenePanel);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
