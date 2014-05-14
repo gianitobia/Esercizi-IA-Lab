@@ -10,6 +10,8 @@
  */
 public class MenuPanel extends javax.swing.JPanel {
 
+    private ScenePanel scenePanel;
+
     /**
      * Creates new form MenuPanel
      */
@@ -40,4 +42,7 @@ public class MenuPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+    void init(ScenePanel scenePanel) {
+        this.scenePanel = scenePanel;
+    }
 }

@@ -13,6 +13,8 @@ import java.awt.Graphics2D;
  */
 public class ScenePanel extends javax.swing.JPanel {
 
+    private MenuPanel menuPanel;
+
     /**
      * Creates new form ScenePanel
      */
@@ -55,8 +57,13 @@ public class ScenePanel extends javax.swing.JPanel {
     Scene s;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
-    void init() {
+    void init(MenuPanel menuPanel) {
         s = new Scene(5, 5, this.getWidth(), this.getHeight());
+        this.menuPanel = menuPanel;
+    }
+
+    void resizeScene(int num_x, int num_y) {
+        s.resize(num_x, num_y);
+        repaint();
     }
 }

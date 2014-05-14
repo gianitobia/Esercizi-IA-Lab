@@ -15,7 +15,8 @@ public class Finestra extends javax.swing.JFrame {
      */
     public Finestra() {
         initComponents();
-        scenePanel.init();
+        scenePanel.init(menuPanel);
+        menuPanel.init(scenePanel);
     }
 
     /**
@@ -28,11 +29,12 @@ public class Finestra extends javax.swing.JFrame {
     private void initComponents() {
 
         scenePanel = new ScenePanel();
-        menuPanel2 = new MenuPanel();
-        jTextField2 = new javax.swing.JTextField();
+        menuPanel = new MenuPanel();
+        num_col_field = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        num_row_field = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        updateButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SceneGenerator");
@@ -53,65 +55,84 @@ public class Finestra extends javax.swing.JFrame {
 
         getContentPane().add(scenePanel);
 
-        jTextField2.setText("5");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        num_col_field.setText("5");
+        num_col_field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                num_col_fieldActionPerformed(evt);
             }
         });
 
         jLabel2.setText("x");
 
-        jTextField1.setText("5");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        num_row_field.setText("5");
+        num_row_field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                num_row_fieldActionPerformed(evt);
             }
         });
 
         jLabel1.setText("Dimensioni griglia");
 
-        javax.swing.GroupLayout menuPanel2Layout = new javax.swing.GroupLayout(menuPanel2);
-        menuPanel2.setLayout(menuPanel2Layout);
-        menuPanel2Layout.setHorizontalGroup(
-            menuPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(menuPanel2Layout.createSequentialGroup()
+        updateButton.setText("Aggiorna");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
+        menuPanel.setLayout(menuPanelLayout);
+        menuPanelLayout.setHorizontalGroup(
+            menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(menuPanelLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(menuPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel1)
-                    .addGroup(menuPanel2Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(updateButton)
+                        .addGroup(menuPanelLayout.createSequentialGroup()
+                            .addComponent(num_row_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(num_col_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(115, Short.MAX_VALUE))
         );
-        menuPanel2Layout.setVerticalGroup(
-            menuPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(menuPanel2Layout.createSequentialGroup()
+        menuPanelLayout.setVerticalGroup(
+            menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(menuPanelLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(menuPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(846, Short.MAX_VALUE))
+                    .addComponent(num_col_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(num_row_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(updateButton)
+                .addContainerGap(180, Short.MAX_VALUE))
         );
 
-        getContentPane().add(menuPanel2);
+        getContentPane().add(menuPanel);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void num_row_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_num_row_fieldActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_num_row_fieldActionPerformed
+
+    private void num_col_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_num_col_fieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_num_col_fieldActionPerformed
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        int num_row = Integer.parseInt(num_row_field.getText());
+        int num_col = Integer.parseInt(num_col_field.getText());
+        if (num_row > 0 && num_col > 0) {
+            scenePanel.resizeScene(num_row, num_col);
+        }
+    }//GEN-LAST:event_updateButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -151,9 +172,10 @@ public class Finestra extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private MenuPanel menuPanel2;
+    private MenuPanel menuPanel;
+    private javax.swing.JTextField num_col_field;
+    private javax.swing.JTextField num_row_field;
     private ScenePanel scenePanel;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

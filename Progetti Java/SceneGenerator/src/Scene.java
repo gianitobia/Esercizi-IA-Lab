@@ -18,11 +18,44 @@ public class Scene {
     int perc;
 
     public Scene(int num_x, int num_y, float w_width, float w_height) {
+        this.w_width = w_width;
+        this.w_height = w_height;
+
+        scene = new int[num_x][num_y];
+        resize(num_x, num_y);
+        initScene(scene);
+    }
+
+    public void drawScene(Graphics2D g) {
+
+        float x0 = (w_width - c_width * num_x) / 2;
+        float y0 = (w_height - c_height * num_y) / 2;
+        for (int i = 0; i < scene.length; i++) {
+            for (int j = 0; j < scene[i].length; j++) {
+                switch (scene[i][j]) {
+                    case 0:
+                        g.setColor(Color.BLACK);
+                        break;
+                    case 1:
+                        g.setColor(Color.orange);
+                        break;
+                    default:
+                        g.setColor(Color.RED);
+                        break;
+                }
+                int x = (int) (x0 + i * c_width);
+                int y = (int) (y0 + j * c_height);
+                //System.out.println(x + " "+ y + " "+ c_width + " "+ c_height);
+                g.drawRect(x, y, (int) (c_width - 1), (int) (c_height - 1));
+            }
+        }
+    }
+
+    void resize(int num_x, int num_y) {
+        int[][] new_scene = new int[num_x][num_y];
         perc = 70;
         this.num_x = num_x;
         this.num_y = num_y;
-        this.w_width = w_width;
-        this.w_height = w_height;
         c_width = (w_width * perc / 100) / num_x;
         c_height = (w_height * perc / 100) / num_y;
         if (c_width > c_height) {
@@ -30,23 +63,25 @@ public class Scene {
         } else {
             c_height = c_width;
         }
-        System.out.println(num_x + " " + num_y + " " + c_width + " " + c_height + " " + w_width + " " + w_height);
 
-        scene = new int[num_x][num_y];
-
+        initScene(new_scene);
+        for (int i = 1; i < new_scene.length - 1; i++) {
+            for (int j = 1; j < new_scene[i].length - 1; j++) {
+                if (i <= scene.length - 1 && j <= scene[0].length - 1) {
+                    new_scene[i][j] = scene[i][j];
+                }
+            }
+        }
+        scene = new_scene;
     }
 
-    public void drawScene(Graphics2D g) {
-        g.setColor(Color.BLACK);
-        float x0 = (w_width - c_width * num_x) / 2;
-        float y0 = (w_height - c_height * num_y) / 2;
+    void initScene(int[][] scene) {
+
         for (int i = 0; i < scene.length; i++) {
             for (int j = 0; j < scene[i].length; j++) {
-
-                int x = (int) (x0 + i * c_width);
-                int y = (int) (y0 + j * c_height);
-                //System.out.println(x + " "+ y + " "+ c_width + " "+ c_height);
-                g.drawRect(x, y, (int) (c_width - 1), (int) (c_height - 1));
+                if (i == 0 || i == scene.length - 1 || j == 0 || j == scene[0].length - 1) {
+                    scene[i][j] = 1;
+                }
             }
         }
     }
