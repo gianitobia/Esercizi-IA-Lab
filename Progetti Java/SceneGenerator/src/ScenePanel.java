@@ -51,7 +51,9 @@ public class ScenePanel extends javax.swing.JPanel {
 
         Graphics2D g2 = (Graphics2D) g; // cast g to Graphics2D  
 
-        s.drawScene(g2);
+        if (s != null) {
+            s.drawScene(g2);
+        }
     }
 
     Scene s;
@@ -65,5 +67,10 @@ public class ScenePanel extends javax.swing.JPanel {
     void resizeScene(int num_x, int num_y) {
         s.resize(num_x, num_y);
         repaint();
+    }
+
+    void exportScene(String text) {
+        String textFile = s.exportScene();
+        // TODO scrivere scrittura su file di textFile
     }
 }

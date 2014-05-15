@@ -1,8 +1,22 @@
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+/*
 
+ 0 = empty
+ 1 = wall
+ 2 = seat
+ 3 = table
+ 4 = RecyclableBasket
+ 5 = trashbasket
+ 6 = food dispenser
+ 7 = drink dispenser
+ 8 = person
+ 9 = parking
+
+ */
 //matrice fondamentale rappresentante la scena
+
 public class Scene {
 
     //numero di celle sulle x e sulle y
@@ -84,5 +98,46 @@ public class Scene {
                 }
             }
         }
+    }
+
+    public String exportScene() {
+        String s = "";
+        for (int i = 0; i < scene.length; i++) {
+            for (int j = 0; j < scene[i].length; j++) {
+                switch (scene[i][j]) {
+                    case 0:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains Empty))\n";
+                        break;
+                    case 1:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains Wall))\n";
+                        break;
+                    case 2:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains Seat))\n";
+                        break;
+                    case 3:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains Table))\n";
+                        break;
+                    case 4:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains RB))\n";
+                        break;
+                    case 5:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains TB))\n";
+                        break;
+                    case 6:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains FD))\n";
+                        break;
+                    case 7:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains DD))\n";
+                        break;
+                    case 8:
+                        break;
+                    case 9:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains Parking))\n";
+                        break;
+                }
+
+            }
+        }
+        return s;
     }
 }

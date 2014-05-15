@@ -11,6 +11,7 @@
 public class MenuPanel extends javax.swing.JPanel {
 
     private ScenePanel scenePanel;
+    private int state;
 
     /**
      * Creates new form MenuPanel
@@ -44,5 +45,13 @@ public class MenuPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
     void init(ScenePanel scenePanel) {
         this.scenePanel = scenePanel;
+    }
+
+    int getState() {
+        return state;
+    }
+
+    void setState(int i) {
+        state = i;
     }
 }
