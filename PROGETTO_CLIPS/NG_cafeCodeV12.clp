@@ -153,7 +153,7 @@
 (defrule createworld
     ?f <- (create) 
 	=>
-	(load-facts "InitMap.clp")
+	(load-facts "InitMapDom1.clp")
 	(assert (create-map) (create-initial-setting) (create-history))  
     (retract ?f)
 	(focus ENV)

@@ -262,7 +262,7 @@
      (goal ?r ?c)
      (node (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g))  
      => 
-	 (printout t " Esiste soluzione per goal (" ?r "," ?c ") con costo "  ?g crlf)
+	 (printout t ?id " Esiste soluzione per goal (" ?r "," ?c ") con costo "  ?g crlf)
      (assert (stampa ?id))
 )
 
@@ -272,13 +272,16 @@
     (node (ident ?id) (father ?anc&~NA))  
     (exec ?anc ?id ?oper ?r ?c)
 	=> 
-	(printout t " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
+	(printout t ?id " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
+	(assert (azione ?anc ?id ?oper ?r ?c))
     (assert (stampa ?anc))
+	(assert (print yes))
     (retract ?f)
 )
 
 ;stampa le statistiche sull'esecuzione di A*
 (defrule stampa-fine (declare (salience 102))
+	?f1 <- (print yes)
 	(stampa ?id)
 	(node (ident ?id) (father ?anc&NA))
 	(open-worse ?worse)
@@ -290,7 +293,16 @@
 	(printout t " stati generati gi� in closed " ?closed crlf)
 	(printout t " stati generati gi� in open (open-worse) " ?worse crlf)
 	(printout t " stati generati gi� in open (open-better) " ?better crlf)
-	(halt)
+	(printout t crlf)
+	(printout t crlf)
+	(retract ?f1)
+)
+
+(defrule stampa-ord (declare (salience 99))
+	?f <- (azione ?anc ?id ?oper ?r ?c)
+	=>
+	(printout t ?id " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
+	(retract ?f)
 )
 
 
@@ -393,17 +405,12 @@
   	(retract ?f1)
   	(focus NEW)
 )
-<<<<<<< HEAD
-;la fenomenale
-(defrule change-current
-	(declare (salience 49))
-=======
+
 
 ;##########################################################################################
 
 ;Regola per selezionare il nodo piu' promettente in termini di costo (g+h) anche da livelli precedendi del grafo
 (defrule change-current		(declare (salience 49))
->>>>>>> FETCH_HEAD
 	?f1 <- (current ?curr)
 	?f2 <- (node (ident ?curr))
 	(node (ident ?best&:(neq ?best ?curr)) (fcost ?bestcost) (open yes))
