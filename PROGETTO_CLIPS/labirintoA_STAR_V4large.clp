@@ -262,7 +262,6 @@
      (goal ?r ?c)
      (node (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g))  
      => 
-	 (printout t ?id " Esiste soluzione per goal (" ?r "," ?c ") con costo "  ?g crlf)
      (assert (stampa ?id))
 )
 
@@ -272,16 +271,13 @@
     (node (ident ?id) (father ?anc&~NA))  
     (exec ?anc ?id ?oper ?r ?c)
 	=> 
-	(printout t ?id " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
-	(assert (azione ?anc ?id ?oper ?r ?c))
+	(printout t " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
     (assert (stampa ?anc))
-	(assert (print yes))
     (retract ?f)
 )
 
 ;stampa le statistiche sull'esecuzione di A*
 (defrule stampa-fine (declare (salience 102))
-	?f1 <- (print yes)
 	(stampa ?id)
 	(node (ident ?id) (father ?anc&NA))
 	(open-worse ?worse)
@@ -298,13 +294,14 @@
 	(retract ?f1)
 )
 
-(defrule stampa-ord (declare (salience 99))
+(defrule convert-solution (declare (salience 99))
 	?f <- (azione ?anc ?id ?oper ?r ?c)
 	=>
 	(printout t ?id " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
+	(assert convert-action ?anc ?id ?oper ?r ?c)
+	(focus CONVERT)
 	(retract ?f)
 )
-
 
 ;############# REGOLE DI MOVIMENTO ############################################################
 
@@ -406,7 +403,6 @@
   	(focus NEW)
 )
 
-
 ;##########################################################################################
 
 ;Regola per selezionare il nodo piu' promettente in termini di costo (g+h) anche da livelli precedendi del grafo
@@ -435,6 +431,19 @@
 	(printout t " fail (last  node expanded " ?curr ")" crlf)
 	(halt)
 )                
+
+
+;################ MODULO CONVERT ############################################################
+(defmodule CONVERT (import MAIN ?ALL) (export ?ALL))
+
+
+
+
+
+
+
+
+
 
 ;################ MODULO NEW ################################################################
 
