@@ -2428,34 +2428,21 @@
 
 
 
-(defrule delivery-drink_WRONG_2
-
-	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule delivery-drink_WRONG_2 (declare (salience 20))
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action DeliveryDrink) (param1 ?x) (param2 ?y))
-
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-drink ?ald&:(> ?ald 0)))
-        (serviceTable ?tb ?rr ?cc)
-
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld) (l-food ?tlf))
-
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) (l-drink ?ald&:(> ?ald 0)))
+    (serviceTable ?tb ?rr ?cc)
+	?f3 <- (tablestatus (step ?i) (table-id ?tb) (l-drink ?tld) (l-food ?tlf))
 	(not (orderstatus (step ?i) (requested-by ?tb))) 
-?f5<-   (penalty ?p)
-=> 
-
+	?f5 <- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)) (l-drink (- ?ald 1)))
-
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 4)) (l-drink (+ ?tld 1)))
-
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
-
+    (retract ?f5)
 ) 
 
 
@@ -2464,116 +2451,81 @@
 
 ;// il robot tenta di fare una delivery-food  ma non sta trasportando cibo
 
-(defrule delivery-drink_WRONG_3
-
-	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule delivery-drink_WRONG_3 (declare (salience 20))
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action DeliveryDrink) (param1 ?x) (param2 ?y))
-
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-drink ?ald&:(= ?ald 0)))
-        (serviceTable ?tb ?rr ?cc)
-?f5<-   (penalty ?p)
-=> 
-
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
+	(l-drink ?ald&:(= ?ald 0)))
+    (serviceTable ?tb ?rr ?cc)
+	?f5 <- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(assert (penalty (+ ?p	100000)))
-        (retract ?f5)
-
+    (retract ?f5)
 )    
 
 ;// L'azione di delivery-food o delivery-drink fallisce perch� l'agente non � accanto ad un tavolo 
 
 
 
-(defrule delivery_WRONG_4
-
-	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule delivery_WRONG_4 (declare (salience 20))
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action DeliveryFood|DeliveryDrink) (param1 ?x) (param2 ?y))
-
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
-        (not (serviceTable ?tb ?rr ?cc))
-?f5<-   (penalty ?p)
-=> 
-
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
+    (not (serviceTable ?tb ?rr ?cc))
+	?f5 <- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4))) 
-
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
-
+    (retract ?f5)
 ) 
 
 ;// L'azione di delivery-food o o delivery-drink fallisce perch� la posizione indicata non 
 ;//contiene un tavolo 
 
-(defrule delivery_WRONG_5
-
-	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule delivery_WRONG_5 (declare (salience 20))
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action DeliveryFood|DeliveryDrink) (param1 ?x) (param2 ?y))
-
 	(not (Table (table-id ?tb) (pos-r ?x) (pos-c ?y)))
-
-?f1<-	(agentstatus (step ?i) (time ?t))
-?f5<-   (penalty ?p)
-=> 
-
+	?f1 <- (agentstatus (step ?i) (time ?t))
+	?f5 <- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4))) 
-
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
-
+    (retract ?f5)
 ) 
 
-(defrule order-completed
-        (declare (salience 18))
+(defrule order-completed (declare (salience 18))
 	(status (time ?t) (step ?i)) 
-
 	(exec (step ?ii&:(= ?ii (- ?i 1))) (action DeliveryFood|DeliveryDrink) (param1 ?x) (param2 ?y))
-
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1 <-  (orderstatus (step ?i) (requested-by ?tb) (food-order ?nfo) (food-deliv ?dfo&:(= ?dfo ?nfo))
-                     (drink-order ?ndo) (drink-deliv ?ddo&:(= ?ddo  ?ndo)))
-=>    (retract ?f1)
+	?f1 <- (orderstatus (step ?i) (requested-by ?tb) (food-order ?nfo) (food-deliv ?dfo&:(= ?dfo ?nfo))
+    (drink-order ?ndo) (drink-deliv ?ddo&:(= ?ddo  ?ndo)))
+	=>    
+	(retract ?f1)
 )
 
-(defrule perc-load-generation1
-        (declare (salience 19))
+(defrule perc-load-generation1 (declare (salience 19))
 	(status (time ?t) (step ?i)) 
-
 	(exec (step ?ii&:(= ?ii (- ?i 1))) (action DeliveryFood|DeliveryDrink|LoadDrink|LoadFood))
-
-        (agentstatus (step ?i)  (l-drink  0) (l-food 0))	
-=>      (assert (perc-load (time ?t) (step ?i) (load no)))
+	(agentstatus (step ?i)  (l-drink  0) (l-food 0))	
+	=>      
+	(assert (perc-load (time ?t) (step ?i) (load no)))
 )
 
-(defrule perc-load-generation2
-        (declare (salience 19))
+(defrule perc-load-generation2 (declare (salience 19))
 	(status (time ?t) (step ?i)) 
-
 	(exec (step ?ii&:(= ?ii (- ?i 1))) (action DeliveryFood|DeliveryDrink|LoadDrink|LoadFood))
-
-        (agentstatus (step ?i)  (l-drink  ?ld) (l-food ?lf))
-        (test (> (+ ?ld ?lf) 0))	
-=>      (assert (perc-load (time ?t) (step ?i) (load yes)))
+    (agentstatus (step ?i)  (l-drink  ?ld) (l-food ?lf))
+    (test (> (+ ?ld ?lf) 0))	
+	=>
+	(assert (perc-load (time ?t) (step ?i) (load yes)))
 )
-
-
 ;//  REGOLE PER MOVIMENTO
 
 
