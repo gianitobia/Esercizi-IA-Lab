@@ -505,102 +505,55 @@
 
 
 
-(defrule neworder1     
-
-	(declare (salience 200))
-
+(defrule neworder1 (declare (salience 200))
 	(status (step ?i) (time ?t))
-
-?f1<-	(event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
-
+	?f1 <- (event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
 	(tablestatus (step ?i) (table-id ?tb) (clean yes)) 
-
-=> 
-
+	=> 
 	(assert 
-
 		(orderstatus (step ?i) (time ?t) (arrivaltime ?t) (requested-by ?tb) 
                              (drink-order ?nd) (food-order ?nf)
                              (drink-deliv 0) (food-deliv 0)
                              (answer pending))
-     
-
 		(msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order)
                               (drink-order ?nd) (food-order ?nf))
-
 	)
-
 	(retract ?f1)		
-
 	(printout t crlf " ENVIRONMENT:" crlf)
-
 	(printout t " - " ?tb " orders " ?nf " food e " ?nd " drinks" crlf)
-
 )
 
-
-(defrule neworder2     
-
-	(declare (salience 200))
-
+(defrule neworder2 (declare (salience 200))
 	(status (step ?i) (time ?t))
-
-?f1<-	(event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
-
+	?f1<-	(event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
 	(tablestatus (step ?i) (table-id ?tb) (clean no))
-        (event (step ?ii&:(< ?ii ?i)) (type finish) (source ?tb))
-
-=> 
-
+	(event (step ?ii&:(< ?ii ?i)) (type finish) (source ?tb))
+	=> 
 	(assert 
-
 		(orderstatus (step ?i) (time ?t) (arrivaltime ?t) (requested-by ?tb) 
                              (drink-order ?nd) (food-order ?nf)
                              (drink-deliv 0) (food-deliv 0)
                              (answer pending))
-     
-
 		(msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order)
                               (drink-order ?nd) (food-order ?nf))
-
 	)
-
 	(retract ?f1)		
-
 	(printout t crlf " ENVIRONMENT:" crlf)
-
 	(printout t " - " ?tb " orders " ?nf " food e " ?nd " drinks" crlf)
+) 
 
-)
-
-
- 
-
-(defrule newfinish      
-
-	(declare (salience 200))
-
+(defrule newfinish (declare (salience 200))
 	(status (step ?i) (time ?t))
-
-?f1<-	(event (step ?i) (type finish) (source ?tb))
-
+	?f1 <- (event (step ?i) (type finish) (source ?tb))
 	(tablestatus (step ?i) (table-id ?tb) (clean no))
-
-=> 
-
+	=> 
 	(assert 	
-
 		(cleanstatus (step ?i) (time ?t) (arrivaltime ?t) (requested-by ?tb))
                 (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type finish))
-
 	)
-
 	(retract ?f1)
-
 	(printout t crlf " ENVIRONMENT:" crlf)
-
 	(printout t " - " ?tb " declares finish " crlf)
-
 )
 
 ;// __________________________________________________________________________________________
@@ -617,37 +570,20 @@
 
 
 
-(defrule CleanEvolution1       
-
-	(declare (salience 10))
-
+(defrule CleanEvolution1 (declare (salience 10))
 	(status (time ?t) (step ?i))
-
-?f1<-	(cleanstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb))
-
+	?f1 <- (cleanstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb))
 	(not (cleanstatus (step ?i)  (arrivaltime ?at) (requested-by ?tb))) 
-
-?f2<-	(penalty ?p)
-
-=> 
-
+	?f2 <- (penalty ?p)
+	=> 
 	(modify ?f1 (time ?t) (step ?i))
-
 	(assert (penalty (+ ?p (* (- ?t ?tt) 3))))
-
 	(retract ?f2)	
-
 )
-
-
-
 
 ;// per ogni istante di tempo che intercorre fra la request e la inform, l'agente prende 50 penalit�
 
-(defrule RequestEvolution1       
-
-	(declare (salience 10))
-
+(defrule RequestEvolution1 (declare (salience 10))
 	(status (time ?t) (step ?i))
 
 ?f1<-	(orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb)
@@ -2314,34 +2250,21 @@
 
 
 
-(defrule delivery-food_WRONG_2
-
-	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule delivery-food_WRONG_2 (declare (salience 20))
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action DeliveryFood) (param1 ?x) (param2 ?y))
-
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-food ?alf&:(> ?alf 0)))
-        (serviceTable ?tb ?rr ?cc)
-
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld) (l-food ?tlf))
-
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) (l-food ?alf&:(> ?alf 0)))
+    (serviceTable ?tb ?rr ?cc)
+	?f3 <- (tablestatus (step ?i) (table-id ?tb) (l-drink ?tld) (l-food ?tlf))
 	(not (orderstatus (step ?i) (requested-by ?tb))) 
-?f5<-   (penalty ?p)
-=> 
-
+	?f5 <- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)) (l-food (- ?alf 1)))
-
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 4)) (l-food (+ ?tlf 1)))
-
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
-
+    (retract ?f5)
 ) 
 
 
@@ -2349,28 +2272,18 @@
 
 ;// il robot tenta di fare una delivery-food  ma non sta trasportando cibo
 
-(defrule delivery-food_WRONG_3
-
-	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule delivery-food_WRONG_3 (declare (salience 20))
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action DeliveryFood) (param1 ?x) (param2 ?y))
-
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-food ?alf&:(= ?alf 0)))
-        (serviceTable ?tb ?rr ?cc)
-?f5<-   (penalty ?p)
-=> 
-
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) (l-food ?alf&:(= ?alf 0)))
+    (serviceTable ?tb ?rr ?cc)
+	?f5 <- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(assert (penalty (+ ?p	100000)))
-        (retract ?f5)
-
+    (retract ?f5)
 )    
 
 ;// __________________________________________________________________________________________
@@ -2382,38 +2295,22 @@
 ;// per i punti (2) per i cibi e bevande non ancora consegnati 
 
 
-(defrule delivery-drink_OK
-
-	(declare (salience 20))    
-
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule delivery-drink_OK (declare (salience 20))    
+	?f2<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action DeliveryDrink) (param1 ?x) (param2 ?y))
-
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-drink ?ald&:(> ?ald 0)))
-        (serviceTable ?tb ?rr ?cc)
-
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld) (l-food ?tlf))
-
-?f4<-	(orderstatus (step ?i) (requested-by ?tb) (food-order ?nfo) (food-deliv ?dfo)
-                     (drink-order ?ndo) (drink-deliv ?ddo&:(< ?ddo ?ndo)))
-?f5<-   (penalty ?p)
-=> 
-
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) (l-drink ?ald&:(> ?ald 0)))
+    (serviceTable ?tb ?rr ?cc)
+	?f3<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld) (l-food ?tlf))
+	?f4<-	(orderstatus (step ?i) (requested-by ?tb) (food-order ?nfo) (food-deliv ?dfo) (drink-order ?ndo) (drink-deliv ?ddo&:(< ?ddo ?ndo)))
+	?f5<-   (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)) (l-drink (- ?ald 1)))
-
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 4)) (l-drink (+ ?tld 1)) (clean no))
-
 	(modify ?f4 (step (+ ?i 1)) (time (+ ?t 4))  (drink-deliv ( + ?ddo 1)))
-
 	(assert (penalty (+ ?p	(max 1 (* 8 (+ (- ?nfo ?dfo) (- ?ndo  (+ ?ddo 1))))))))
-        (retract ?f5)
-
+    (retract ?f5)
 )
 
 
@@ -2455,8 +2352,7 @@
 	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action DeliveryDrink) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-	(l-drink ?ald&:(= ?ald 0)))
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) (l-drink ?ald&:(= ?ald 0)))
     (serviceTable ?tb ?rr ?cc)
 	?f5 <- (penalty ?p)
 	=> 
