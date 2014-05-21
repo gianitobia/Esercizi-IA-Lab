@@ -585,98 +585,54 @@
 
 (defrule RequestEvolution1 (declare (salience 10))
 	(status (time ?t) (step ?i))
-
-?f1<-	(orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb)
-                     (answer pending))
-
-	(not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)
-                     (answer ~pending)))
-
-?f2<- (penalty ?p)
-
-=> 
-
+	?f1 <- (orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb) (answer pending))
+	(not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb) (answer ~pending)))
+	?f2<- (penalty ?p)
+	=> 
 	(modify ?f1 (time ?t) (step ?i))
-
 	(assert (penalty (+ ?p (* (- ?t ?tt) 50))))
-
 	(retract ?f2)
-
 )
-
-
-
-
 
 ;// penalit� perch� l'ordine � stato accepted e non � ancora stato completato
 
-(defrule RequestEvolution2       
-
-	(declare (salience 10))
-
-        (status (time ?t) (step ?i))
-
-?f1<-	(orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb)
-                     (answer accepted)
-                     (drink-order ?nd) (food-order ?nf) (drink-deliv ?dd) (food-deliv ?df))
-        (not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)))
-?f2<-	(penalty ?p)
-
-=> 
-
-        (modify ?f1 (time ?t) (step ?i))
-
+(defrule RequestEvolution2 (declare (salience 10))
+    (status (time ?t) (step ?i))
+	?f1 <- (orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb)
+           (answer accepted)
+           (drink-order ?nd) (food-order ?nf) (drink-deliv ?dd) (food-deliv ?df))
+    (not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)))
+	?f2 <- (penalty ?p)
+	=> 
+    (modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) (max 1 (* (+ (- ?nd ?dd) (- ?nf ?df)) 2))))))
-
 	(retract ?f2)
-
 )
-
-
-
 
 ;// penalit� perch� l'ordine � stato delayed e non � ancora stato completato 
 
-(defrule RequestEvolution3       
-
-	(declare (salience 10))
-
-        (status (time ?t) (step ?i))
-
-?f1<-	(orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb)
-                     (answer delayed)
-                     (drink-order ?nd) (food-order ?nf) (drink-deliv ?dd) (food-deliv ?df))
-        (not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)))
-?f2<-	(penalty ?p)
-
-=> 
-
-        (modify ?f1 (time ?t) (step ?i))
-
+(defrule RequestEvolution3 (declare (salience 10))
+    (status (time ?t) (step ?i))
+	?f1 <- (orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb)
+           (answer delayed)
+           (drink-order ?nd) (food-order ?nf) (drink-deliv ?dd) (food-deliv ?df))
+    (not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)))
+	?f2 <- (penalty ?p)
+	=> 
+    (modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) (max 1 (+ (- ?nd ?dd) (- ?nf ?df)))))))
-
 	(retract ?f2)
-
 )
-
 
 ;// 
 
-(defrule RequestEvolution4       
-
-	(declare (salience 10))
-
-        (status (time ?t) (step ?i))
-
-?f1<-	(tablestatus (step = (- ?i 1)) (time ?tt) (table-id ?tb))
-        (not (tablestatus (step ?i)  (table-id ?tb)))
-
-=> 
-
-        (modify ?f1 (time ?t) (step ?i))
-
+(defrule RequestEvolution4 (declare (salience 10))
+	(status (time ?t) (step ?i))
+	?f1 <- (tablestatus (step = (- ?i 1)) (time ?tt) (table-id ?tb))
+    (not (tablestatus (step ?i)  (table-id ?tb)))
+	=> 
+    (modify ?f1 (time ?t) (step ?i))
 )
-
 
 ;// __________________________________________________________________________________________
 
@@ -686,73 +642,41 @@
 
 ;// Persona ferma non arriva comando di muoversi
 
-(defrule MovePerson1		
-
-	(declare (salience 10))    
-
+(defrule MovePerson1 (declare (salience 10))    
 	(status (step ?i) (time ?t)) 
-
-?f1<-	(personstatus (step =(- ?i 1)) (ident ?id) (activity seated|stand))
-
+	?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (activity seated|stand))
 	(not (personmove (step ?i) (ident ?id)))
-
-=> 
-
+	=> 
 	(modify ?f1 (time ?t) (step ?i))
-
 )         
 
          
 
 ;//;//Persona ferma ma arriva comando di muoversi         
 
-(defrule MovePerson2
-
-   (declare (salience 10))    
-
-        (status (step ?i) (time ?t))  
-
- ?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (activity seated|stand))
-
- ?f2 <- (personmove (step  ?i) (ident ?id) (path-id ?m))
-
-        => (modify  ?f1 (time ?t) (step ?i) (activity ?m) (move 0))
-
-           (retract ?f2)
-
+(defrule MovePerson2 (declare (salience 10))    
+    (status (step ?i) (time ?t))  
+	?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (activity seated|stand))
+	?f2 <- (personmove (step  ?i) (ident ?id) (path-id ?m))
+    => (modify  ?f1 (time ?t) (step ?i) (activity ?m) (move 0))
+    (retract ?f2)
 )           
-
-  
-
 
 ;// La cella in cui deve  andare la persona � libera. Persona si muove. 
 
 ;// La cella di partenza � un seat in cui si trovava l'operatore
 
-(defrule MovePerson3
-
-   (declare (salience 10))    
-
-        (status (step ?i) (time ?t))   
-
- ?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (pos-r ?x) (pos-c ?y) 
-
-                      (activity ?m&~seated&~stand) (move ?s))
-
-        (cell (pos-r ?x) (pos-c ?y) (contains Seat))
-
- ?f3 <- (move-path ?m =(+ ?s 1) ?id ?r ?c)
-
-        (not (agentstatus (step ?i) (pos-r ?r) (pos-c ?c)))
-
- ?f2 <- (cell (pos-r ?r) (pos-c ?c) (contains Empty))
-
-        => (modify  ?f1  (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (move (+ ?s 1)))
-
-           (modify ?f2 (contains Person))
-
-           (retract ?f3)		
-
+(defrule MovePerson3 (declare (salience 10))    
+    (status (step ?i) (time ?t))   
+	?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (pos-r ?x) (pos-c ?y) (activity ?m&~seated&~stand) (move ?s))
+    (cell (pos-r ?x) (pos-c ?y) (contains Seat))
+	?f3 <- (move-path ?m =(+ ?s 1) ?id ?r ?c)
+    (not (agentstatus (step ?i) (pos-r ?r) (pos-c ?c)))
+	?f2 <- (cell (pos-r ?r) (pos-c ?c) (contains Empty))
+    => 
+	(modify  ?f1  (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (move (+ ?s 1)))
+    (modify ?f2 (contains Person))
+    (retract ?f3)		
 )
 
 ;// La cella in cui deve  andare la persona � libera. Persona si muove. 
@@ -761,64 +685,36 @@
 
 ;// dell'operatore diventa libera
 
-(defrule MovePerson4
-
-   (declare (salience 10))    
-
-        (status (step ?i) (time ?t)) 
-
- ?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (pos-r ?x) (pos-c ?y) 
-
-                      (activity ?m&~seated|~stand) (move ?s))
-
- ?f4 <- (cell (pos-r ?x) (pos-c ?y) (contains Person))
-
- ?f3 <- (move-path ?m =(+ ?s 1) ?id ?r ?c)
-
-        (not (agentstatus (step ?i) (pos-r ?r) (pos-c ?c)))
-
- ?f2 <- (cell (pos-r ?r) (pos-c ?c) (contains Empty))
-
-        => (modify  ?f1  (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (move (+ ?s 1)))
-
-           (modify ?f2 (contains Person))
-
-           (modify ?f4 (contains Empty))
-
-           (retract ?f3))
-
-
-
+(defrule MovePerson4 (declare (salience 10))    
+	(status (step ?i) (time ?t)) 
+	?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (pos-r ?x) (pos-c ?y) (activity ?m&~seated|~stand) (move ?s))
+	?f4 <- (cell (pos-r ?x) (pos-c ?y) (contains Person))
+ 	?f3 <- (move-path ?m =(+ ?s 1) ?id ?r ?c)
+    (not (agentstatus (step ?i) (pos-r ?r) (pos-c ?c)))
+	?f2 <- (cell (pos-r ?r) (pos-c ?c) (contains Empty))
+    =>
+	(modify  ?f1  (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (move (+ ?s 1)))
+    (modify ?f2 (contains Person))
+    (modify ?f4 (contains Empty))
+    (retract ?f3)
+)
 
 ;// La cella in cui deve andare il cliente � un seat e il seat non � occupata da altra persona.
 ;// La cella di partenza diventa libera, e l'attivita del cliente diventa seated
 
- (defrule MovePerson5
-
-   (declare (salience 10))    
-
-        (status (step ?i) (time ?t)) 
-
- ?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (pos-r ?x) (pos-c ?y) 
-
-                       (activity ?m&~seated&~stand) (move ?s))
-
- ?f3 <- (move-path ?m =(+ ?s 1) ?id ?r ?c)
-
-        (not (agentstatus (time ?i) (pos-r ?r) (pos-c ?c)))
-
- ?f2 <- (cell (pos-r ?r) (pos-c ?c) (contains Seat))
-        (not (personstatus (step ?i) (ident ?id) (pos-r ?r) (pos-c ?c) 
-
-                       (activity seated)))
-
- ?f4 <- (cell (pos-r ?x) (pos-c ?y) (contains Person))
-
-        => (modify  ?f1  (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (activity seated) (move NA))
-
-           (modify ?f4 (contains Empty))
-
-           (retract ?f3))
+(defrule MovePerson5 (declare (salience 10))    
+	(status (step ?i) (time ?t)) 
+	?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (pos-r ?x) (pos-c ?y) (activity ?m&~seated&~stand) (move ?s))
+	?f3 <- (move-path ?m =(+ ?s 1) ?id ?r ?c)
+    (not (agentstatus (time ?i) (pos-r ?r) (pos-c ?c)))
+	?f2 <- (cell (pos-r ?r) (pos-c ?c) (contains Seat))
+    (not (personstatus (step ?i) (ident ?id) (pos-r ?r) (pos-c ?c) (activity seated)))
+	?f4 <- (cell (pos-r ?x) (pos-c ?y) (contains Person))
+	=> 
+	(modify  ?f1  (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (activity seated) (move NA))
+    (modify ?f4 (contains Empty))
+    (retract ?f3)
+)
 
 
 ;// La cella in cui deve  andare la persona � occupata dal robot. Persona non si muove           
