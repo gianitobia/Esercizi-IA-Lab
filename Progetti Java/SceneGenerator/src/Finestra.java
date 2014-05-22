@@ -87,6 +87,7 @@ public class Finestra extends javax.swing.JFrame {
 
         int x = (int) evt.getPoint().getX();
         int y = (int) evt.getPoint().getY();
+        scenePanel.click(x, y, state);
     }//GEN-LAST:event_scenePanelMouseClicked
 
     /**

@@ -1,6 +1,11 @@
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -47,9 +52,9 @@ public class ScenePanel extends javax.swing.JPanel {
     @Override
     public void paintComponent(Graphics g) {
         System.out.println(this.getWidth() + " " + this.getHeight());
-        super.paintComponent(g); // call superclass's paintComponent  
+        super.paintComponent(g); // call superclass's paintComponent
 
-        Graphics2D g2 = (Graphics2D) g; // cast g to Graphics2D  
+        Graphics2D g2 = (Graphics2D) g; // cast g to Graphics2D
 
         if (s != null) {
             s.drawScene(g2);
@@ -71,6 +76,25 @@ public class ScenePanel extends javax.swing.JPanel {
 
     void exportScene(String text) {
         String textFile = s.exportScene();
-        // TODO scrivere scrittura su file di textFile
+        FileWriter outFile;
+        try {
+            outFile = new FileWriter(text);
+
+            PrintWriter out = new PrintWriter(outFile);
+
+            // Also could be written as follows on one line
+            // Printwriter out = new PrintWriter(new FileWriter(args[0]));
+            // Write text to file
+            out.println(textFile);
+            out.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ScenePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    void click(int x, int y, int state) {
+        s.click(x, y, state);
+        repaint();
     }
 }

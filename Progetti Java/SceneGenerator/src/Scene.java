@@ -1,6 +1,12 @@
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 /*
 
  0 = empty
@@ -30,42 +36,89 @@ public class Scene {
     int[][] scene;
 
     int perc;
+    
+    BufferedImage[] images;
 
     public Scene(int num_x, int num_y, float w_width, float w_height) {
         this.w_width = w_width;
         this.w_height = w_height;
 
         scene = new int[num_x][num_y];
-        resize(num_x, num_y);
-        initScene(scene);
+        this.resize(num_x, num_y);
+        this.initScene(scene);
+        this.loadImages("img/");
+    }
+    
+    public void loadImages(String path){
+        images = new BufferedImage[9];
+        try {
+            images[0] = ImageIO.read(new File("wall.jpeg"));
+        } catch (IOException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            images[1] = ImageIO.read(new File("seat.jpg"));
+        } catch (IOException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            images[2] = ImageIO.read(new File("table.jpeg"));
+        } catch (IOException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            images[3] = ImageIO.read(new File("rb.jpeg"));
+        } catch (IOException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            images[4] = ImageIO.read(new File("tb.jpeg"));
+        } catch (IOException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            images[5] = ImageIO.read(new File("fd.jpeg"));
+        } catch (IOException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            images[6] = ImageIO.read(new File("dd.jpg"));
+        } catch (IOException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            images[7] = ImageIO.read(new File("persona.jpg"));
+        } catch (IOException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            images[8] = ImageIO.read(new File("parking.jpeg"));
+        } catch (IOException ex) {
+            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     public void drawScene(Graphics2D g) {
 
         float x0 = (w_width - c_width * num_x) / 2;
         float y0 = (w_height - c_height * num_y) / 2;
+        g.setColor(Color.BLACK);
+
         for (int i = 0; i < scene.length; i++) {
             for (int j = 0; j < scene[i].length; j++) {
-                switch (scene[i][j]) {
-                    case 0:
-                        g.setColor(Color.BLACK);
-                        break;
-                    case 1:
-                        g.setColor(Color.orange);
-                        break;
-                    default:
-                        g.setColor(Color.RED);
-                        break;
-                }
                 int x = (int) (x0 + i * c_width);
                 int y = (int) (y0 + j * c_height);
                 //System.out.println(x + " "+ y + " "+ c_width + " "+ c_height);
+                if (scene[i][j]>0) {
+                    g.drawImage(images[scene[i][j]-1], x, y,(int) (c_width - 1), (int) (c_height - 1), null);
+                }
                 g.drawRect(x, y, (int) (c_width - 1), (int) (c_height - 1));
             }
         }
     }
 
-    void resize(int num_x, int num_y) {
+    public void resize(int num_x, int num_y) {
         int[][] new_scene = new int[num_x][num_y];
         perc = 70;
         this.num_x = num_x;
@@ -89,7 +142,7 @@ public class Scene {
         scene = new_scene;
     }
 
-    void initScene(int[][] scene) {
+    public void initScene(int[][] scene) {
 
         for (int i = 0; i < scene.length; i++) {
             for (int j = 0; j < scene[i].length; j++) {
@@ -140,5 +193,18 @@ public class Scene {
             }
         }
         return s;
+    }
+
+    void click(int x, int y, int state) {
+        float x0 = (w_width - c_width * num_x) / 2;
+        float y0 = (w_height - c_height * num_y) / 2;
+        float cordx = x - x0;
+        float cordy = y - y0;
+        cordx = cordx / c_width;
+        cordy = cordy / c_height;
+        int i = (int) cordx;
+        int j = (int) cordy;
+        scene[i][j] = state;
+        
     }
 }

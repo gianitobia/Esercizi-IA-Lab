@@ -6,13 +6,12 @@ import javax.swing.JPanel;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author toby
  */
-public class MenuPannello extends JPanel{
-    
+public class MenuPannello extends JPanel {
+
     private javax.swing.JRadioButton drinkButton;
     private javax.swing.JRadioButton emptyButton;
     private javax.swing.JButton exportButton;
@@ -34,13 +33,13 @@ public class MenuPannello extends JPanel{
     private ScenePanel scenePanel;
     private int state;
 
-    public MenuPannello(){
+    public MenuPannello() {
         initComponents();
         state = 0;
     }
 
     private void initComponents() {
-        
+
         jLabel1 = new javax.swing.JLabel();
         num_row_field = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -177,155 +176,156 @@ public class MenuPannello extends JPanel{
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(num_row_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(num_col_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(updateButton)
-                            .addComponent(jLabel3)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(exportButton)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addGap(9, 9, 9)
-                                    .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(emptyButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(wallButton))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(seatButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tableButton))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(recyclableButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(trashButton))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(foodButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(drinkButton))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(parkingButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(personButton))))
-                .addGap(58, 58, 58))
+                                        .addGap(41, 41, 41)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                                .addComponent(jLabel1)
+                                                .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(num_row_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(jLabel2)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(num_col_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(updateButton)
+                                                .addComponent(jLabel3)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(exportButton)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addGap(9, 9, 9)
+                                                                .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(emptyButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(wallButton))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(seatButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(tableButton))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(recyclableButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(trashButton))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(foodButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(drinkButton))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(parkingButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(personButton))))
+                        .addGap(58, 58, 58))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(num_col_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(num_row_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(updateButton)
-                .addGap(40, 40, 40)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(emptyButton)
-                    .addComponent(wallButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(seatButton)
-                    .addComponent(tableButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(recyclableButton)
-                    .addComponent(trashButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(foodButton)
-                    .addComponent(drinkButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(parkingButton)
-                    .addComponent(personButton))
-                .addGap(41, 41, 41)
-                .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(exportButton)
-                .addContainerGap(279, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel2)
+                                .addComponent(num_col_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(num_row_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(updateButton)
+                        .addGap(40, 40, 40)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(emptyButton)
+                                .addComponent(wallButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(seatButton)
+                                .addComponent(tableButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(recyclableButton)
+                                .addComponent(trashButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(foodButton)
+                                .addComponent(drinkButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(parkingButton)
+                                .addComponent(personButton))
+                        .addGap(41, 41, 41)
+                        .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(exportButton)
+                        .addContainerGap(279, Short.MAX_VALUE))
         );
     }
-    
-    private void num_row_fieldActionPerformed(java.awt.event.ActionEvent evt) {                                              
 
-    }                                             
+    private void num_row_fieldActionPerformed(java.awt.event.ActionEvent evt) {
 
-    private void num_col_fieldActionPerformed(java.awt.event.ActionEvent evt) {                                              
-    }                                             
+    }
 
-    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void num_col_fieldActionPerformed(java.awt.event.ActionEvent evt) {
+    }
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {
         int num_row = Integer.parseInt(num_row_field.getText());
         int num_col = Integer.parseInt(num_col_field.getText());
         if (num_row > 0 && num_col > 0) {
             scenePanel.resizeScene(num_row, num_col);
         }
-    }                                            
+    }
 
-    private void emptyButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void emptyButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(0);
-    }                                           
+    }
 
-    private void wallButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void wallButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(1);
-    }                                          
+    }
 
-    private void seatButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void seatButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(2);
-    }                                          
+    }
 
-    private void tableButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void tableButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(3);
-    }                                           
+    }
 
-    private void recyclableButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+    private void recyclableButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(4);
-    }                                                
+    }
 
-    private void trashButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void trashButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(5);
-    }                                           
+    }
 
-    private void foodButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    private void foodButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(6);
-    }                                          
+    }
 
-    private void drinkButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void drinkButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(7);
-    }                                           
+    }
 
-    private void personButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void personButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(8);
-    }                                            
+    }
 
-    private void parkingButtonActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    private void parkingButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(9);
-    }                                             
+    }
 
-    private void nomeFileFieldActionPerformed(java.awt.event.ActionEvent evt) {                                              
+    private void nomeFileFieldActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }                                             
+    }
 
-    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {
         scenePanel.exportScene(nomeFileField.getText());
-    }   
+    }
+
     void init(ScenePanel scenePanel) {
         this.scenePanel = scenePanel;
     }
