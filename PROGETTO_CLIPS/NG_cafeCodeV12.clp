@@ -1943,16 +1943,12 @@
         (serviceDD ?dd ?rr ?cc)
 
         (test (= (+ ?lf ?ld) 4))
-?f5<-   (penalty ?p)
-=> 
-
+		?f5<-   (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-
-        (assert (penalty (+ ?p	100000)))
-        (retract ?f5)
-
+    (assert (penalty (+ ?p	100000)))
+    (retract ?f5)
 )    
 
 ;// Operazione fallisce perch� l'agente � gi� carico di immondizia
