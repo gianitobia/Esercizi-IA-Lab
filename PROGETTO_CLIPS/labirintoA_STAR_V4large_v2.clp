@@ -34,7 +34,7 @@
 	(slot step)
 	(slot pos-r)
 	(slot pos-c)
-	(slot direction (allowed-values up down right left))
+	(slot direction)
 	(slot penality)
 )
 
@@ -344,8 +344,8 @@
 (defrule convert-solution (declare (salience 99))
 	?f <- (azione ?anc ?id ?oper ?r ?c)
 	=>
-	(printout t ?id " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
-	(assert convert-action ?anc ?id ?oper ?r ?c)
+	;(printout t ?id " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
+	(assert (convert-action ?anc ?id ?oper ?r ?c))
 	(focus CONVERT)
 	(retract ?f)
 )
@@ -485,55 +485,71 @@
 ;################ MODULO CONVERT ############################################################
 (defmodule CONVERT (import MAIN ?ALL) (export ?ALL))
 
+;(deftemplate agentstatus
+;	(slot step)
+;	(slot pos-r)
+;	(slot pos-c)
+;	(slot direction (allowed-values up down right left))
+;	(slot penality)
+;)
+
 (defrule check-forward (declare (salience 50))
 	;effettuiamo un forward solo quando la direzione dell'operazione e' la medesima
 	;in cui si trova l'agente
 	?f1 <- (convert-action ?anc ?id ?oper ?r ?c)
-	?f2 <- (agentstatus (pos-r ?rig) (pos-c ?col) (penality ?pen) (step ?curr) (direction ?dir))
-	(test (= ?oper ?dir))
+	?f2 <- (agentstatus (step ?curr) (pos-r ?rig) (pos-c ?col) (direction ?dir) (penality ?pen))
+	(test (eq ?oper ?dir))
 	=>
 	;(assert (agent-action (step ?curr) (action forward) (direction ?dir) (pos-r ?r) (pos-c ?c)))
-	(assert (exect (action forward) (direction ?dir) (pos-r ?r) (pos-c ?c)))
+	(assert (exect forward ?oper ?r ?c))
 	(retract ?f1)
 )
 
 ;definizione delle forward nelle 4 direzioni
 (defrule exec-forward-nord (declare (salience 50))
 	;effettuaimo un forward verso SU
-	?f1 <- (exect (action forward) (direction up) (pos-r ?r) (pos-c ?c))
-	?f2 <- (agentstatus (pos-r ?rig) (pos-c ?col) (step ?curr))
+	?f1 <- (exect forward up ?r ?c)
+	?f2 <- (agentstatus (step ?curr) (pos-r ?rig) (pos-c ?col))
 	=>
-	(modify ?f2 (pos-r =(+ ?rig 1) (step =(+ ?curr 1)) (direction up)))
+	(printout t " forward NORD " crlf)
+	(printout t " " crlf)
+	(modify ?f2 (step =(+ ?curr 1)) (pos-r =(+ ?rig 1)))
 	(retract ?f1)
 	(pop-focus)
 )
 
 (defrule exec-forward-est (declare (salience 50))
 	;effettuaimo un forward verso destra
-	?f1 <- (exect (action forward) (direction right) (pos-r ?r) (pos-c ?c))
-	?f2 <- (agentstatus (pos-r ?rig) (pos-c ?col) (step ?curr))
+	?f1 <- (exect forward right ?r ?c)
+	?f2 <- (agentstatus (step ?curr) (pos-r ?rig) (pos-c ?col))
 	=>
-	(modify ?f2 (pos-c =(+ ?col 1) (step =(+ ?curr 1))))
+	(printout t " forward EST " crlf)
+	(printout t " " crlf)
+	(modify ?f2 (step =(+ ?curr 1)) (pos-c =(+ ?col 1)))
 	(retract ?f1)
 	(pop-focus)
 )
 
 (defrule exec-forward-sud (declare (salience 50))
 	;effettuaimo un forward verso giu'
-	?f1 <- (exect (action forward) (direction down) (pos-r ?r) (pos-c ?c))
-	?f2 <- (agentstatus (pos-r ?rig) (pos-c ?col) (step ?curr))
+	?f1 <- (exect forward down ?r ?c)
+	?f2 <- (agentstatus (step ?curr) (pos-r ?rig) (pos-c ?col))
 	=>
-	(modify ?f2 (pos-r =(- ?rig 1) (step =(+ ?curr 1))))
+	(printout t " forward SUD " crlf)
+	(printout t " " crlf)
+	(modify ?f2 (step =(+ ?curr 1)) (pos-r =(- ?rig 1)))
 	(retract ?f1)
 	(pop-focus)
 )
 
 (defrule exec-forward-ovest (declare (salience 50))
 	;effettuaimo un forward verso destra
-	?f1 <- (exect (action forward) (direction left) (pos-r ?r) (pos-c ?c))
-	?f2 <- (agentstatus (pos-r ?rig) (pos-c ?col) (step ?curr))
+	?f1 <- (exect forward left ?r ?c)
+	?f2 <- (agentstatus (step ?curr) (pos-r ?rig) (pos-c ?col))
 	=>
-	(modify ?f2 (pos-c =(- ?col 1) (step =(+ ?curr 1))))
+	(printout t " forward OVEST " crlf)
+	(printout t " " crlf)
+	(modify ?f2 (step =(+ ?curr 1)) (pos-c =(- ?col 1)))
 	(retract ?f1)
 	(pop-focus)
 )
@@ -545,20 +561,21 @@
 	;effettuiamo un forward solo quando la direzione dell'operazione e' la medesima
 	;in cui si trova l'agente
 	?f1 <- (convert-action ?anc ?id ?oper ?r ?c)
-	?f2 <- (agentstatus (step ?curr) (direction ?dir)))
+	?f2 <- (agentstatus (step ?curr) (direction ?dir))
 	(rotation (r_dir ?dir) (m_dir ?oper) (rotazione ?rot))
 	=>
-	(assert (exect (turn ?rot) (dir ?oper)))
+	(assert (exect ?rot ?oper))
 	;(assert (agent-action (step ?curr) (action turn) (direction ?rot) (pos-r ?r) (pos-c ?c)))
 	;esegui una rotazione ?rot (destra o sinitra) per arrivare (o avvicinarci)
 	;alla direzione ?oper dell'operazione da effettuare
 )
 
-(defrule exec-rotation (declare (salience 40))
-	?f1 <- (exect (turn ?rot) (dir ?oper))
-	?f2 <- (agentstatus (step ?curr) (direction ?dir)))
+(defrule exec-rotation (declare (salience 50))
+	?f1 <- (exect ?rot ?oper)
+	?f2 <- (agentstatus (step ?curr) (direction ?dir))
 	(rotation (r_dir ?dir) (m_dir ?oper) (rotazione ?rot) (dir_f ?turn))
 	=>
+	(printout t " Rotation " ?rot crlf)
 	(modify ?f2 (direction ?turn))
 	(retract ?f1)
 )
