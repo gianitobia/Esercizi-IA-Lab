@@ -35,18 +35,18 @@ public class MenuPanel extends javax.swing.JPanel {
         num_col_field = new javax.swing.JTextField();
         updateButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        emptyButton = new javax.swing.JButton();
-        wallButton = new javax.swing.JButton();
-        seatButton = new javax.swing.JButton();
-        tableButton = new javax.swing.JButton();
-        recyclableButton = new javax.swing.JButton();
-        trashButton = new javax.swing.JButton();
-        foodButton = new javax.swing.JButton();
-        drinkButton = new javax.swing.JButton();
-        personButton = new javax.swing.JButton();
-        parkingButton = new javax.swing.JButton();
         nomeFileField = new javax.swing.JTextField();
         exportButton = new javax.swing.JButton();
+        emptyButton = new javax.swing.JRadioButton();
+        wallButton = new javax.swing.JRadioButton();
+        seatButton = new javax.swing.JRadioButton();
+        tableButton = new javax.swing.JRadioButton();
+        recyclableButton = new javax.swing.JRadioButton();
+        trashButton = new javax.swing.JRadioButton();
+        foodButton = new javax.swing.JRadioButton();
+        drinkButton = new javax.swing.JRadioButton();
+        personButton = new javax.swing.JRadioButton();
+        parkingButton = new javax.swing.JRadioButton();
 
         setPreferredSize(new java.awt.Dimension(280, 720));
         setSize(new java.awt.Dimension(280, 720));
@@ -78,76 +78,6 @@ public class MenuPanel extends javax.swing.JPanel {
 
         jLabel3.setText("Inserisci");
 
-        emptyButton.setText("Vuoto");
-        emptyButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emptyButtonActionPerformed(evt);
-            }
-        });
-
-        wallButton.setText("Muro");
-        wallButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                wallButtonActionPerformed(evt);
-            }
-        });
-
-        seatButton.setText("Sedia");
-        seatButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                seatButtonActionPerformed(evt);
-            }
-        });
-
-        tableButton.setText("Tavolo");
-        tableButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tableButtonActionPerformed(evt);
-            }
-        });
-
-        recyclableButton.setText("Riciclabile");
-        recyclableButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                recyclableButtonActionPerformed(evt);
-            }
-        });
-
-        trashButton.setText("Cestino");
-        trashButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                trashButtonActionPerformed(evt);
-            }
-        });
-
-        foodButton.setText("Dispenser cibo");
-        foodButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                foodButtonActionPerformed(evt);
-            }
-        });
-
-        drinkButton.setText("Dispenser drink");
-        drinkButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                drinkButtonActionPerformed(evt);
-            }
-        });
-
-        personButton.setText("Persona");
-        personButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                personButtonActionPerformed(evt);
-            }
-        });
-
-        parkingButton.setText("Parcheggio");
-        parkingButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                parkingButtonActionPerformed(evt);
-            }
-        });
-
         nomeFileField.setText("initMap");
         nomeFileField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -162,51 +92,123 @@ public class MenuPanel extends javax.swing.JPanel {
             }
         });
 
+        emptyButton.setText("Empty");
+        emptyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emptyButtonActionPerformed(evt);
+            }
+        });
+
+        wallButton.setText("Wall");
+        wallButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                wallButtonActionPerformed(evt);
+            }
+        });
+
+        seatButton.setText("Seat");
+        seatButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                seatButtonActionPerformed(evt);
+            }
+        });
+
+        tableButton.setText("Table");
+        tableButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tableButtonActionPerformed(evt);
+            }
+        });
+
+        recyclableButton.setText("RB");
+        recyclableButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                recyclableButtonActionPerformed(evt);
+            }
+        });
+
+        trashButton.setText("TB");
+        trashButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                trashButtonActionPerformed(evt);
+            }
+        });
+
+        foodButton.setText("FD");
+        foodButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                foodButtonActionPerformed(evt);
+            }
+        });
+
+        drinkButton.setText("DD");
+        drinkButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                drinkButtonActionPerformed(evt);
+            }
+        });
+
+        personButton.setText("Parking");
+        personButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                personButtonActionPerformed(evt);
+            }
+        });
+
+        parkingButton.setText("Person");
+        parkingButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                parkingButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(jLabel1)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(num_row_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(num_col_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(updateButton)
-                        .addComponent(jLabel3)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(num_row_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(num_col_field, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(updateButton)
+                            .addComponent(jLabel3)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(exportButton)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(9, 9, 9)
+                                    .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(emptyButton)
-                            .addGap(10, 10, 10)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(wallButton))
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(seatButton)
-                            .addGap(10, 10, 10)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(tableButton))
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(recyclableButton)
-                            .addGap(10, 10, 10)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(trashButton))
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(foodButton)
-                            .addGap(10, 10, 10)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(drinkButton))
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(personButton)
-                            .addGap(10, 10, 10)
-                            .addComponent(parkingButton)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(102, 102, 102)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(exportButton)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(9, 9, 9)
-                                .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(parkingButton)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(personButton))))
+                .addGap(58, 58, 58))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -222,7 +224,7 @@ public class MenuPanel extends javax.swing.JPanel {
                 .addComponent(updateButton)
                 .addGap(40, 40, 40)
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(emptyButton)
                     .addComponent(wallButton))
@@ -240,13 +242,13 @@ public class MenuPanel extends javax.swing.JPanel {
                     .addComponent(drinkButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(personButton)
-                    .addComponent(parkingButton))
-                .addGap(40, 40, 40)
+                    .addComponent(parkingButton)
+                    .addComponent(personButton))
+                .addGap(41, 41, 41)
                 .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(exportButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(279, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -265,46 +267,6 @@ public class MenuPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_updateButtonActionPerformed
 
-    private void emptyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emptyButtonActionPerformed
-        setState(0);
-    }//GEN-LAST:event_emptyButtonActionPerformed
-
-    private void wallButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wallButtonActionPerformed
-        setState(1);
-    }//GEN-LAST:event_wallButtonActionPerformed
-
-    private void seatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seatButtonActionPerformed
-        setState(2);
-    }//GEN-LAST:event_seatButtonActionPerformed
-
-    private void tableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableButtonActionPerformed
-        setState(3);
-    }//GEN-LAST:event_tableButtonActionPerformed
-
-    private void recyclableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recyclableButtonActionPerformed
-        setState(4);
-    }//GEN-LAST:event_recyclableButtonActionPerformed
-
-    private void trashButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trashButtonActionPerformed
-        setState(5);
-    }//GEN-LAST:event_trashButtonActionPerformed
-
-    private void foodButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_foodButtonActionPerformed
-        setState(6);
-    }//GEN-LAST:event_foodButtonActionPerformed
-
-    private void drinkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drinkButtonActionPerformed
-        setState(7);
-    }//GEN-LAST:event_drinkButtonActionPerformed
-
-    private void personButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_personButtonActionPerformed
-        setState(8);
-    }//GEN-LAST:event_personButtonActionPerformed
-
-    private void parkingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parkingButtonActionPerformed
-        setState(9);
-    }//GEN-LAST:event_parkingButtonActionPerformed
-
     private void nomeFileFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomeFileFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nomeFileFieldActionPerformed
@@ -313,25 +275,65 @@ public class MenuPanel extends javax.swing.JPanel {
         scenePanel.exportScene(nomeFileField.getText());
     }//GEN-LAST:event_exportButtonActionPerformed
 
+    private void emptyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emptyButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_emptyButtonActionPerformed
+
+    private void wallButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wallButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_wallButtonActionPerformed
+
+    private void seatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seatButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_seatButtonActionPerformed
+
+    private void tableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tableButtonActionPerformed
+
+    private void recyclableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recyclableButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_recyclableButtonActionPerformed
+
+    private void trashButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trashButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_trashButtonActionPerformed
+
+    private void foodButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_foodButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_foodButtonActionPerformed
+
+    private void drinkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drinkButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_drinkButtonActionPerformed
+
+    private void personButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_personButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_personButtonActionPerformed
+
+    private void parkingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parkingButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_parkingButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton drinkButton;
-    private javax.swing.JButton emptyButton;
+    private javax.swing.JRadioButton drinkButton;
+    private javax.swing.JRadioButton emptyButton;
     private javax.swing.JButton exportButton;
-    private javax.swing.JButton foodButton;
+    private javax.swing.JRadioButton foodButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField nomeFileField;
     private javax.swing.JTextField num_col_field;
     private javax.swing.JTextField num_row_field;
-    private javax.swing.JButton parkingButton;
-    private javax.swing.JButton personButton;
-    private javax.swing.JButton recyclableButton;
-    private javax.swing.JButton seatButton;
-    private javax.swing.JButton tableButton;
-    private javax.swing.JButton trashButton;
+    private javax.swing.JRadioButton parkingButton;
+    private javax.swing.JRadioButton personButton;
+    private javax.swing.JRadioButton recyclableButton;
+    private javax.swing.JRadioButton seatButton;
+    private javax.swing.JRadioButton tableButton;
+    private javax.swing.JRadioButton trashButton;
     private javax.swing.JButton updateButton;
-    private javax.swing.JButton wallButton;
+    private javax.swing.JRadioButton wallButton;
     // End of variables declaration//GEN-END:variables
     void init(ScenePanel scenePanel) {
         this.scenePanel = scenePanel;
