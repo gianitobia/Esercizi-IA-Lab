@@ -130,6 +130,7 @@ public class Scene {
                         s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains DD))\n";
                         break;
                     case 8:
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains Person))\n";
                         break;
                     case 9:
                         s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + i + ") (contains Parking))\n";
