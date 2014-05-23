@@ -51,7 +51,6 @@ public class ScenePanel extends javax.swing.JPanel {
 
     @Override
     public void paintComponent(Graphics g) {
-        System.out.println(this.getWidth() + " " + this.getHeight());
         super.paintComponent(g); // call superclass's paintComponent
 
         Graphics2D g2 = (Graphics2D) g; // cast g to Graphics2D

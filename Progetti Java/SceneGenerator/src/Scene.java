@@ -109,7 +109,6 @@ public class Scene {
             for (int j = 0; j < scene[i].length; j++) {
                 int x = (int) (x0 + i * c_width);
                 int y = (int) (y0 + j * c_height);
-                //System.out.println(x + " "+ y + " "+ c_width + " "+ c_height);
                 if (scene[i][j]>0) {
                     g.drawImage(images[scene[i][j]-1], x, y,(int) (c_width - 1), (int) (c_height - 1), null);
                 }
@@ -204,6 +203,8 @@ public class Scene {
         cordy = cordy / c_height;
         int i = (int) cordx;
         int j = (int) cordy;
+        if(i>=0 && i< num_x 
+            && j>= 0 && j<num_y)
         scene[i][j] = state;
         
     }
