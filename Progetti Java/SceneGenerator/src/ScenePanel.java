@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,7 +66,7 @@ public class ScenePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     void init(MenuPannello menuPanel) {
-        s = new Scene(5, 5, this.getWidth(), this.getHeight());
+        s = new Scene(10, 10, this.getWidth(), this.getHeight());
         this.menuPanel = menuPanel;
     }
 
@@ -75,17 +77,15 @@ public class ScenePanel extends javax.swing.JPanel {
 
     void exportScene(String text) {
         String textFile = s.exportScene();
-        FileWriter outFile;
+        //System.out.println(textFile);
         try {
-            outFile = new FileWriter(text);
-
-            PrintWriter out = new PrintWriter(outFile);
-
-            // Also could be written as follows on one line
-            // Printwriter out = new PrintWriter(new FileWriter(args[0]));
-            // Write text to file
-            out.println(textFile);
-            out.close();
+            String nome = this.menuPanel.getNomeFile();
+            if(nome.length() > 0 && nome != null) { 
+                Files.write(Paths.get("./"+ nome +".clp"), textFile.getBytes());
+                this.menuPanel.printMsg("File creato \n" + Paths.get("./"+ nome +".clp"));
+            }
+            else
+                this.menuPanel.errorMsg("Inserire un nome valido");
         } catch (IOException ex) {
             Logger.getLogger(ScenePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
