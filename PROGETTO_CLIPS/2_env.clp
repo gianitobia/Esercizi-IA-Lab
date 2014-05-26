@@ -586,117 +586,64 @@
 ;//
 
 ;// l'agente ha inviato inform che l'ordine � accettato (e va bene)
-(defrule msg-order-accepted-OK    
-
-	(declare (salience 20))
-
-?f1<-	(status (step ?i) (time ?t))
-
+(defrule msg-order-accepted-OK (declare (salience 20))
+	?f1 <- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 accepted))
-
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-
-?f3<-	(agentstatus (step ?i) (time ?t))
-
+	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3 <- (agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean yes))	
-
-=> 
-
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
-
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer accepted))
-
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
 )
 
 ;// l'agente ha inviato inform che l'ordine � accettato (e ma non sono vere le condizioni)
-(defrule msg-order-accepted-KO1    
-
-	(declare (salience 20))
-
-?f1<-	(status (step ?i) (time ?t))
-
+(defrule msg-order-accepted-KO1 (declare (salience 20))
+	?f1 <- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 accepted))
-
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-
-?f3<-	(agentstatus (step ?i) (time ?t))
-
+	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3 <- (agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean no))	
-
-?f4<-   (penalty ?p)	
-
-=> 
-
+	?f4 <- (penalty ?p)	
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
-
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer accepted))
-
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
-        (assert (penalty (+ ?p 500000)))
-
+    (assert (penalty (+ ?p 500000)))
 	(retract ?f4)
 )
 
-
-
 ;// l'agente ha inviato inform che l'ordine � delayed (e va bene)
-(defrule msg-order-delayed-OK    
-
-	(declare (salience 20))
-
-?f1<-	(status (step ?i) (time ?t))
-
+(defrule msg-order-delayed-OK (declare (salience 20))
+	?f1 <- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 delayed))
-
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-
-?f3<-	(agentstatus (step ?i) (time ?t))
-
+	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3 <- (agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean no))
-        (cleanstatus (step ?i) (time ?t) (arrivaltime ?tt&:(< ?tt ?request)) (requested-by ?tb))	
-
-=> 
-
+    (cleanstatus (step ?i) (time ?t) (arrivaltime ?tt&:(< ?tt ?request)) (requested-by ?tb))	
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
-
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer delayed))
-
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
-
-	
-
 )
 
 
 
 ;// l'agente ha inviato inform che l'ordine � delayed (e non va bene dovrebbe essere accepted)
-(defrule msg-order-delayed-KO1    
-
-	(declare (salience 20))
-
-?f1<-	(status (step ?i) (time ?t))
-
+(defrule msg-order-delayed-KO1 (declare (salience 20))
+	?f1 <- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 delayed))
-
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-
-?f3<-	(agentstatus (step ?i) (time ?t))
-
+	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3 <- (agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean yes))
-?f4<-   (penalty ?p)	
-
-=> 
-
+	?f4 <- (penalty ?p)	
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
-
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer delayed))
-
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
-        (assert (penalty (+ ?p 500000)))
-
+	(assert (penalty (+ ?p 500000)))
 	(retract ?f4)
-
 )
 
 ;// l'agente ha inviato inform che l'ordine � rejected (e non va bene dovrebbe essere accepted)
@@ -1762,88 +1709,52 @@
 
 ;// Operazione fallisce perch� l'agente � gi� carico di immondizia
 
-(defrule load-drink_KO2
-
-	(declare (salience 20))    
-
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule load-drink_KO2	(declare (salience 20))    
+	?f2<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action LoadDrink) (param1 ?x) (param2 ?y))
-
 	(DrinkDispenser (DD-id ?dd) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
+	?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
                      (l-food ?lf) (l-drink ?ld) (l_d_waste ?dw) (l_f_waste ?fw))
-        (serviceDD ?dd ?rr ?cc)
-
-        (test (or (eq ?dw yes) (eq ?fw yes)))
-?f5<-   (penalty ?p)
-=> 
-
+    (serviceDD ?dd ?rr ?cc)
+    (test (or (eq ?dw yes) (eq ?fw yes)))
+	?f5 <- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
-
+    (assert (penalty (+ ?p	500000)))
+    (retract ?f5)
 )
-
 
 ;// Operazione fallisce perch� l'agente non � adiacente a un drinkDispenser
 
-(defrule load-drink_KO3
-
-	(declare (salience 20))    
-
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule load-drink_KO3 (declare (salience 20))    
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action LoadDrink) (param1 ?x) (param2 ?y))
-
 	(DrinkDispenser (DD-id ?dd) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t)(pos-r ?rr) (pos-c ?cc))
-        (not (serviceDD ?dd ?rr ?cc))
-?f5<-   (penalty ?p)
-=> 
-
+	?f1 <- (agentstatus (step ?i) (time ?t)(pos-r ?rr) (pos-c ?cc))
+    (not (serviceDD ?dd ?rr ?cc))
+	?f5 <- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
-
+    (assert (penalty (+ ?p	500000)))
+    (retract ?f5)
 )
 
 ;// Operazione fallisce perch� la cella indicata non � un drinkDispenser
 
-(defrule load-drink_KO4
-
-	(declare (salience 20))    
-
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule load-drink_KO4 (declare (salience 20))    
+	?f2<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action LoadDrink) (param1 ?x) (param2 ?y))
-
 	(not (DrinkDispenser (DD-id ?dd) (pos-r ?x) (pos-c ?y)))
-
-?f1<-	(agentstatus (step ?i) (time ?t))
- 
-?f5<-   (penalty ?p)
-=> 
-
+	?f1 <- (agentstatus (step ?i) (time ?t))
+	?f5 <- (penalty ?p)	
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
-
+    (assert (penalty (+ ?p	500000)))
+    (retract ?f5)
 )
-
-
-
     
 ;// __________________________________________________________________________________________
 
@@ -1853,39 +1764,24 @@
 ;// le penalit� di riferiscono alla durata dell'azione (4 unit� di tempo) 
 ;// per i punti (2) per i cibi e bevande non ancora consegnati 
 
-
-(defrule delivery-food_OK
-
-	(declare (salience 20))    
-
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule delivery-food_OK (declare (salience 20))    
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action DeliveryFood) (param1 ?x) (param2 ?y))
-
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-food ?alf&:(> ?alf 0)))
-        (serviceTable ?tb ?rr ?cc)
-
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld) (l-food ?tlf))
-
-?f4<-	(orderstatus (step ?i) (requested-by ?tb) (food-order ?nfo) (food-deliv ?dfo&:(< ?dfo ?nfo))
-                     (drink-order ?ndo) (drink-deliv ?ddo))
-?f5<-   (penalty ?p)
-=> 
-
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
+	             (l-food ?alf&:(> ?alf 0)))
+	(serviceTable ?tb ?rr ?cc)
+	?f3 <- (tablestatus (step ?i) (table-id ?tb) (l-drink ?tld) (l-food ?tlf))
+	?f4 <- (orderstatus (step ?i) (requested-by ?tb) (food-order ?nfo) (food-deliv ?dfo&:(< ?dfo ?nfo))
+	             (drink-order ?ndo) (drink-deliv ?ddo))
+	?f5 <- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)) (l-food (- ?alf 1)))
-
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 4)) (l-food (+ ?tlf 1)) (clean no))
-
 	(modify ?f4 (step (+ ?i 1)) (time (+ ?t 4)) (food-deliv ( + ?dfo 1)))
-
 	(assert (penalty (+ ?p	(max  1 (* 8 (+ (- ?ndo ?ddo) (- ?nfo  (+ ?dfo 1))))))))
-        (retract ?f5)
-
+	(retract ?f5)
 )
 
 
