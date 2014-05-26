@@ -91,7 +91,6 @@ public class ScenePanel extends javax.swing.JPanel {
             }
             else
                 this.menuPanel.errorMsg("Inserire un nome valido");
-            }
         } catch (IOException ex) {
             Logger.getLogger(ScenePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
