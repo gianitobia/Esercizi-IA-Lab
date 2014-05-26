@@ -89,7 +89,7 @@ public class Scene {
             Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            images[7] = ImageIO.read(new File("./img/persona.jpg"));
+            images[7] = ImageIO.read(new File("./img/seated.jpeg"));
         } catch (IOException ex) {
             Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -274,9 +274,9 @@ public class Scene {
         String result = "success";
         if (i >= 0 && i < num_x
                 && j >= 0 && j < num_y) {
-            if (state == 10 && scene[i][j] == 2) {
-                scene[i][j] = state;
-            } else if (state == 10 && scene[i][j] != 2) {
+            if (state == 8 && scene[i][j] == 2) {
+                scene[i][j] = 8;
+            } else if (state == 8 && scene[i][j] != 2) {
                 result = "Una persona può essere aggiunta solo su una sedia.";
             } else {
                 scene[i][j] = state;
