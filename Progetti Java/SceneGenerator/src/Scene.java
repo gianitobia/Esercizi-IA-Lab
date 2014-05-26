@@ -52,48 +52,16 @@ public class Scene {
     }
 
     public void loadImages(String path) {
-        images = new BufferedImage[9];
+        images = new BufferedImage[10];
         try {
             images[0] = ImageIO.read(new File("./img/wall.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[1] = ImageIO.read(new File("./img/seat.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[2] = ImageIO.read(new File("./img/table.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[3] = ImageIO.read(new File("./img/rb.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[4] = ImageIO.read(new File("./img/tb.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[5] = ImageIO.read(new File("./img/fd.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[6] = ImageIO.read(new File("./img/dd.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            images[7] = ImageIO.read(new File("./img/seated.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
+            images[7] = ImageIO.read(new File("./img/seated.png"));
             images[8] = ImageIO.read(new File("./img/parking.jpeg"));
         } catch (IOException ex) {
             Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
@@ -153,11 +121,27 @@ public class Scene {
             }
         }
     }
-
+    
+    String exportHistory() {
+        String history = ""; int count = 1;
+        for (int i = 0; i < scene.length; i++) {
+           for (int j = 0; j < scene[i].length; j++) {
+               if(scene[i][j] == 8) {  //controllo che la cella contenga una persona
+                   history += "\n(personstatus\n\t(step 0)\n\t(time 0)\n\t(ident C"+ count +")\n";
+                   history += "\t(pos-r " + (scene[i].length - j) + ")\n";
+                   history += "\t(pos-c " + (i+1) + ")\n";
+                   history += "\t(activity seated)\n)\n";
+                   count++;
+               }
+           }
+        }
+        return history;
+    }
+    
     public String exportScene() {
         String map = "(maxduration 100)\n";
 
-        //variabili per impostare la posizione delle componenti 
+        //variabili per impostare la posizione delle componenti
         int[] pos_agent = new int[2];
 
         //posizione dei vari componenti della mappa
@@ -207,7 +191,7 @@ public class Scene {
                         drink.add(dr);
                         break;
                     case 8:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains Person))\n";
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains Seat))\n";
                         break;
                     case 9:
                         s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains Parking))\n";
@@ -261,7 +245,7 @@ public class Scene {
         map += "\n" + s;
         return map;
     }
-
+    
     String click(int x, int y, int state) {
         float x0 = (w_width - c_width * num_x) / 2;
         float y0 = (w_height - c_height * num_y) / 2;
