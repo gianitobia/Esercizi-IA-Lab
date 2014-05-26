@@ -93,7 +93,13 @@ public class ScenePanel extends javax.swing.JPanel {
     }
 
     void click(int x, int y, int state) {
-        s.click(x, y, state);
-        repaint();
+        
+        String result = s.click(x, y, state);
+        if(result.equals("success")){
+            repaint();
+        }
+        else{
+            menuPanel.errorMsg(result);
+        }
     }
 }

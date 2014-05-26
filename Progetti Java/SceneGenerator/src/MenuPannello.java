@@ -190,6 +190,8 @@ public class MenuPannello extends JPanel {
         gruppo.add(emptyButton);
         gruppo.add(recyclableButton);
 
+        emptyButton.setSelected(true);
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(

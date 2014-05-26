@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
  7 = drink dispenser
  8 = person
  9 = parking
+ 10 = seat + person
 
  */
 //matrice fondamentale rappresentante la scena
@@ -37,7 +38,7 @@ public class Scene {
     int[][] scene;
 
     int perc;
-    
+
     BufferedImage[] images;
 
     public Scene(int num_x, int num_y, float w_width, float w_height) {
@@ -49,8 +50,8 @@ public class Scene {
         this.initScene(scene);
         this.loadImages("img/");
     }
-    
-    public void loadImages(String path){
+
+    public void loadImages(String path) {
         images = new BufferedImage[9];
         try {
             images[0] = ImageIO.read(new File("./img/wall.jpeg"));
@@ -97,7 +98,7 @@ public class Scene {
         } catch (IOException ex) {
             Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     public void drawScene(Graphics2D g) {
@@ -110,8 +111,8 @@ public class Scene {
             for (int j = 0; j < scene[i].length; j++) {
                 int x = (int) (x0 + i * c_width);
                 int y = (int) (y0 + j * c_height);
-                if (scene[i][j]>0) {
-                    g.drawImage(images[scene[i][j]-1], x, y,(int) (c_width - 1), (int) (c_height - 1), null);
+                if (scene[i][j] > 0) {
+                    g.drawImage(images[scene[i][j] - 1], x, y, (int) (c_width - 1), (int) (c_height - 1), null);
                 }
                 g.drawRect(x, y, (int) (c_width - 1), (int) (c_height - 1));
             }
@@ -120,7 +121,7 @@ public class Scene {
 
     public void resize(int num_x, int num_y) {
         int[][] new_scene = new int[num_x][num_y];
-        perc = 70;
+        perc = 90;
         this.num_x = num_x;
         this.num_y = num_y;
         c_width = (w_width * perc / 100) / num_x;
@@ -155,109 +156,113 @@ public class Scene {
 
     public String exportScene() {
         String map = "(maxduration 100)\n";
-        
+
         //variabili per impostare la posizione delle componenti 
         int[] pos_agent = new int[2];
-        
+
         //posizione dei vari componenti della mappa
         ArrayList<int[]> tavoli = new ArrayList<>();
         ArrayList<int[]> food = new ArrayList<>();
         ArrayList<int[]> drink = new ArrayList<>();
         ArrayList<int[]> recyclable = new ArrayList<>();
         ArrayList<int[]> trash = new ArrayList<>();
-        
+
         String s = "";
         //Scansione della matrice di celle
         for (int i = 0; i < scene.length; i++) {
             for (int j = 0; j < scene[i].length; j++) {
                 switch (scene[i][j]) {
                     case 0:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains Empty))\n";
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains Empty))\n";
                         break;
                     case 1:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains Wall))\n";
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains Wall))\n";
                         break;
                     case 2:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains Seat))\n";
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains Seat))\n";
                         break;
                     case 3:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains Table))\n";
-                        int[] t = {(scene[i].length - j), (i+1)};       //aggiungo agli array di tavoli trovati
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains Table))\n";
+                        int[] t = {(scene[i].length - j), (i + 1)};       //aggiungo agli array di tavoli trovati
                         tavoli.add(t);
                         break;
                     case 4:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains RB))\n";
-                        int[] r = {(scene[i].length - j), (i+1)};
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains RB))\n";
+                        int[] r = {(scene[i].length - j), (i + 1)};
                         recyclable.add(r);
                         break;
                     case 5:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains TB))\n";
-                        int[] tr = {(scene[i].length - j), (i+1)};
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains TB))\n";
+                        int[] tr = {(scene[i].length - j), (i + 1)};
                         trash.add(tr);
                         break;
                     case 6:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains FD))\n";
-                        int[] f = {(scene[i].length - j), (i+1)};
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains FD))\n";
+                        int[] f = {(scene[i].length - j), (i + 1)};
                         food.add(f);
                         break;
                     case 7:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains DD))\n";
-                        int[] dr = {(scene[i].length - j), (i+1)};
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains DD))\n";
+                        int[] dr = {(scene[i].length - j), (i + 1)};
                         drink.add(dr);
                         break;
                     case 8:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains Person))\n";
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains Person))\n";
                         break;
                     case 9:
-                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i+1) + ") (contains Parking))\n";
+                        s += "(prior-cell (pos-r " + (scene[i].length - j) + ") (pos-c " + (i + 1) + ") (contains Parking))\n";
                         pos_agent[0] = (scene[i].length - j);
-                        pos_agent[1] = (i+1);
+                        pos_agent[1] = (i + 1);
                         break;
                 }
             }
         }
-        
+
         //costuisco la string da salvare sul file
         //1. Posizione del agente all'inizio - Parking
-        map += "\n(initial_agentposition (pos-r "+ pos_agent[0] +") (pos-c "+ pos_agent[1]+") (direction south))\n";
-        
+        map += "\n(initial_agentposition (pos-r " + pos_agent[0] + ") (pos-c " + pos_agent[1] + ") (direction south))\n";
+
         //2. Posizione dei tavoli
         int count = 1;
-        for(int[] t : tavoli) {
-            map += "(Table (table-id T"+ count +") (pos-r "+ t[0] +") (pos-c "+ t[1] +"))\n";
-            count++;
-        } count = 1;
-        
-        //3. Posizione dei trash
-        for(int[] tr : trash) {
-            map += "(TrashBasket (TB-id TB"+ count +") (pos-r "+ tr[0] +") (pos-c "+ tr[1] +"))\n";
-            count++;
-        } count = 1;
-        
-        //4. Posizione dei Recyclable
-        for(int[] rc : recyclable) {
-            map += "(RecyclableBasket (RB-id RB"+ count +") (pos-r "+ rc[0] +") (pos-c "+ rc[1] +"))\n";
-            count++;
-        } count = 1;
-        
-        //5. Posizione dei food
-        for(int[] fd : food) {
-            map += "(FoodDispenser  (FD-id FD"+ count +") (pos-r "+ fd[0] +") (pos-c "+ fd[1] +"))\n";
-            count++;
-        } count = 1; 
-        
-        //6. Posizione dei drink
-        for(int[] dr : drink) {
-            map += "(DrinkDispenser  (DD-id DD"+ count +") (pos-r "+ dr[0] +") (pos-c "+ dr[1] +"))\n";
+        for (int[] t : tavoli) {
+            map += "(Table (table-id T" + count + ") (pos-r " + t[0] + ") (pos-c " + t[1] + "))\n";
             count++;
         }
-        
+        count = 1;
+
+        //3. Posizione dei trash
+        for (int[] tr : trash) {
+            map += "(TrashBasket (TB-id TB" + count + ") (pos-r " + tr[0] + ") (pos-c " + tr[1] + "))\n";
+            count++;
+        }
+        count = 1;
+
+        //4. Posizione dei Recyclable
+        for (int[] rc : recyclable) {
+            map += "(RecyclableBasket (RB-id RB" + count + ") (pos-r " + rc[0] + ") (pos-c " + rc[1] + "))\n";
+            count++;
+        }
+        count = 1;
+
+        //5. Posizione dei food
+        for (int[] fd : food) {
+            map += "(FoodDispenser  (FD-id FD" + count + ") (pos-r " + fd[0] + ") (pos-c " + fd[1] + "))\n";
+            count++;
+        }
+        count = 1;
+
+        //6. Posizione dei drink
+        for (int[] dr : drink) {
+            map += "(DrinkDispenser  (DD-id DD" + count + ") (pos-r " + dr[0] + ") (pos-c " + dr[1] + "))\n";
+            count++;
+        }
+
         //concateno con la definizione delle celle;
         map += "\n" + s;
         return map;
     }
 
-    void click(int x, int y, int state) {
+    String click(int x, int y, int state) {
         float x0 = (w_width - c_width * num_x) / 2;
         float y0 = (w_height - c_height * num_y) / 2;
         float cordx = x - x0;
@@ -266,9 +271,19 @@ public class Scene {
         cordy = cordy / c_height;
         int i = (int) cordx;
         int j = (int) cordy;
-        if(i>=0 && i< num_x 
-            && j>= 0 && j<num_y)
-        scene[i][j] = state;
-        
+        String result = "success";
+        if (i >= 0 && i < num_x
+                && j >= 0 && j < num_y) {
+            if (state == 10 && scene[i][j] == 2) {
+                scene[i][j] = state;
+            } else if (state == 10 && scene[i][j] != 2) {
+                result = "Una persona può essere aggiunta solo su una sedia.";
+            } else {
+                scene[i][j] = state;
+            }
+        } else {
+            result = "Hai cliccato fuori dalla scena.";
+        }
+        return result;
     }
 }
