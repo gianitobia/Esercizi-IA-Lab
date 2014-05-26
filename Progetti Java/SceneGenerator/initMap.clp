@@ -13,7 +13,7 @@
 (prior-cell (pos-r 2) (pos-c 1) (contains Wall))
 (prior-cell (pos-r 1) (pos-c 1) (contains Wall))
 (prior-cell (pos-r 10) (pos-c 2) (contains Wall))
-(prior-cell (pos-r 9) (pos-c 2) (contains Empty))
+(prior-cell (pos-r 9) (pos-c 2) (contains Seat))
 (prior-cell (pos-r 8) (pos-c 2) (contains Empty))
 (prior-cell (pos-r 7) (pos-c 2) (contains Empty))
 (prior-cell (pos-r 6) (pos-c 2) (contains Empty))

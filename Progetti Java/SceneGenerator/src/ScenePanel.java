@@ -1,9 +1,7 @@
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -80,12 +78,12 @@ public class ScenePanel extends javax.swing.JPanel {
         //System.out.println(textFile);
         try {
             String nome = this.menuPanel.getNomeFile();
-            if(nome.length() > 0 && nome != null) { 
-                Files.write(Paths.get("./"+ nome +".clp"), textFile.getBytes());
-                this.menuPanel.printMsg("File creato \n" + Paths.get("./"+ nome +".clp"));
-            }
-            else
+            if (nome.length() > 0 && nome != null) {
+                Files.write(Paths.get("./" + nome + ".clp"), textFile.getBytes());
+                this.menuPanel.printMsg("File creato \n" + Paths.get("./" + nome + ".clp"));
+            } else {
                 this.menuPanel.errorMsg("Inserire un nome valido");
+            }
         } catch (IOException ex) {
             Logger.getLogger(ScenePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -93,12 +91,11 @@ public class ScenePanel extends javax.swing.JPanel {
     }
 
     void click(int x, int y, int state) {
-        
+
         String result = s.click(x, y, state);
-        if(result.equals("success")){
+        if (result.equals("success")) {
             repaint();
-        }
-        else{
+        } else {
             menuPanel.errorMsg(result);
         }
     }

@@ -15,9 +15,9 @@ public class Finestra extends javax.swing.JFrame {
      */
     public Finestra() {
         initComponents();
+        //inizializzo i due panel fornendo ad entrambi un mutuo riferimento
         scenePanel.init(menuPanel);
         menuPanel.init(scenePanel);
-        this.validate();
     }
 
     /**
@@ -83,8 +83,10 @@ public class Finestra extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void scenePanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scenePanelMouseClicked
+        //ottento dal menuPanel lo state impostato dai radiobutton di scelta
         int state = menuPanel.getState();
 
+        //ottengo le coordinate del click e le passo allo scenePanel
         int x = (int) evt.getPoint().getX();
         int y = (int) evt.getPoint().getY();
         scenePanel.click(x, y, state);
