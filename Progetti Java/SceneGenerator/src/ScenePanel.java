@@ -74,14 +74,22 @@ public class ScenePanel extends javax.swing.JPanel {
     }
 
     void exportScene(String text) {
-        String textFile = s.exportScene();
+        String sceneFile = s.exportScene();
+        String historyFile = s.exportHistory();
         //System.out.println(textFile);
         try {
             String nome = this.menuPanel.getNomeFile();
-            if (nome.length() > 0 && nome != null) {
-                Files.write(Paths.get("./" + nome + ".clp"), textFile.getBytes());
-                this.menuPanel.printMsg("File creato \n" + Paths.get("./" + nome + ".clp"));
-            } else {
+            if(nome.length() > 0 && nome != null) { 
+                Files.write(Paths.get("./"+ nome +".clp"), sceneFile.getBytes());
+                this.menuPanel.printMsg("File creato \n" + Paths.get("./"+ nome +".clp"));
+                 
+                if(historyFile.length() > 0)    //scrivo il file della history solo se sono  
+                {                               //sono state aggiunte persone alla scena
+                    Files.write(Paths.get("./"+ nome +"_history.clp"), historyFile.getBytes());
+                    this.menuPanel.printMsg("File creato \n" + Paths.get("./"+ nome +"_history.clp"));
+                }
+            }
+            else
                 this.menuPanel.errorMsg("Inserire un nome valido");
             }
         } catch (IOException ex) {
