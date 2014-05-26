@@ -52,48 +52,16 @@ public class Scene {
     }
 
     public void loadImages(String path) {
-        images = new BufferedImage[9];
+        images = new BufferedImage[10];
         try {
             images[0] = ImageIO.read(new File("./img/wall.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[1] = ImageIO.read(new File("./img/seat.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[2] = ImageIO.read(new File("./img/table.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[3] = ImageIO.read(new File("./img/rb.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[4] = ImageIO.read(new File("./img/tb.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[5] = ImageIO.read(new File("./img/fd.jpeg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             images[6] = ImageIO.read(new File("./img/dd.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            images[7] = ImageIO.read(new File("./img/persona.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
+            images[7] = ImageIO.read(new File("./img/seated.jpeg"));
             images[8] = ImageIO.read(new File("./img/parking.jpeg"));
         } catch (IOException ex) {
             Logger.getLogger(Scene.class.getName()).log(Level.SEVERE, null, ex);
@@ -157,7 +125,7 @@ public class Scene {
     public String exportScene() {
         String map = "(maxduration 100)\n";
 
-        //variabili per impostare la posizione delle componenti 
+        //variabili per impostare la posizione delle componenti
         int[] pos_agent = new int[2];
 
         //posizione dei vari componenti della mappa
@@ -274,9 +242,10 @@ public class Scene {
         String result = "success";
         if (i >= 0 && i < num_x
                 && j >= 0 && j < num_y) {
-            if (state == 10 && scene[i][j] == 2) {
-                scene[i][j] = state;
-            } else if (state == 10 && scene[i][j] != 2) {
+            System.out.println(state);
+            if (state == 8 && scene[i][j] == 2) {
+                scene[i][j] = 8;
+            } else if (state == 8 && scene[i][j] != 2) {
                 result = "Una persona può essere aggiunta solo su una sedia.";
             } else {
                 scene[i][j] = state;
