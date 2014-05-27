@@ -6,12 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.simple.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -56,13 +56,15 @@ public class loader {
         Scene s = new Scene();
         try {
             JSONObject json = convertStreamToJson(new FileInputStream(jsonFile));
-            int num_x = (Integer)json.get("cell_x");
-            int num_y = (Integer)json.get("cell_y");
+            int num_x = ((Long)json.get("cell_x")).intValue();
+            int num_y = ((Long)json.get("cell_y")).intValue();
             s.setNumCelle(num_x, num_y);
             JSONArray arrayCelle=(JSONArray)json.get("celle");
             for(Object cella : arrayCelle){
                 JSONObject cell = (JSONObject) cella;
-                s.setCella((Integer)cell.get("x"), (Integer)cell.get("y"), (Integer)cell.get("stato"));
+                s.setCella(((Long)json.get("x")).intValue(), 
+                            ((Long)json.get("y")).intValue(),
+                            ((Long)json.get("stato")).intValue());
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(loader.class.getName()).log(Level.SEVERE, null, ex);
