@@ -394,6 +394,7 @@ public class MenuPannello extends JPanel {
             Scene s = loader.read_mappa(file);
             s.resize(scenePanel.getWidth(), scenePanel.getHeight());
             s.loadImages();
+            scenePanel.s = s;
             scenePanel.repaint();
         } else {
         }

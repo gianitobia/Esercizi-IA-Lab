@@ -62,9 +62,11 @@ public class loader {
             JSONArray arrayCelle=(JSONArray)json.get("celle");
             for(Object cella : arrayCelle){
                 JSONObject cell = (JSONObject) cella;
-                s.setCella(((Long)json.get("x")).intValue(), 
-                            ((Long)json.get("y")).intValue(),
-                            ((Long)json.get("stato")).intValue());
+                Long lx = (Long)cell.get("x");
+                int x = (lx).intValue();
+                s.setCella(x, 
+                            ((Long)cell.get("y")).intValue(),
+                            ((Long)cell.get("stato")).intValue());
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(loader.class.getName()).log(Level.SEVERE, null, ex);
