@@ -88,6 +88,7 @@ public class ScenePanel extends javax.swing.JPanel {
                     Files.write(Paths.get("./"+ nome +"_history.clp"), historyFile.getBytes());
                     this.menuPanel.printMsg("File creato \n" + Paths.get("./"+ nome +"_history.clp"));
                 }
+                loader.salva_info_mappa(s, nome);
             }
             else
                 this.menuPanel.errorMsg("Inserire un nome valido");
