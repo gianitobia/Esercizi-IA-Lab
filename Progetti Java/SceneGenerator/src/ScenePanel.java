@@ -79,19 +79,19 @@ public class ScenePanel extends javax.swing.JPanel {
         //System.out.println(textFile);
         try {
             String nome = this.menuPanel.getNomeFile();
-            if(nome.length() > 0 && nome != null) { 
-                Files.write(Paths.get("./"+ nome +".clp"), sceneFile.getBytes());
-                this.menuPanel.printMsg("File creato \n" + Paths.get("./"+ nome +".clp"));
-                 
-                if(historyFile.length() > 0)    //scrivo il file della history solo se sono  
+            if (nome.length() > 0 && nome != null) {
+                Files.write(Paths.get("./" + nome + ".clp"), sceneFile.getBytes());
+                this.menuPanel.printMsg("File creato \n" + Paths.get("./" + nome + ".clp"));
+
+                if (historyFile.length() > 0) //scrivo il file della history solo se sono  
                 {                               //sono state aggiunte persone alla scena
-                    Files.write(Paths.get("./"+ nome +"_history.clp"), historyFile.getBytes());
-                    this.menuPanel.printMsg("File creato \n" + Paths.get("./"+ nome +"_history.clp"));
+                    Files.write(Paths.get("./" + nome + "_history.clp"), historyFile.getBytes());
+                    this.menuPanel.printMsg("File creato \n" + Paths.get("./" + nome + "_history.clp"));
                 }
                 loader.salva_info_mappa(s, nome);
-            }
-            else
+            } else {
                 this.menuPanel.errorMsg("Inserire un nome valido");
+            }
         } catch (IOException ex) {
             Logger.getLogger(ScenePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -106,5 +106,13 @@ public class ScenePanel extends javax.swing.JPanel {
         } else {
             menuPanel.errorMsg(result);
         }
+    }
+
+    void updateScene(Scene s) {
+        s.setSizeScreen(this.getWidth(), this.getHeight());
+        s.resize(s.num_x, s.num_y);
+        s.loadImages();
+        this.s = s;
+        this.repaint();
     }
 }
