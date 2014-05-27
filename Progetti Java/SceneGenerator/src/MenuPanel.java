@@ -47,6 +47,7 @@ public class MenuPanel extends javax.swing.JPanel {
         drinkButton = new javax.swing.JRadioButton();
         personButton = new javax.swing.JRadioButton();
         parkingButton = new javax.swing.JRadioButton();
+        loadButton = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(280, 720));
         setSize(new java.awt.Dimension(280, 720));
@@ -162,6 +163,13 @@ public class MenuPanel extends javax.swing.JPanel {
             }
         });
 
+        loadButton.setText("Load map");
+        loadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -183,7 +191,9 @@ public class MenuPanel extends javax.swing.JPanel {
                             .addComponent(jLabel3)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(nomeFileField, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(exportButton, javax.swing.GroupLayout.Alignment.CENTER)))
+                                .addGroup(javax.swing.GroupLayout.Alignment.CENTER, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                    .addComponent(exportButton)
+                                    .addComponent(loadButton))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(emptyButton)
@@ -245,7 +255,9 @@ public class MenuPanel extends javax.swing.JPanel {
                 .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(exportButton)
-                .addContainerGap(279, Short.MAX_VALUE))
+                .addGap(62, 62, 62)
+                .addComponent(loadButton)
+                .addContainerGap(188, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -257,6 +269,9 @@ public class MenuPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_num_col_fieldActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        //leggo le nuove dimensioni della scena e le comunico al metodo 
+        //resizeScene che si preoccuperà di ridimensionare la matrice mantenendo
+        // i vecchi dati all'interno
         int num_row = Integer.parseInt(num_row_field.getText());
         int num_col = Integer.parseInt(num_col_field.getText());
         if (num_row > 0 && num_col > 0) {
@@ -312,6 +327,10 @@ public class MenuPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_parkingButtonActionPerformed
 
+    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
+        
+    }//GEN-LAST:event_loadButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton drinkButton;
     private javax.swing.JRadioButton emptyButton;
@@ -320,6 +339,7 @@ public class MenuPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JButton loadButton;
     private javax.swing.JTextField nomeFileField;
     private javax.swing.JTextField num_col_field;
     private javax.swing.JTextField num_row_field;
