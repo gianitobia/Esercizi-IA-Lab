@@ -103,12 +103,17 @@ public class Scene {
     }
 
     public void resize(int num_x, int num_y) {
+        //creo una scena con la nuova dimensione
         int[][] new_scene = new int[num_x][num_y];
+        //percentuale che la scena al massimo o sulle x o sulle y può occupare
         perc = 90;
+        //salvo il numero di celle sulle x e sulle y
         this.num_x = num_x;
         this.num_y = num_y;
+        //calcolo la larghezza delle celle
         c_width = (w_width * perc / 100) / num_x;
         c_height = (w_height * perc / 100) / num_y;
+        
         if (c_width > c_height) {
             c_width = c_height;
         } else {
