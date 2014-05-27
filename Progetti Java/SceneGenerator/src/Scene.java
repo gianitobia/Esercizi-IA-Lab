@@ -46,6 +46,10 @@ public class Scene {
     //cioè in 0 c'è wall (1), in 1 c'è seat (2), e cosi via 
     BufferedImage[] images;
 
+    public Scene() {
+        
+    }
+
     public Scene(int num_x, int num_y, float w_width, float w_height) {
         this.w_width = w_width;
         this.w_height = w_height;
@@ -55,10 +59,10 @@ public class Scene {
         //inizializzo la scena con i valori di default e cioè con i muri su tutto il bordo della scena
         this.initScene(scene);
         //carico tutte le image in ram
-        this.loadImages("img/");
+        this.loadImages();
     }
 
-    public void loadImages(String path) {
+    public void loadImages() {
         images = new BufferedImage[10];
         try {
             images[0] = ImageIO.read(new File("./img/wall.jpeg"));
@@ -113,7 +117,7 @@ public class Scene {
         //calcolo la larghezza delle celle
         c_width = (w_width * perc / 100) / num_x;
         c_height = (w_height * perc / 100) / num_y;
-        
+
         if (c_width > c_height) {
             c_width = c_height;
         } else {
@@ -290,5 +294,15 @@ public class Scene {
             result = "Hai cliccato fuori dalla scena.";
         }
         return result;
+    }
+
+    public void setNumCelle(int num_x, int num_y) {
+        this.num_x = num_x;
+        this.num_y = num_y;
+        scene = new int[num_x][num_y];
+    }
+
+    public void setCella(int x, int y, int value) {
+        scene[x][y] = value;
     }
 }
