@@ -36,7 +36,7 @@ public class loader {
                     celle.add(cella);
                 }
             }
-            info.put(celle, "celle");
+            info.put("celle", celle);
             //salvo le informazioni in un file JSON della mappa
             Files.write(Paths.get("./"+ nome +".json"), info.toJSONString().getBytes());
         } catch (IOException ex) {
