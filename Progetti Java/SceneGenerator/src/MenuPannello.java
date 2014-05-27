@@ -1,6 +1,7 @@
 
 import java.awt.Component;
 import java.io.File;
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -211,6 +212,21 @@ public class MenuPannello extends JPanel {
                 loadButtonActionPerformed(evt);
             }
         });
+        
+        //raggruppo i radio button per avere una mutua esclusione sulla selezione
+        ButtonGroup gruppo = new ButtonGroup();
+        gruppo.add(foodButton);
+        gruppo.add(drinkButton);
+        gruppo.add(personButton);
+        gruppo.add(parkingButton);
+        gruppo.add(trashButton);
+        gruppo.add(tableButton);
+        gruppo.add(seatButton);
+        gruppo.add(wallButton);
+        gruppo.add(emptyButton);
+        gruppo.add(recyclableButton);
+
+        emptyButton.setSelected(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
