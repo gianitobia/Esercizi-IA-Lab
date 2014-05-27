@@ -5,6 +5,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -53,6 +54,7 @@ public class MenuPannello extends JPanel {
     private void initComponents() {
         fc = new JFileChooser();
         fc.setCurrentDirectory(new File("./"));
+        fc.setFileFilter(new JSONFilter());
 
         jLabel1 = new javax.swing.JLabel();
         num_row_field = new javax.swing.JTextField();
@@ -389,7 +391,11 @@ public class MenuPannello extends JPanel {
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
-            //This is where a real application would open the file.
+            Scene s = loader.read_mappa(file);
+            s.resize(scenePanel.getWidth(), scenePanel.getHeight());
+            s.loadImages();
+            scenePanel.s = s;
+            scenePanel.repaint();
         } else {
         }
     }
@@ -426,5 +432,18 @@ public class MenuPannello extends JPanel {
                 Msg,
                 "Message",
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private class JSONFilter extends FileFilter {
+
+        @Override
+        public boolean accept(File f) {
+            return f.getName().toLowerCase().endsWith(".json") || f.isDirectory();
+        }
+
+        @Override
+        public String getDescription() {
+            return "JSON files (*.json)";
+        }
     }
 }
