@@ -393,8 +393,7 @@ public class MenuPannello extends JPanel {
             File file = fc.getSelectedFile();
             Scene s = loader.read_mappa(file);
             scenePanel.updateScene(s);
-        } else {
-        }
+        } 
     }
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {
