@@ -191,7 +191,7 @@ public class MenuPannello extends JPanel {
         personButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                personButtonActionPerformed(evt);
+                parkingButtonActionPerformed(evt);
             }
         });
 
@@ -199,7 +199,7 @@ public class MenuPannello extends JPanel {
         parkingButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                parkingButtonActionPerformed(evt);
+                personButtonActionPerformed(evt);
             }
         });
 
