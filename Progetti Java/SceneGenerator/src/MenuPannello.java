@@ -1,6 +1,7 @@
 
 import java.awt.Component;
-import javax.swing.ButtonGroup;
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -19,6 +20,7 @@ public class MenuPannello extends JPanel {
     private javax.swing.JRadioButton emptyButton;
     private javax.swing.JButton exportButton;
     private javax.swing.JRadioButton foodButton;
+    private javax.swing.JButton loadButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -34,6 +36,8 @@ public class MenuPannello extends JPanel {
     private javax.swing.JButton updateButton;
     private javax.swing.JRadioButton wallButton;
     private ScenePanel scenePanel;
+    private JFileChooser fc;
+
     //variabile che tiene in memoria lo stato di selezione dei radiobutton per 
     //capire il significato dei numeri memorizzati all'interno vedere a inizio 
     //file scene
@@ -46,6 +50,8 @@ public class MenuPannello extends JPanel {
     }
 
     private void initComponents() {
+        fc = new JFileChooser();
+        fc.setCurrentDirectory(new File("./"));
 
         jLabel1 = new javax.swing.JLabel();
         num_row_field = new javax.swing.JTextField();
@@ -65,6 +71,7 @@ public class MenuPannello extends JPanel {
         drinkButton = new javax.swing.JRadioButton();
         personButton = new javax.swing.JRadioButton();
         parkingButton = new javax.swing.JRadioButton();
+        loadButton = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(280, 720));
         setSize(new java.awt.Dimension(280, 720));
@@ -73,6 +80,7 @@ public class MenuPannello extends JPanel {
 
         num_row_field.setText("10");
         num_row_field.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 num_row_fieldActionPerformed(evt);
             }
@@ -82,6 +90,7 @@ public class MenuPannello extends JPanel {
 
         num_col_field.setText("10");
         num_col_field.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 num_col_fieldActionPerformed(evt);
             }
@@ -89,6 +98,7 @@ public class MenuPannello extends JPanel {
 
         updateButton.setText("Aggiorna");
         updateButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 updateButtonActionPerformed(evt);
             }
@@ -98,6 +108,7 @@ public class MenuPannello extends JPanel {
 
         nomeFileField.setText("initMap");
         nomeFileField.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nomeFileFieldActionPerformed(evt);
             }
@@ -105,6 +116,7 @@ public class MenuPannello extends JPanel {
 
         exportButton.setText("Export");
         exportButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exportButtonActionPerformed(evt);
             }
@@ -112,6 +124,7 @@ public class MenuPannello extends JPanel {
 
         emptyButton.setText("Empty");
         emptyButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 emptyButtonActionPerformed(evt);
             }
@@ -119,6 +132,7 @@ public class MenuPannello extends JPanel {
 
         wallButton.setText("Wall");
         wallButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 wallButtonActionPerformed(evt);
             }
@@ -126,6 +140,7 @@ public class MenuPannello extends JPanel {
 
         seatButton.setText("Seat");
         seatButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 seatButtonActionPerformed(evt);
             }
@@ -133,6 +148,7 @@ public class MenuPannello extends JPanel {
 
         tableButton.setText("Table");
         tableButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tableButtonActionPerformed(evt);
             }
@@ -140,6 +156,7 @@ public class MenuPannello extends JPanel {
 
         recyclableButton.setText("RB");
         recyclableButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 recyclableButtonActionPerformed(evt);
             }
@@ -147,6 +164,7 @@ public class MenuPannello extends JPanel {
 
         trashButton.setText("TB");
         trashButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 trashButtonActionPerformed(evt);
             }
@@ -154,6 +172,7 @@ public class MenuPannello extends JPanel {
 
         foodButton.setText("FD");
         foodButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 foodButtonActionPerformed(evt);
             }
@@ -161,39 +180,35 @@ public class MenuPannello extends JPanel {
 
         drinkButton.setText("DD");
         drinkButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 drinkButtonActionPerformed(evt);
             }
         });
 
-        personButton.setText("Person");
+        personButton.setText("Parking");
         personButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 personButtonActionPerformed(evt);
             }
         });
 
-        parkingButton.setText("Parking");
+        parkingButton.setText("Person");
         parkingButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 parkingButtonActionPerformed(evt);
             }
         });
 
-        //raggruppo i radio button per avere una mutua esclusione sulla selezione
-        ButtonGroup gruppo = new ButtonGroup();
-        gruppo.add(foodButton);
-        gruppo.add(drinkButton);
-        gruppo.add(personButton);
-        gruppo.add(parkingButton);
-        gruppo.add(trashButton);
-        gruppo.add(tableButton);
-        gruppo.add(seatButton);
-        gruppo.add(wallButton);
-        gruppo.add(emptyButton);
-        gruppo.add(recyclableButton);
-
-        emptyButton.setSelected(true);
+        loadButton.setText("Load map");
+        loadButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -216,7 +231,9 @@ public class MenuPannello extends JPanel {
                                                 .addComponent(jLabel3)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(nomeFileField, javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addComponent(exportButton, javax.swing.GroupLayout.Alignment.CENTER)))
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.CENTER, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                                                .addComponent(exportButton)
+                                                                .addComponent(loadButton))))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                         .addComponent(emptyButton)
@@ -278,7 +295,9 @@ public class MenuPannello extends JPanel {
                         .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(exportButton)
-                        .addContainerGap(279, Short.MAX_VALUE))
+                        .addGap(62, 62, 62)
+                        .addComponent(loadButton)
+                        .addContainerGap(188, Short.MAX_VALUE))
         );
     }
 
@@ -347,6 +366,16 @@ public class MenuPannello extends JPanel {
 
     private void nomeFileFieldActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+    }
+
+    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        int returnVal = fc.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            //This is where a real application would open the file.
+        } else {
+        }
     }
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {
