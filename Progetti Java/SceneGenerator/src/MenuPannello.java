@@ -392,9 +392,8 @@ public class MenuPannello extends JPanel {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             Scene s = loader.read_mappa(file);
-            
-        } else {
-        }
+            scenePanel.updateScene(s);
+        } 
     }
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {
