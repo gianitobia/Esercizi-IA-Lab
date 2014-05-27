@@ -1,3 +1,10 @@
 /Progetti Java/SceneGenerator/nbproject/private/
 /Progetti Java/SceneGenerator/build/
 /Progetti Java/SceneGenerator/dist/
+*.properties
+
+*.clp
+
+*.json
+
+*.properties
