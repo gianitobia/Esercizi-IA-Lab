@@ -86,7 +86,6 @@ public class Scene {
         float x0 = (w_width - c_width * num_x) / 2;
         float y0 = (w_height - c_height * num_y) / 2;
 
-        System.out.println(w_width+ "  " +c_width); 
         g.setColor(Color.BLACK);
 
         //doppio ciclo sulla matrice
