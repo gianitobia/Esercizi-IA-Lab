@@ -77,6 +77,32 @@
     (slot drink)
 )
 
+(deftemplate rotation
+	(slot r_dir)
+	(slot m_dir)
+	(slot rotazione)
+	(slot dir_f)
+)
+
+(deffacts rotations
+	;rotazione da un stato del robot UP;
+	(rotation (r_dir up) (m_dir left) (rotazione left) (dir_f left))
+	(rotation (r_dir up) (m_dir right) (rotazione right) (dir_f right))
+	(rotation (r_dir up) (m_dir down) (rotazione left) (dir_f left))
+	;rotazione da uno stato del robot RIGHT;
+	(rotation (r_dir right) (m_dir up) (rotazione left) (dir_f up))
+	(rotation (r_dir right) (m_dir down) (rotazione right) (dir_f down))
+	(rotation (r_dir right) (m_dir left) (rotazione left) (dir_f up))
+	;rotazione da uno stato del robot DOWN;
+	(rotation (r_dir down) (m_dir right) (rotazione left) (dir_f right))
+	(rotation (r_dir down) (m_dir left) (rotazione right) (dir_f left))
+	(rotation (r_dir down) (m_dir up) (rotazione right) (dir_f left))
+	;rotazione da uno stato del robot LEFT;
+	(rotation (r_dir left) (m_dir up) (rotazione right) (dir_f up))
+	(rotation (r_dir left) (m_dir down) (rotazione left) (dir_f down))
+	(rotation (r_dir left) (m_dir right) (rotazione right) (dir_f up))
+)
+
 ;// DEFRULE
 
 
