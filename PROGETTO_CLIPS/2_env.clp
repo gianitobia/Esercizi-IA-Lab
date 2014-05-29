@@ -137,7 +137,7 @@
 
 (defrule neworder2 (declare (salience 200))
 	(status (step ?i) (time ?t))
-	?f1<-	(event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
+	?f1 <- (event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
 	(tablestatus (step ?i) (table-id ?tb) (clean no))
 	(event (step ?ii&:(< ?ii ?i)) (type finish) (source ?tb))
 	=> 
