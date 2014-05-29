@@ -44,7 +44,7 @@ public class loader {
             }
             info.put("celle", celle);
             //salvo le informazioni in un file JSON della mappa
-            Files.write(Paths.get("./"+ nome +".json"), info.toJSONString().getBytes());
+            Files.write(Paths.get(nome +".json"), info.toJSONString().getBytes());
         } catch (IOException ex) {
             Logger.getLogger(loader.class.getName()).log(Level.SEVERE, null, ex);
             return false;

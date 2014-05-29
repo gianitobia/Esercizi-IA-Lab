@@ -26,7 +26,6 @@ public class MenuPannello extends JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField nomeFileField;
     private javax.swing.JTextField num_col_field;
     private javax.swing.JTextField num_row_field;
     private javax.swing.JRadioButton parkingButton;
@@ -39,6 +38,7 @@ public class MenuPannello extends JPanel {
     private javax.swing.JRadioButton wallButton;
     private ScenePanel scenePanel;
     private JFileChooser fc;
+    private JFileChooser save_fc;
 
     //variabile che tiene in memoria lo stato di selezione dei radiobutton per 
     //capire il significato dei numeri memorizzati all'interno vedere a inizio 
@@ -56,13 +56,16 @@ public class MenuPannello extends JPanel {
         fc.setCurrentDirectory(new File("./"));
         fc.setFileFilter(new JSONFilter());
 
+        save_fc = new JFileChooser();
+        save_fc.setCurrentDirectory(new File("./"));
+        save_fc.setFileFilter(new CLIPSFilter());
+
         jLabel1 = new javax.swing.JLabel();
         num_row_field = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         num_col_field = new javax.swing.JTextField();
         updateButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        nomeFileField = new javax.swing.JTextField();
         exportButton = new javax.swing.JButton();
         emptyButton = new javax.swing.JRadioButton();
         wallButton = new javax.swing.JRadioButton();
@@ -109,15 +112,7 @@ public class MenuPannello extends JPanel {
 
         jLabel3.setText("Inserisci");
 
-        nomeFileField.setText("initMap");
-        nomeFileField.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nomeFileFieldActionPerformed(evt);
-            }
-        });
-
-        exportButton.setText("Export");
+        exportButton.setText("Salva");
         exportButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -205,14 +200,14 @@ public class MenuPannello extends JPanel {
             }
         });
 
-        loadButton.setText("Load map");
+        loadButton.setText("Carica");
         loadButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadButtonActionPerformed(evt);
             }
         });
-        
+
         //raggruppo i radio button per avere una mutua esclusione sulla selezione
         ButtonGroup gruppo = new ButtonGroup();
         gruppo.add(foodButton);
@@ -248,7 +243,6 @@ public class MenuPannello extends JPanel {
                                                 .addComponent(updateButton)
                                                 .addComponent(jLabel3)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(nomeFileField, javax.swing.GroupLayout.Alignment.TRAILING)
                                                         .addGroup(javax.swing.GroupLayout.Alignment.CENTER, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                                                 .addComponent(exportButton)
                                                                 .addComponent(loadButton))))
@@ -310,7 +304,6 @@ public class MenuPannello extends JPanel {
                                 .addComponent(parkingButton)
                                 .addComponent(personButton))
                         .addGap(41, 41, 41)
-                        .addComponent(nomeFileField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(exportButton)
                         .addGap(62, 62, 62)
@@ -382,22 +375,22 @@ public class MenuPannello extends JPanel {
         setState(9);
     }
 
-    private void nomeFileFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        int returnVal = fc.showOpenDialog(this);
+        int returnVal = save_fc.showOpenDialog(this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
+            File file = save_fc.getSelectedFile();
             Scene s = loader.read_mappa(file);
             scenePanel.updateScene(s);
-        } 
+        }
     }
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        scenePanel.exportScene(nomeFileField.getText());
+        int retrival = save_fc.showSaveDialog(this);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
+            scenePanel.exportScene(save_fc.getSelectedFile().toString());
+        }
     }
 
     void init(ScenePanel scenePanel) {
@@ -412,10 +405,6 @@ public class MenuPannello extends JPanel {
         state = i;
     }
 
-    String getNomeFile() {
-        return this.nomeFileField.getText();
-    }
-
     void errorMsg(String error) {
         JOptionPane.showMessageDialog(frame,
                 error,
@@ -428,6 +417,19 @@ public class MenuPannello extends JPanel {
                 Msg,
                 "Message",
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private static class CLIPSFilter extends FileFilter {
+
+        @Override
+        public boolean accept(File f) {
+            return f.getName().toLowerCase().endsWith(".clp") || f.isDirectory();
+        }
+
+        @Override
+        public String getDescription() {
+            return "CLIPS files (*.clp)";
+        }
     }
 
     private class JSONFilter extends FileFilter {
