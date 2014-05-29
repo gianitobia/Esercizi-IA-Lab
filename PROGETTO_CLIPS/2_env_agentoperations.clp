@@ -26,35 +26,22 @@
 )
 
 
-(defrule CleanTable_OK_2
-
-	(declare (salience 20))    
-
-?f2<-	(status (time ?t) (step ?i)) 
-
+(defrule CleanTable_OK_2 (declare (salience 20))    
+	?f2<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CleanTable) (param1 ?x) (param2 ?y))
-
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-food  0) (l-drink 0) (l_d_waste ?dw) (l_f_waste ?fw))
-        (serviceTable ?tb ?rr ?cc)
-
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld&:(> ?tld 0)) (l-food 0))
-
-?f4<-	(cleanstatus (step ?i) (requested-by ?tb))
-=> 
-
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
+            (l-food  0) (l-drink 0) (l_d_waste ?dw) (l_f_waste ?fw))
+    (serviceTable ?tb ?rr ?cc)
+	?f3 <- (tablestatus (step ?i) (table-id ?tb) (l-drink ?tld&:(> ?tld 0)) (l-food 0))
+	?f4 <- (cleanstatus (step ?i) (requested-by ?tb))
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld)))))
-
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld)))) 
                     (l_d_waste yes) (l_f_waste ?fw))
-
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld)))) 
                     (l-drink 0) (l-food 0) (clean yes))
-
 	(retract ?f4)
-
 )
 
 ;// Operazione OK
