@@ -2266,7 +2266,7 @@
 
 (defrule forward-north-ok (declare (salience 20))    
 	?f2 <- (status (step ?i) (time ?t)) 
-	(exec (step ?i) (action  Forward))
+	(exec (step ?i) (action Forward))
 	?f1 <- (agentstatus (step ?i) (pos-r ?r) (pos-c ?c)(direction north))
 	(cell (pos-r =(+ ?r 1)) (pos-c ?c) (contains Empty|Parking))
 	=> 
@@ -2280,7 +2280,7 @@
 
 (defrule forward-north-bump (declare (salience 20))    
 	?f2<- (status (step ?i) (time ?t)) 
-	(exec (step ?i) (action  Forward))
+	(exec (step ?i) (action Forward))
 	?f1<- (agentstatus (step ?i) (pos-r ?r) (pos-c ?c)(direction north))
 	(cell (pos-r =(+ ?r 1)) (pos-c ?c) (contains ~Empty&~Parking))
 	?f3 <- (penalty ?p)

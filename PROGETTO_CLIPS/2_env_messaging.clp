@@ -36,7 +36,7 @@
 )
 
 ;// l'agente ha inviato inform che l'ordine � delayed (e va bene)
-(defrule msg-order-delayed-OK (declare (salience 20))
+(defrule msg-order-delayed-OK	(declare (salience 20))
 	?f1 <- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 delayed))
 	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
@@ -52,7 +52,7 @@
 
 
 ;// l'agente ha inviato inform che l'ordine � delayed (e non va bene dovrebbe essere accepted)
-(defrule msg-order-delayed-KO1 (declare (salience 20))
+(defrule msg-order-delayed-KO1	(declare (salience 20))
 	?f1 <- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 delayed))
 	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
@@ -68,46 +68,29 @@
 )
 
 ;// l'agente ha inviato inform che l'ordine � rejected (e non va bene dovrebbe essere accepted)
-(defrule msg-order-rejected-KO1    
-
-	(declare (salience 20))
-
-?f1<-	(status (step ?i) (time ?t))
-
+(defrule msg-order-rejected-KO1	(declare (salience 20))
+	?f1	<- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 rejected))
-
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-
-?f3<-	(agentstatus (step ?i) (time ?t))
-
+	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3 <- (agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean yes))
-?f4<-   (penalty ?p)	
-
-=> 
-
+	?f4 <- (penalty ?p)	
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
-
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer rejected))
-
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
-        (assert (penalty (+ ?p 5000000)))
-
+    (assert (penalty (+ ?p 5000000)))
 	(retract ?f4)
-
 )
 
 ;// l'agente ha inviato inform che l'ordine � rejected (e non va bene dovrebbe essere delayed)
-(defrule msg-order-rejected-KO2    
+(defrule msg-order-rejected-KO2	 (declare (salience 20))
 
-	(declare (salience 20))
-
-?f1<-	(status (step ?i) (time ?t))
-
+	?f1 <- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 rejected))
+	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
 
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-
-?f3<-	(agentstatus (step ?i) (time ?t))
+	?f3<-	(agentstatus (step ?i) (time ?t))
         (tablestatus (step ?i) (time ?t) (table-id ?tb) (clean no))
         (cleanstatus (step ?i) (time ?t) (arrivaltime ?tt&:(< ?tt ?request)) (requested-by ?tb))
 ?f4<-   (penalty ?p)	
