@@ -76,19 +76,19 @@ public class ScenePanel extends javax.swing.JPanel {
     void exportScene(String text) {
         String sceneFile = s.exportScene();
         String historyFile = s.exportHistory();
-        //System.out.println(textFile);
         try {
-            String nome = this.menuPanel.getNomeFile();
-            if (nome.length() > 0 && nome != null) {
-                Files.write(Paths.get("./" + nome + ".clp"), sceneFile.getBytes());
-                this.menuPanel.printMsg("File creato \n" + Paths.get("./" + nome + ".clp"));
+            if (text.length() > 0 && text != null) {
+                Files.write(Paths.get(text + ".clp"), sceneFile.getBytes());
+                this.menuPanel.printMsg("File creato \n" + Paths.get(text + ".clp"));
 
                 if (historyFile.length() > 0) //scrivo il file della history solo se sono  
                 {                               //sono state aggiunte persone alla scena
-                    Files.write(Paths.get("./" + nome + "_history.clp"), historyFile.getBytes());
-                    this.menuPanel.printMsg("File creato \n" + Paths.get("./" + nome + "_history.clp"));
+                    Files.write(Paths.get(text + "_history.clp"), historyFile.getBytes());
+                    this.menuPanel.printMsg("File creato \n" + Paths.get(text + "_history.clp"));
                 }
-                loader.salva_info_mappa(s, nome);
+                loader.salva_info_mappa(s, text);
+                this.menuPanel.printMsg("File creato \n" + Paths.get( text + ".json"));
+
             } else {
                 this.menuPanel.errorMsg("Inserire un nome valido");
             }

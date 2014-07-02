@@ -160,8 +160,7 @@
 )
 
 ;// SI PASSA AL MODULO AGENT SE NON  E' ESAURITO IL TEMPO (indicato da maxduration)
-(defrule go-on-agent		
-	(declare (salience 20))
+(defrule go-on-agent (declare (salience 20))
 	(maxduration ?d)
 	(status (step ?t&:(< ?t ?d)))	;// controllo sul tempo
  	=>
@@ -170,8 +169,7 @@
 )
 
 ;// SI PASSA AL MODULO ENV DOPO CHE AGENTE HA DECISO AZIONE DA FARE
-(defrule go-on-env
-	(declare (salience 21))
+(defrule go-on-env (declare (salience 21))
 	?f1<-	(status (step ?t))
 	(exec (step ?t)) 	;// azione da eseguire al al passo T, viene simulata dall'environment
 	=>
