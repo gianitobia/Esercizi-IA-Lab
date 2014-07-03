@@ -1,27 +1,49 @@
+
+;// DEFRULE
+
+
+
 ;//imposta il valore iniziale di ciascuna cella 
 
-(defrule creation1
+(defrule creation1	
+
      (declare (salience 25))
+
      (create-map)
      (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
-	 =>
+
+=>
+
      (assert (cell (pos-r ?r) (pos-c ?c) (contains ?x)))
+
+            
+
 )
 
+
+
+
+
+
+
 (defrule creation2	
+
 	(declare (salience 24))
-	?f1 <- (create-history) 
-	=>
-   	(load-facts "historyDom1.clp")
-    (retract ?f1)
+
+?f1<-	(create-history) 
+
+=>
+
+   	(load-facts "history.txt")
+        (retract ?f1)
 )
 
 (defrule creation3
-	(declare (salience 23))
-	(create-initial-setting)
-	(Table (table-id ?tb) (pos-r ?r) (pos-c ?c))
-	=> 
-	(assert (tablestatus (step 0) (time 0) (table-id ?tb) (clean yes) (l-drink 0) (l-food 0)))
+         (declare (salience 23))
+         (create-initial-setting)
+         (Table (table-id ?tb) (pos-r ?r) (pos-c ?c))
+=> 
+         (assert (tablestatus (step 0) (time 0) (table-id ?tb) (clean yes) (l-drink 0) (l-food 0)))
 )
    
 
@@ -171,6 +193,8 @@
          (assert (serviceFD ?fd ?r (+ ?c 1)))
 )
 
+
+
 (defrule creation451
          (declare (salience 22))
          (create-initial-setting)
@@ -209,15 +233,15 @@
 
 
 (defrule creation5
-	(declare (salience 21))
-	?f1 <- (create-initial-setting)
-	?f2 <- (create-map)
-    (initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
-	=> 
-    (assert (agentstatus (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d)
-                         (l-drink 0) (l-food 0) (l_d_waste no) (l_f_waste no))
-            (status (step 0) (time 0))
-            (penalty 0)
-	)
-    (retract ?f1 ?f2)
+         (declare (salience 21))
+?f1 <-   (create-initial-setting)
+?f2 <-   (create-map)
+
+         (initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
+=> 
+         (assert (agentstatus (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d)
+                              (l-drink 0) (l-food 0) (l_d_waste no) (l_f_waste no))
+                 (status (step 0) (time 0) (result no))
+                 (penalty 0))
+         (retract ?f1 ?f2)
 )

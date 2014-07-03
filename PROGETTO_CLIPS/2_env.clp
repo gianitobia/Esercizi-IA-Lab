@@ -1,73 +1,124 @@
 ;// _______________________________________________________________________________________________________________________
+
 ;// ENV                                                                                                                   
-;// �����������������������������������������������������������������������������������������������������������������������
+
+;// ØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØ
+
+
 
 (defmodule ENV (import MAIN ?ALL))
 
+
+
+
+
 ;// DEFTEMPLATE
-(deftemplate cell  
-	(slot pos-r)
-	(slot pos-c) 
-    (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket RecyclableBasket DrinkDispenser FoodDispenser))
-)
+
+
+
+
+(deftemplate cell  (slot pos-r) (slot pos-c) 
+                   (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket
+                                                      RecyclableBasket DrinkDispenser FoodDispenser)))
+
+
 
 (deftemplate agentstatus 
+
 	(slot step)
-    (slot time)
+        (slot time) 
+
 	(slot pos-r) 
+
 	(slot pos-c) 
+
 	(slot direction) 
+
 	(slot l-drink)
-    (slot l-food)
-    (slot l_d_waste)
-    (slot l_f_waste)
+        (slot l-food)
+        (slot l_d_waste)
+        (slot l_f_waste)
+
 )
+
+
+
+
 
 (deftemplate tablestatus	
+
 	(slot step)
-    (slot time)
+        (slot time)
+
 	(slot table-id)
+
 	(slot clean (allowed-values yes no))
+
 	(slot l-drink)
-    (slot l-food)
-)
+        (slot l-food))
+
 
 (deftemplate orderstatus	;// tiente traccia delle ordinazioni
+
 	(slot step)
-    (slot time)				;// tempo corrente
-	(slot arrivaltime)		;// momento in cui � arrivata l'ordinazione
-	(slot requested-by)		;// tavolo richiedente
+        (slot time)			;// tempo corrente
+
+	(slot arrivaltime)	;// momento in cui È arrivata l'ordinazione
+
+	(slot requested-by)	;// tavolo richiedente
+
 	(slot drink-order)
-    (slot food-order)
-    (slot drink-deliv)
-    (slot food-deliv)
-    (slot answer (allowed-values pending accepted delayed rejected))	
+        (slot food-order)
+        (slot drink-deliv)
+        (slot food-deliv)
+        (slot answer (allowed-values pending accepted delayed rejected))	
+
 )
+
+
 
 (deftemplate cleanstatus
+
 	(slot step)
-    (slot time)
-	(slot arrivaltime)
+        (slot time)
+
+	(slot arrivaltime)	
+
 	(slot requested-by)	;// tavolo richiedente	
+
 )
+
+
 
 (deftemplate personstatus 	;// informazioni sulla posizione delle persone
+
 	(slot step)
-    (slot time)
+        (slot time)
+
 	(slot ident)
+
 	(slot pos-r)
+
 	(slot pos-c)
+
 	(slot activity)   ;// activity seated se cliente seduto, stand se in piedi, oppure path  		
-    (slot move)			
+        (slot move)			
+
 )
 
-(deftemplate personmove		
-	;// modella i movimenti delle persone. l'environment deve tenere conto dell'interazione di tanti agenti. 
-	;//Il mondo cambia sia per le azioni del robot, si per le azioni degli operatori. Il modulo environment deve gestire le interazioni. 
+
+
+(deftemplate personmove		;// modella i movimenti delle persone. l'environment deve tenere conto dell'interazione di tanti agenti. Il mondo cambia sia per le azioni del robot, si per le azioni degli operatori. Il modulo environment deve gestire le interazioni. 
+
 	(slot step)
+
 	(slot ident)
+
 	(slot path-id)
+
 )
+
+
 
 (deftemplate event   		;// gli eventi sono le richieste dei tavoli: ordini e finish
 	(slot step)
@@ -382,99 +433,189 @@
 
 
 ;// __________________________________________________________________________________________
+
 ;// REGOLE PER PERCEZIONI VISIVE (N,S,E,O)          
-;// ������������������������������������������������������������������������������������������ 
 
-(defrule percept-north (declare (salience 5))
-	?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction north)) 
-	(cell (pos-r =(+ ?r 1))	(pos-c =(- ?c 1)) 	(contains ?x1))
-	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  		(contains ?x2))
-	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x3))
-	(cell (pos-r ?r) 		(pos-c =(- ?c 1)) 	(contains ?x4))
-	(cell (pos-r ?r) 		(pos-c ?c)  		(contains ?x5))
-	(cell (pos-r ?r) 		(pos-c =(+ ?c 1)) 	(contains ?x6))
-	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x7))
-	(cell (pos-r =(- ?r 1)) (pos-c ?c)  		(contains ?x8))
-	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x9))
-	=> 
-	(assert 	
-		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction north) 
-			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-			(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-			(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
-		)
-	)
-	(focus MAIN)
-)
+;// ØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØØ 
 
+(defrule percept-north
 
+	(declare (salience 5))
 
-(defrule percept-south (declare (salience 5))
-	?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction south)) 
-	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x1))
-	(cell (pos-r =(- ?r 1)) (pos-c ?c)  		(contains ?x2))
-	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x3))
-	(cell (pos-r ?r)  		(pos-c =(+ ?c 1)) 	(contains ?x4))
-	(cell (pos-r ?r)  		(pos-c ?c)  		(contains ?x5))
-	(cell (pos-r ?r)  		(pos-c =(- ?c 1)) 	(contains ?x6))
-	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x7))
-	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  		(contains ?x8))
-	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x9))
+?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction north)) 
+
+	(cell (pos-r =(+ ?r 1))	(pos-c =(- ?c 1)) (contains ?x1))
+
+	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x2))
+
+	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x3))
+
+	(cell (pos-r ?r) 		(pos-c =(- ?c 1)) (contains ?x4))
+
+	(cell (pos-r ?r) 		(pos-c ?c)  	(contains ?x5))
+
+	(cell (pos-r ?r) 		(pos-c =(+ ?c 1)) (contains ?x6))
+
+	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x7))
+
+	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x8))
+
+	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x9))
+
 => 
+
 	(assert 	
+
+		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction north) 
+
+			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+
+			(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+
+			(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
+
+		)
+
+	)
+
+	(focus MAIN)
+
+)
+
+
+
+(defrule percept-south
+
+	(declare (salience 5))
+
+?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction south)) 
+
+	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x1))
+
+	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x2))
+
+	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x3))
+
+	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x4))
+
+	(cell (pos-r ?r)  	(pos-c ?c)  	(contains ?x5))
+
+	(cell (pos-r ?r)  	(pos-c =(- ?c 1)) (contains ?x6))
+
+	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x7))
+
+	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x8))
+
+	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)) (contains ?x9))
+
+=> 
+
+	(assert 	
+
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction south) 
+
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+
 			(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+
 			(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
+
 		)
+
 	)
+
 	(focus MAIN)
+
 )
 
 
 
-(defrule percept-east (declare (salience 5))
-	?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction east)) 
-	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x1))
-	(cell (pos-r ?r)  		(pos-c =(+ ?c 1)) 	(contains ?x2))
-	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x3))
-	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  		(contains ?x4))
-	(cell (pos-r ?r)  		(pos-c ?c)  		(contains ?x5))	
-	(cell (pos-r =(- ?r 1)) (pos-c ?c)  		(contains ?x6))
+(defrule percept-east
+
+	(declare (salience 5))
+
+?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction east)) 
+
+	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x1))
+
+	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x2))
+
+	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x3))
+
+	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x4))
+
+	(cell (pos-r ?r)  	(pos-c ?c)  	(contains ?x5))	
+
+	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x6))
+
 	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1))	(contains ?x7))
-	(cell (pos-r ?r)		(pos-c =(- ?c 1)) 	(contains ?x8))
-	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x9))
-	=> 	
+
+	(cell (pos-r ?r)		(pos-c =(- ?c 1)) (contains ?x8))
+
+	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x9))
+
+=> 	
+
 	(assert 	
+
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction east) 
+
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+
 			(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+
 			(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
+
 		)
+
 	)
+
 	(focus MAIN)
+
 )
 
 
 
-(defrule percept-west (declare (salience 5))
-	?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction west)) 
-	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) 	(contains ?x1))
-	(cell (pos-r ?r)  		(pos-c =(- ?c 1)) 	(contains ?x2))
-	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1))	(contains ?x3))
-	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	  	(contains ?x4))
-	(cell (pos-r ?r)  		(pos-c ?c)  	  	(contains ?x5))
-	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	  	(contains ?x6))
-	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x7))	
-	(cell (pos-r ?r)  		(pos-c =(+ ?c 1)) 	(contains ?x8))	
-	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) 	(contains ?x9))
-	=> 
+(defrule percept-west
+
+	(declare (salience 5))
+
+?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction west)) 
+
+	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x1))
+
+	(cell (pos-r ?r)  	(pos-c =(- ?c 1)) (contains ?x2))
+
+	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)) (contains ?x3))
+
+	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x4))
+
+	(cell (pos-r ?r)  	(pos-c ?c)  	(contains ?x5))
+
+	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x6))
+
+	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x7))	
+
+	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x8))	
+
+	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x9))
+
+=> 
+
 	(assert 	
+
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction west) 
+
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+
 			(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+
 			(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
+
 		)
+
 	)
+
 	(focus MAIN)
+
 )
