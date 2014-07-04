@@ -120,7 +120,7 @@
 ;inizializzazione delle variabili per pianificare con A*
 (defrule init_var (declare (salience 50))
 	(K-agent (step ?st) (pos-r ?r) (pos-c ?c) (direction ?d))
-	(exec (step ?st) (action muovi_a) (pos-r ?r_g) (pos-c ?c_g))
+	(exec (step ?st) (action muovi_a) (pos-r ?r_g) (pos-c ?c_g))	;Da modificare
 	=>
 	(assert
 		(agentstatus_As (step 0) (pos-r ?r) (pos-c ?c) (direction ?d))
