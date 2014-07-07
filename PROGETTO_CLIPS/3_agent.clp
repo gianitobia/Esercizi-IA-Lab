@@ -2,80 +2,67 @@
 
 (defmodule AGENT (import MAIN ?ALL))
 
-
-
-
-
-(deftemplate K-cell  (slot pos-r) (slot pos-c) 
-                   (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser)))
-
-
-
-(deftemplate K-agent
-
-	(slot step)
-        (slot time) 
-
-	(slot pos-r) 
-
+;costruisco una versione del mondo interna mediante l'utilizzo della K-Cell;
+(deftemplate K-cell  
+	(slot pos-r)
 	(slot pos-c) 
-
+    (slot contains (allowed-values
+									Wall
+								 	Person  
+									Empty 
+									Parking 
+									Table 
+									Seat 
+									TrashBasket
+                                    RecyclableBasket 
+									DrinkDispenser 
+									FoodDispenser
+					)
+	)
+)
+;rappresentazione interna dell'agente;
+(deftemplate K-agent
+	(slot step)
+	(slot time)
+	(slot pos-r) 
+	(slot pos-c) 
 	(slot direction) 
-
 	(slot l-drink)
     (slot l-food)
     (slot l_d_waste)
     (slot l_f_waste)
 )
 
-(defrule  beginagent1
-
-    (declare (salience 11))
-
+;prendo le informazioni sul mondo dalle prior-cell dell'ENV e costruisco le K-Cell
+(defrule  beginagent1	(declare (salience 11))
     (status (step 0))
-
     (not (exec (step 0)))
     (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
-
-=>
-
-     (assert (K-cell (pos-r ?r) (pos-c ?c) (contains ?x)))
+	=>
+	(assert (K-cell (pos-r ?r) (pos-c ?c) (contains ?x)))
 )
 
-            
-
-
-
-
-
- 
-(defrule  beginagent2
-
-    (declare (salience 11))
-
+;inizializzo lo stato del K-agent alla posizione di partenza (Parking)
+(defrule  beginagent2	(declare (salience 11))
     (status (step 0))
-
     (not (exec (step 0)))
     (initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
-=> 
+	=> 
     (assert (K-agent (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d)
-                              (l-drink 0) (l-food 0) (l_d_waste no) (l_f_waste no)))
+                     (l-drink 0) (l-food 0) (l_d_waste no) (l_f_waste no)))
 )
 
-
+;l'agente chiede se ci sono delle commesse da compiere (inform)
 (defrule ask_act
+	?f <- (status (step ?i))
+    =>
+	(printout t crlf crlf)
+    (printout t "action to be executed at step:" ?i)
+    (printout t crlf crlf)
+    (modify ?f (result no))
+)
 
- ?f <-   (status (step ?i))
-
-    =>  (printout t crlf crlf)
-
-        (printout t "action to be executed at step:" ?i)
-
-        (printout t crlf crlf)
-
-        (modify ?f (result no)))
-
+;L'agente esegue un azione (Main -> ENV)
 (defrule exec_act
     (status (step ?i))
     (exec (step ?i))
@@ -110,6 +97,7 @@
     (slot pos-c)
 )
 
+;Definizione di uno stato agente, (interna da A*, per simulare il movimento)
 (deftemplate agentstatus_As
 	(slot step)
 	(slot pos-r)
@@ -137,6 +125,8 @@
 
 ;####################### REGOLE DI FINE PIANIFICAZIONE DI MOVIMENTO
 
+;PAINIFICAZIONE -> GOAL RAGGIUNTO -> CONVERSIONE AZIONI IN BASSO LIVELLO 
+
 ;regola che si attiva al raggiungimento del goal
 (defrule achieved-goal (declare (salience 100))
      (current ?id)
@@ -148,9 +138,9 @@
 
 ;stampa la soluzione trovata
 (defrule stampaSol (declare (salience 101))
-	?f<-(stampa ?id)
+	?f <- (stampa ?id)
     (node (ident ?id) (father ?anc&~NA))  
-    (exec ?anc ?id ?oper ?r ?c)
+    (exec_as ?anc ?id ?oper ?r ?c)
 	=> 
 	(printout t ?id " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
 	(assert (azione ?anc ?id ?oper ?r ?c))
@@ -302,7 +292,7 @@
 	(modify ?f2 (open no))
 ) 
 
-;controlla che la lista di open non sia vuota -altrimenti segnala l'errore
+;controlla che la lista di open non sia vuota altrimenti segnala l'errore
 (defrule close-empty	(declare (salience 49))
 	?f1 <- (current ?curr)
 	?f2 <- (node (ident ?curr))
@@ -352,14 +342,14 @@
 	?f2 <- (agentstatus_As (step ?curr) (pos-r ?rig) (pos-c ?col) (direction ?dir))
 	(test (eq ?oper ?dir))
 	=>
-	;(assert (agent-action (step ?curr) (action forward) (direction ?dir) (pos-r ?r) (pos-c ?c)))
-	(assert (exec Forward))
+	;Da cambiare in modo che possa essere compatibile con la il deftamplate del main
+	(assert (exec Forward))	
 	(retract ?f1)
 )
 
 ;definzione metodi di rotazione a destra e sinistra
 ;regola si attiva solo se viene effettuato match tra tutte le
-;possibili rotazioni definiti nella deffact rotations
+;possibili rotazioni definite nella deffact rotations
 (defrule check-rotation (declare (salience 50))
 	;effettuiamo un forward solo quando la direzione dell'operazione e' la medesima
 	;in cui si trova l'agente
@@ -368,17 +358,17 @@
 	(rotation (r_dir ?dir) (m_dir ?oper) (rotazione ?rot))
 	=>
 	(assert (exect ?rot ?oper))
-	;(assert (agent-action (step ?curr) (action turn) (direction ?rot) (pos-r ?r) (pos-c ?c)))
 	;esegui una rotazione ?rot (destra o sinitra) per arrivare (o avvicinarci)
 	;alla direzione ?oper dell'operazione da effettuare
 )
 
+;Modificare in modo da comunicare che si faccia una (exec ...) di tipo turn
 (defrule exec-rotation (declare (salience 50))
 	?f1 <- (exect ?rot ?oper)
 	?f2 <- (agentstatus_As (step ?curr) (direction ?dir))
 	(rotation (r_dir ?dir) (m_dir ?oper) (rotazione ?rot) (dir_f ?turn))
 	=>
-	(printout t " Rotation " ?rot crlf)
+	(printout t " Rotation " ?rot crlf)	;MODIFICARE QUI
 	(modify ?f2 (direction ?turn))
 	(retract ?f1)
 )
