@@ -92,9 +92,7 @@
 
 
 
-(defrule forward-west-bump 
-
-	(declare (salience 20))    
+(defrule forward-west-bump 	(declare (salience 20))    
 
 ?f2<-	(status (step ?i) (time ?t)) 
 
