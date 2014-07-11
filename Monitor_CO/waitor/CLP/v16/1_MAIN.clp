@@ -38,6 +38,22 @@
            (slot type (allowed-values order finish))
            (slot  drink-order)
            (slot food-order))
+		   
+%esempio di stampa sulla gui
+%verbosity e' un campo che determina la rilevanza di un messaggio
+%(assert (printGUI .... (text "Numero di ordini: %p1") (param1 ?orders)))
+(deftemplate printGUI
+	(slot time (default ?NONE))
+	(slot step (default ?NONE))
+	(slot source (type STRING) (default ?NONE))
+	(slot verbosity (type INTEGER) (allowed-integers 0 1 2) (default 0))
+	(slot text (type STRING))
+	(slot param1 (default ""))
+	(slot param2 (default ""))
+	(slot param3 (default ""))
+	(slot param4 (default ""))
+	(slot param5 (default ""))
+)
 
         
 (deftemplate status (slot step) (slot time) (slot result))  ;//struttura interna
