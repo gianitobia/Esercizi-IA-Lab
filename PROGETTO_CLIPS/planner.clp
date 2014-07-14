@@ -3,7 +3,24 @@
 ;che l'agente dovra' fare eseguire per arrivare ad un dato goal
 (defmodule PLANNER (import AGENT ?ALL) (export ?ALL))
 
+;Definizone del template per le azioni pieanificate
+(deftemplate planned-action
+	(slot step)
+	(slot action)		;azioni da far effettuare al robot
+	(slot pos_r)		;riga da dove viene effettuata l'azione 
+	(slot pos_c) 		;colonna da dove si effettua l'azione
+)
 
+;definizione del template per i goal a cui bisogna arrivare
+;possiamo definire dei goal a vari livelli di astrazione
+;piu' il valore e' alto piu' l'azione e' specifica
+(deftemplate planned-goal
+	(slot level)
+	(slot ordine)		;0 -> N; successione di passi ad uno stesso livello di astrazione
+	(slot action)		;tipo di azione richiesta dal goal
+	(slot pos_r)		;riga della posizione finale del robot
+	(slot pos_c) 		;colonna della posione finale del robot
+)
 
 
 
@@ -361,11 +378,146 @@
 ;Modulo per la conversione tra azioni di generiche di A* --> (planned-action) 
 (defmodule CONVERT (import CALC_PATH ?ALL) (export ?ALL))
 
+;Definizione della base di conoscenza per le rotazioni
+(deftemplate rotation
+	(slot r_dir)
+	(slot m_dir)
+	(slot rotazione)
+	(slot dir_f)	
+	(slot action)			;azione da comunicare al robot;
+)
+
+(deffacts rotations
+	;rotazione da un stato del robot UP;
+	(rotation (r_dir north) (m_dir west) (rotazione west) (dir_f west) (action Turnleft))
+	(rotation (r_dir north) (m_dir east) (rotazione east) (dir_f east) (action Turnright))
+	(rotation (r_dir north) (m_dir south) (rotazione west) (dir_f west) (action Turnleft))
+	;rotazione da uno stato del robot RIGHT;
+	(rotation (r_dir east) (m_dir north) (rotazione west) (dir_f north) (action Turnleft))
+	(rotation (r_dir east) (m_dir south) (rotazione east) (dir_f south) (action Turnright))
+	(rotation (r_dir east) (m_dir west) (rotazione west) (dir_f north) (action Turnleft))
+	;rotazione da uno stato del robot DOWN;
+	(rotation (r_dir south) (m_dir east) (rotazione west) (dir_f east) (action Turnleft))
+	(rotation (r_dir south) (m_dir west) (rotazione east) (dir_f west) (action Turnright))
+	(rotation (r_dir south) (m_dir north) (rotazione east) (dir_f west) (action Turnright))
+	;rotazione da uno stato del robot LEFT;
+	(rotation (r_dir west) (m_dir north) (rotazione east) (dir_f north) (action Turnright))
+	(rotation (r_dir west) (m_dir south) (rotazione west) (dir_f south) (action Turnleft))
+	(rotation (r_dir west) (m_dir east) (rotazione east) (dir_f north) (action Turnright))
+)
+
+;regole per pianificare un forward
+
+;regole per modificare la rappresentazione interna dell'agent per il movimento
+;converto in forward verso SU
+(defrule exec-forward-nord	(declare (salience 60))
+	?f1 <- (convert-action ?anc ?id north ?r ?c)
+	?f2 <- (agentstatus_As (step ?curr) (pos-r ?rig) (pos-c ?col) (direction north))
+	=>
+	(printout t " forward NORD " crlf)
+	(modify ?f2 (step =(+ ?curr 1)) (pos-r =(+ ?rig 1)))
+	(assert 
+			(planned-action 
+					(step ?curr) 
+					(action Forward)
+					(pos_r ?rig)
+					(pos_c ?col)  
+			)
+	)
+	(retract ?f1)
+	(pop-focus)
+)
+
+
+;converto in forward verso destra
+(defrule exec-forward-east	(declare (salience 60))
+	?f1 <- (convert-action ?anc ?id east ?r ?c)
+	?f2 <- (agentstatus_As (step ?curr) (pos-r ?rig) (pos-c ?col) (direction east))
+	=>
+	(printout t " forward EAST " crlf)
+	(modify ?f2 (step =(+ ?curr 1)) (pos-c =(+ ?col 1)))
+	(assert 
+			(planned-action
+					(step ?curr)
+					(action Forward)
+					(pos_r ?rig)
+					(pos_c ?col)
+			)
+	)
+	(retract ?f1)
+	(pop-focus)
+)
+
+
+;converto in forward verso giu
+(defrule exec-forward-south	 (declare (salience 60))
+	?f1 <- (convert-action ?anc ?id south ?r ?c)
+	?f2 <- (agentstatus_As (step ?curr) (pos-r ?rig) (pos-c ?col) (direction south))
+	=>
+	(printout t " forward SOUTH " crlf)
+	(modify ?f2 (step =(+ ?curr 1)) (pos-r =(- ?rig 1)))
+	(assert 
+			(planned-action
+					(step ?curr)
+					(action Forward)
+					(pos_r ?rig)
+					(pos_c ?col)
+			)
+	)
+	(retract ?f1)
+	(pop-focus)
+)
+
+
+;converto in forward verso giu
+(defrule exec-forward-west	 (declare (salience 60))
+	?f1 <- (convert-action ?anc ?id west ?r ?c)
+	?f2 <- (agentstatus_As (step ?curr) (pos-r ?rig) (pos-c ?col) (direction west))
+	=>
+	(printout t " forward WEST " crlf)
+	(modify ?f2 (step =(+ ?curr 1)) (pos-c =(- ?col 1)))
+	(assert 
+			(planned-action
+					(step ?curr)
+					(action Forward)
+					(pos_r ?rig)
+					(pos_c ?col)
+			)
+	)
+	(retract ?f1)
+	(pop-focus)
+)
+
+;definzione metodi di rotazione a destra e sinistra
+;regola si attiva solo se viene effettuato match tra tutte le
+;possibili rotazioni definite nella deffact rotations
+(defrule exec-rotation (declare (salience 50))
+	;effettuiamo un forward solo quando la direzione dell'operazione e' la medesima
+	;in cui si trova l'agente
+	?f1 <- (convert-action ?anc ?id ?oper ?r ?c)
+	?f2 <- (agentstatus_As (step ?curr) (direction ?dir))
+	(rotation (r_dir ?dir) (m_dir ?oper) (rotazione ?rot) (dir_f ?turn) (action ?act))
+	=>
+	(printout t " Rotation " ?act crlf)
+	(modify ?f2 (step =(+ ?curr 1)) (direction ?turn))
+	(assert 
+			(planned-action
+					(step ?curr)
+					(action ?act)
+					(pos_r ?rig)
+					(pos_c ?col)
+			)
+	)
+	;esegui una rotazione ?rot (destra o sinitra) per arrivare (o avvicinarci)
+	;alla direzione ?oper dell'operazione da effettuare
+)
 
 
 
 
-;=============================================================================================
+;===========================================================================================================================
+;===========================================================================================================================
+;===========================================================================================================================
 ;Modulo per la cancellazione di tutti i fatti relativi ad un planning gia' eseguito o fallito
 (defmodule DEL_PLANNER (import PLANNER ?ALL) (export ?ALL))
 
