@@ -1,81 +1,19 @@
-;// AGENT
+;// PLANNER
+;Questo modulo si occupa di pianificare le azioni
+;che l'agente dovra' fare eseguire per arrivare ad un dato goal
+(defmodule PLANNER (import AGENT ?ALL) (export ?ALL))
 
-(defmodule AGENT (import MAIN ?ALL))
 
-;costruisco una versione del mondo interna mediante l'utilizzo della K-Cell;
-(deftemplate K-cell  
-	(slot pos-r)
-	(slot pos-c) 
-    (slot contains (allowed-values
-									Wall
-								 	Person  
-									Empty 
-									Parking 
-									Table 
-									Seat 
-									TrashBasket
-                                    RecyclableBasket 
-									DrinkDispenser 
-									FoodDispenser
-					)
-	)
-)
-;rappresentazione interna dell'agente;
-(deftemplate K-agent
-	(slot step)
-	(slot time)
-	(slot pos-r) 
-	(slot pos-c) 
-	(slot direction) 
-	(slot l-drink)
-    (slot l-food)
-    (slot l_d_waste)
-    (slot l_f_waste)
-)
 
-;prendo le informazioni sul mondo dalle prior-cell dell'ENV e costruisco le K-Cell
-(defrule  beginagent1	(declare (salience 11))
-    (status (step 0))
-    (not (exec (step 0)))
-    (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
-	=>
-	(assert (K-cell (pos-r ?r) (pos-c ?c) (contains ?x)))
-)
 
-;inizializzo lo stato del K-agent alla posizione di partenza (Parking)
-(defrule  beginagent2	(declare (salience 11))
-    (status (step 0))
-    (not (exec (step 0)))
-    (initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
-	=> 
-    (assert (K-agent (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d)
-                     (l-drink 0) (l-food 0) (l_d_waste no) (l_f_waste no)))
-)
 
-;l'agente chiede se ci sono delle commesse da compiere (inform)
-(defrule ask_act
-	?f <- (status (step ?i))
-    =>
-	(printout t crlf crlf)
-    (printout t "action to be executed at step:" ?i)
-    (printout t crlf crlf)
-    (modify ?f (result no))
-)
 
-;L'agente esegue un azione (Main -> ENV)
-(defrule exec_act
-    (status (step ?i))
-    (exec (step ?i))
- 	=> (focus MAIN)
- )
-
-;(defrule calculate_route
-;	(status (step ?i))
-;	(exec )
-;)
-
-;Definizione del modulo per il calcolo del percorso mediante l'utilizzo di A*
-(defmodule CALC_MOVES (import AGENT ?ALL)(export ?ALL))
+;===========================================================================================================================
+;===========================================================================================================================
+;===========================================================================================================================
+;Modulo per il calcolo del percorso mediante l'utilizzo di A*
+;PAINIFICAZIONE -> AZIONI PER GOAL -> CONVERSIONE AZIONI IN BASSO LIVELLO
+(defmodule CALC_PATH (import PLANNER ?ALL) (export ?ALL))
 
 ;definizione dei template necessarie per le strutture di A*
 (deftemplate node
@@ -108,11 +46,9 @@
 ;inizializzazione delle variabili per pianificare con A*
 (defrule init_var (declare (salience 50))
 	(K-agent (step ?st) (pos-r ?r) (pos-c ?c) (direction ?d))
-	(exec (step ?st) (action muovi_a) (pos-r ?r_g) (pos-c ?c_g))	;Da modificare
 	=>
 	(assert
 		(agentstatus_As (step 0) (pos-r ?r) (pos-c ?c) (direction ?d))
-		(goal ?r_g ?c_g)
         (node (ident 0) (gcost 0) (fcost 0) (father NA) (pos-r ?r) (pos-c ?c) (open yes)) 
         (current 0)
         (lastnode 0)
@@ -123,9 +59,10 @@
 	)
 )
 
-;####################### REGOLE DI FINE PIANIFICAZIONE DI MOVIMENTO
 
-;PAINIFICAZIONE -> GOAL RAGGIUNTO -> CONVERSIONE AZIONI IN BASSO LIVELLO 
+;############################################################
+;######   REGOLE DI FINE PIANIFICAZIONE DI MOVIMENTO   ######
+;############################################################
 
 ;regola che si attiva al raggiungimento del goal
 (defrule achieved-goal (declare (salience 100))
@@ -171,6 +108,7 @@
 	(retract ?f1)
 )
 
+;Avvio la conversione delle azioni in (planned-action)
 (defrule convert-solution (declare (salience 99))
 	?f <- (azione ?anc ?id ?oper ?r ?c)
 	=>
@@ -180,11 +118,13 @@
 	(retract ?f)
 )
 
-;############# REGOLE DI MOVIMENTO ###########################################
+;############################################################
+;###########         REGOLE DI MOVIMENTO         ############
+;############################################################
 
-;##########	OPERAZIONE VERSO SU
 
-;regola che controlla se e' fattibile fare una operazione di movimento vero su
+;OPERAZIONI VERSO SU
+;regola che controlla se e' possibile fare una operazione di movimento verso su
 (defrule up-apply	(declare (salience 50))
     (current ?curr)
     (node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
@@ -201,16 +141,25 @@
     (node (ident ?curr) (gcost ?g))
     (goal ?x ?y)
  	=>
-	(assert (exec_as ?curr (+ ?n 1) north ?r ?c)
-	(newnode (ident (+ ?n 1)) (pos-r (+ ?r 1)) (pos-c ?c) (gcost (+ ?g 1)) (fcost (+ (abs (- ?x (+ ?r 1))) (abs (- ?y ?c)) ?g 1))
-	(father ?curr)))
+	(assert 
+		(exec_as ?curr (+ ?n 1) north ?r ?c)
+		(newnode 	
+				(ident (+ ?n 1)) 
+				(pos-r (+ ?r 1)) 
+				(pos-c ?c) 
+				(gcost (+ ?g 1)) 
+				(fcost (+ (abs (- ?x (+ ?r 1))) (abs (- ?y ?c)) ?g 1))  ;distanza L1
+				(father ?curr)
+		)
+	)
   	(retract ?f1)
   	(focus NEW)
 )
 
-;##########	OPERAZIONE VERSO GIU'
 
-(defrule down-apply		(declare (salience 50))
+;##########	OPERAZIONE VERSO GIU'
+;regola che controlla se e' possibile fare una operazione di movimento verso giu'
+(defrule down-apply	  (declare (salience 50))
     (current ?curr)
     (node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
     (K-cell (pos-r =(- ?r 1)) (pos-c ?c) (contains Empty|Parking))
@@ -225,15 +174,24 @@
     (node (ident ?curr) (gcost ?g))
     (goal ?x ?y)
  	=>
-	(assert (exec_as ?curr (+ ?n 2) south ?r ?c)
-	(newnode (ident (+ ?n 2)) (pos-r (- ?r 1)) (pos-c ?c) (gcost (+ ?g 1)) (fcost (+ (abs (- ?x (- ?r 1))) (abs (- ?y ?c)) ?g 1))
-    (father ?curr)))
+	(assert 
+		(exec_as ?curr (+ ?n 2) south ?r ?c)
+		(newnode 
+			(ident (+ ?n 2))
+			(pos-r (- ?r 1)) 
+			(pos-c ?c) 
+			(gcost (+ ?g 1)) 
+			(fcost (+ (abs (- ?x (- ?r 1))) (abs (- ?y ?c)) ?g 1))	;distanza L1
+    		(father ?curr)
+		)
+	)
 	(retract ?f1)
   	(focus NEW)
 )
 
-;##########	OPERAZIONE VERSO DESTRA
 
+;##########	OPERAZIONE VERSO DESTRA
+;regola che controlla se e' possibile fare una operazione di movimento verso destra
 (defrule right-apply	(declare (salience 50))
     (current ?curr)
     (node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
@@ -249,15 +207,24 @@
     (node (ident ?curr) (gcost ?g))
     (goal ?x ?y)
  	=>
-	(assert (exec_as ?curr (+ ?n 3) east ?r ?c)
-    (newnode (ident (+ ?n 3)) (pos-c (+ ?c 1)) (pos-r ?r) (gcost (+ ?g 1)) (fcost (+ (abs (- ?y (+ ?c 1))) (abs (- ?x ?r)) ?g 1))
-    (father ?curr)))
+	(assert 
+		(exec_as ?curr (+ ?n 3) east ?r ?c)
+    	(newnode 
+			(ident (+ ?n 3)) 
+			(pos-c (+ ?c 1)) 
+			(pos-r ?r) 
+			(gcost (+ ?g 1)) 
+			(fcost (+ (abs (- ?y (+ ?c 1))) (abs (- ?x ?r)) ?g 1))	;distanza L1
+    		(father ?curr)
+		)
+	)
     (retract ?f1)
     (focus NEW)
 )
 
-;##########	OPERAZIONE VERSO SINISTRA
 
+;##########	OPERAZIONE VERSO SINISTRA
+;regola che controlla se e' possibile fare una operazione di movimento verso sinistra
 (defrule left-apply		(declare (salience 50))
     (current ?curr)
     (node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
@@ -273,14 +240,25 @@
     (node (ident ?curr) (gcost ?g))
     (goal ?x ?y)
  	=>
-	(assert (exec_as ?curr (+ ?n 4) west ?r ?c)
-	(newnode (ident (+ ?n 4)) (pos-c (- ?c 1)) (pos-r ?r) (gcost (+ ?g 1)) (fcost (+ (abs (- ?y (- ?c 1))) (abs (- ?x ?r)) ?g 1))
-    (father ?curr)))
+	(assert 
+		(exec_as ?curr (+ ?n 4) west ?r ?c)
+		(newnode 
+			(ident (+ ?n 4)) 
+			(pos-c (- ?c 1)) 
+			(pos-r ?r) 
+			(gcost (+ ?g 1)) 
+			(fcost (+ (abs (- ?y (- ?c 1))) 
+			(abs (- ?x ?r)) ?g 1))
+    		(father ?curr)
+		)
+	)
   	(retract ?f1)
   	(focus NEW)
 )
 
-;##########################################################################################
+;############################################################
+;###########      REGOLE DI SELEZIONE NODO       ############
+;############################################################
 
 ;Regola per selezionare il nodo piu' promettente in termini di costo (g+h) anche da livelli precedendi del grafo
 (defrule change-current		(declare (salience 49))
@@ -293,7 +271,7 @@
 	(assert (current ?best) (lastnode (+ ?last 5)))	;Branching factor + 1 perche' inpila gli stati :D
 	(retract ?f1 ?f3)
 	(modify ?f2 (open no))
-) 
+)
 
 ;controlla che la lista di open non sia vuota altrimenti segnala l'errore
 (defrule close-empty	(declare (salience 49))
@@ -306,83 +284,20 @@
 	(retract ?f1)
 	(modify ?f2 (open no))
 	(printout t " fail (last  node expanded " ?curr ")" crlf)
-	(halt)
+	(halt)		;da modifcare per evitare che si blocchi il programma
 )
 
-;################ MODULO CONVERT A* -> AGENT OPERATIONS
-(defmodule CONVERT (import CALC_MOVES ?ALL) (export ?ALL))
 
-(deftemplate rotation
-	(slot r_dir)
-	(slot m_dir)
-	(slot rotazione)
-	(slot dir_f)
-	(slot action)
-)
 
-(deffacts rotations
-	;rotazione da un stato del robot UP;
-	(rotation (r_dir north) (m_dir west) (rotazione west) (dir_f west) (action Turnleft))
-	(rotation (r_dir north) (m_dir east) (rotazione east) (dir_f east) (action Turnright))
-	(rotation (r_dir north) (m_dir south) (rotazione west) (dir_f west) (action Turnleft))
-	;rotazione da uno stato del robot RIGHT;
-	(rotation (r_dir east) (m_dir north) (rotazione west) (dir_f north) (action Turnleft))
-	(rotation (r_dir east) (m_dir south) (rotazione east) (dir_f south) (action Turnright))
-	(rotation (r_dir east) (m_dir west) (rotazione west) (dir_f north) (action Turnleft))
-	;rotazione da uno stato del robot DOWN;
-	(rotation (r_dir south) (m_dir east) (rotazione west) (dir_f east) (action Turnleft))
-	(rotation (r_dir south) (m_dir west) (rotazione east) (dir_f west) (action Turnright))
-	(rotation (r_dir south) (m_dir north) (rotazione east) (dir_f west) (action Turnright))
-	;rotazione da uno stato del robot LEFT;
-	(rotation (r_dir west) (m_dir north) (rotazione east) (dir_f north) (action Turnright))
-	(rotation (r_dir west) (m_dir south) (rotazione west) (dir_f south) (action Turnleft))
-	(rotation (r_dir west) (m_dir east) (rotazione east) (dir_f north) (action Turnright))
-)
 
-(defrule check-forward (declare (salience 50))
-	;effettuiamo un forward solo quando la direzione dell'operazione e' la medesima
-	;in cui si trova l'agente
-	(status (step ?i) (time ?t))
-	?f1 <- (convert-action ?anc ?id ?oper ?r ?c)
-	?f2 <- (agentstatus_As (step ?curr) (pos-r ?rig) (pos-c ?col) (direction ?dir))
-	(test (eq ?oper ?dir))
-	=>
-	;Da cambiare in modo che possa essere compatibile con la il deftamplate del main
-	(assert (exec (step ?i) (action Forward))
-	(retract ?f1)
-)
+;===========================================================================================================================
+;===========================================================================================================================
+;===========================================================================================================================
+;Modulo per la generazione di nuovi nodi di A* e la gestione del miglior nodo current
+(defmodule NEW (import CALC_PATH ?ALL) (export ?ALL))
 
-;definzione metodi di rotazione a destra e sinistra
-;regola si attiva solo se viene effettuato match tra tutte le
-;possibili rotazioni definite nella deffact rotations
-(defrule check-rotation (declare (salience 50))
-	;effettuiamo un forward solo quando la direzione dell'operazione e' la medesima
-	;in cui si trova l'agente
-	?f1 <- (convert-action ?anc ?id ?oper ?r ?c)
-	?f2 <- (agentstatus_As (step ?curr) (direction ?dir))
-	(rotation (r_dir ?dir) (m_dir ?oper) (rotazione ?rot))
-	=>
-	(assert (exect ?rot ?oper))
-	;esegui una rotazione ?rot (destra o sinitra) per arrivare (o avvicinarci)
-	;alla direzione ?oper dell'operazione da effettuare
-)
-
-;Modificare in modo da comunicare che si faccia una (exec ...) di tipo turn
-(defrule exec-rotation (declare (salience 50))
-	?f1 <- (exect ?rot ?oper)
-	?f2 <- (agentstatus_As (step ?curr) (direction ?dir))
-	(rotation (r_dir ?dir) (m_dir ?oper) (rotazione ?rot) (dir_f ?turn))
-	=>
-	(printout t " Rotation " ?rot crlf)	;MODIFICARE QUI
-	(modify ?f2 (direction ?turn))
-	(retract ?f1)
-)
-
-;################ MODULO NEW ################################################################
-
-(defmodule NEW (import AGENT ?ALL) (export ?ALL))
-
-;;;;;;;;;CHIEDERE AL PROF XKE NON RICONTROLLA IL COSTO TRA I NODI IN CLODED per riaprirli????
+;Non vengono ricontrollati i nodi in CLOSED(gia' esplorati) xke la funzione distanza che
+;utilizziamo e` monotona e quindi non succedera' di doverli riaprirli;
 (defrule check-closed (declare (salience 50))
 	?f1 <- (newnode (ident ?id) (pos-r ?r) (pos-c ?c))
 	(node (ident ?old) (pos-r ?r) (pos-c ?c) (open no))
@@ -393,6 +308,7 @@
 	(retract ?f2)
 	(pop-focus)
 )
+
 
 ;Il nodo che sto provando a generare negli open ha un costo f(x) maggiore di un uguale
 ;gia' presente nella lista di open
@@ -408,6 +324,7 @@
 	(pop-focus)
 )
 
+
 ;il nodo che sto genereando ha un costo f(x) inferiore al quello di uno uguale
 ;gia' presente in open
 (defrule check-open-better (declare (salience 50))
@@ -422,8 +339,8 @@
 	(pop-focus)
 )
 
-;Aggiunge un nuovo nodo da esplorare alla lista di open
-;elimanando i fatti temporanei di (newnode)
+
+;Aggiunge un nuovo nodo da esplorare alla lista di open elimanando i fatti temporanei di (newnode)
 (defrule add-open
 	(declare (salience 49))
 	?f1 <- (newnode (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g) (fcost ?f)(father ?anc))
@@ -436,4 +353,19 @@
 )
 
 
+
+
+;===========================================================================================================================
+;===========================================================================================================================
+;===========================================================================================================================
+;Modulo per la conversione tra azioni di generiche di A* --> (planned-action) 
+(defmodule CONVERT (import CALC_PATH ?ALL) (export ?ALL))
+
+
+
+
+
+;=============================================================================================
+;Modulo per la cancellazione di tutti i fatti relativi ad un planning gia' eseguito o fallito
+(defmodule DEL_PLANNER (import PLANNER ?ALL) (export ?ALL))
 

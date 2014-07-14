@@ -206,6 +206,7 @@ public class MonitorView extends ClipsView implements Observer {
 
         for (int i = x - 1; i >= 0; i--) {
             for (int j = 0; j < y; j++) {
+                System.out.print(map_img.get(mapString[i][j]) + "  ");
                 ImageIcon icon = new ImageIcon("img" + File.separator + map_img.get(mapString[i][j])); //Sfrutta la HashTable per trovare l'immagine correlata al nome
                 Image image = icon.getImage().getScaledInstance(cellDimension, cellDimension, Image.SCALE_SMOOTH);
                 icon = new ImageIcon(image);
@@ -213,6 +214,7 @@ public class MonitorView extends ClipsView implements Observer {
                 map[i][j].setToolTipText("(" + (i + 1) + ", " + (j + 1) + ")");
                 mapPanel.add(map[i][j]);
             }
+            System.out.println();
         }
         view.add(mapPanelContainer, BorderLayout.SOUTH);
 
