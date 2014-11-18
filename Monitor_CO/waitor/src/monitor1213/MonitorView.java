@@ -84,14 +84,12 @@ public class MonitorView extends ClipsView implements Observer {
         //Per l'agente, il primo campo deve essere di tipo agent_<direction>
         //Dove <direction> è il valore del campo preso da CLIPS.
         map_img_robot = new HashMap<>();
-        try{
+        try {
             map_img_robot.put("agent_east", ImageIO.read(new File("img" + File.separator + "agent_east.png")));
             map_img_robot.put("agent_west", ImageIO.read(new File("img" + File.separator + "agent_west.png")));
             map_img_robot.put("agent_north", ImageIO.read(new File("img" + File.separator + "agent_north.png")));
             map_img_robot.put("agent_south", ImageIO.read(new File("img" + File.separator + "agent_south.png")));
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         //Per gestire le persone. Non vengono sovrapposte, sono vere e proprie celle
@@ -206,15 +204,6 @@ public class MonitorView extends ClipsView implements Observer {
         //Inserisce in ogni elemento del grid la corretta immagine.
         for (int i = x - 1; i >= 0; i--) {
             for (int j = 0; j < y; j++) {
-<<<<<<< HEAD
-                System.out.print(map_img.get(mapString[i][j]) + "  ");
-                ImageIcon icon = new ImageIcon("img" + File.separator + map_img.get(mapString[i][j])); //Sfrutta la HashTable per trovare l'immagine correlata al nome
-                Image image = icon.getImage().getScaledInstance(cellDimension, cellDimension, Image.SCALE_SMOOTH);
-                icon = new ImageIcon(image);
-                map[i][j] = new JLabel(icon);
-                map[i][j].setToolTipText("(" + (i + 1) + ", " + (j + 1) + ")");
-                mapPanel.add(map[i][j]);
-=======
                 ImageIcon icon = map_img.get(mapString[i][j]); //Sfrutta la HashTable per trovare l'immagine correlata al nome
                 if (icon != null) {
                     Image image = icon.getImage().getScaledInstance(cellDimension, cellDimension, Image.SCALE_SMOOTH);
@@ -226,7 +215,6 @@ public class MonitorView extends ClipsView implements Observer {
                     map[i][j] = new JLabel(icon);
                     mapPanel.add(map[i][j]);
                 }
->>>>>>> FETCH_HEAD
             }
             System.out.println();
         }
@@ -270,7 +258,7 @@ public class MonitorView extends ClipsView implements Observer {
                     // ...nel, caso prosegue dal 6° carattere in poi.
 
                     background = imageIcon2Buffered(map_img.get(mapString[i][j].substring(6, mapString[i][j].length())));
-                    robot = map_img_robot.get("agent_"+direction);
+                    robot = map_img_robot.get("agent_" + direction);
 
                     icon = overlapImages(robot, background);
 
