@@ -41,6 +41,11 @@ public class Finestra extends javax.swing.JFrame {
         scenePanel.setBackground(new java.awt.Color(255, 255, 255));
         scenePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         scenePanel.setPreferredSize(new java.awt.Dimension(1000, 720));
+        scenePanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                scenePanelMouseDragged(evt);
+            }
+        });
         scenePanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 scenePanelMouseClicked(evt);
@@ -92,6 +97,16 @@ public class Finestra extends javax.swing.JFrame {
         scenePanel.click(x, y, state);
     }//GEN-LAST:event_scenePanelMouseClicked
 
+    private void scenePanelMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_scenePanelMouseDragged
+        //ottento dal menuPanel lo state impostato dai radiobutton di scelta
+        int state = menuPanel.getState();
+
+        //ottengo le coordinate del click e le passo allo scenePanel
+        int x = (int) evt.getPoint().getX();
+        int y = (int) evt.getPoint().getY();
+        scenePanel.click(x, y, state);
+    }//GEN-LAST:event_scenePanelMouseDragged
+
     /**
      * @param args the command line arguments
      */
@@ -99,7 +114,7 @@ public class Finestra extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
