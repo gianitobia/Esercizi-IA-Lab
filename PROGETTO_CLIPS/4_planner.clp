@@ -22,6 +22,7 @@
 	(slot pos_c) 		;colonna della posione finale del robot
 )
 
+;bisogna modificare da planned-goal -> goal
 
 
 
@@ -75,7 +76,6 @@
         (numberofnodes 0)
 	)
 )
-
 
 ;############################################################
 ;######   REGOLE DI FINE PIANIFICAZIONE DI MOVIMENTO   ######
