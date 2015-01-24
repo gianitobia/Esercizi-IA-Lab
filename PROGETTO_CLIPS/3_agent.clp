@@ -1,6 +1,7 @@
 ;// AGENT
 
-(defmodule AGENT (import MAIN ?ALL))
+(defmodule AGENT (import MAIN ?ALL)(export ?ALL))
+
 
 (deftemplate K-cell
 	(slot pos-r) 
@@ -33,7 +34,8 @@
     (slot l_f_waste)
 )
 
-(defrule beginagent1	(declare (salience 11))
+(defrule  beginagent1
+    (declare (salience 11))
     (status (step 0))
     (not (exec (step 0)))
     (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
