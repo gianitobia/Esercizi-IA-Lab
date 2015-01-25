@@ -34,20 +34,20 @@ public class Scene {
     //largezza e altezza finestra
     float w_width, w_height;
 
-    //matrice fondamentale rappresentante la scena 
+    //matrice fondamentale rappresentante la scena
     int[][] scene;
 
     //percentuale della finestra che viene occupata dalla scena
     int perc;
 
-    //array di immagini da disegnare sulla scena sono nello stesso ordine dello 
-    //schema di valori della scena però traslato di -1 visto che per le celle 
+    //array di immagini da disegnare sulla scena sono nello stesso ordine dello
+    //schema di valori della scena però traslato di -1 visto che per le celle
     //empty non bisogna disegnare nulla
-    //cioè in 0 c'è wall (1), in 1 c'è seat (2), e cosi via 
+    //cioè in 0 c'è wall (1), in 1 c'è seat (2), e cosi via
     BufferedImage[] images;
 
     public Scene() {
-        
+
     }
 
     public Scene(int num_x, int num_y, float w_width, float w_height) {
@@ -81,7 +81,7 @@ public class Scene {
     }
 
     public void drawScene(Graphics2D g) {
-        //calcolo le coordinate di inizio della scena partendo a disegnare 
+        //calcolo le coordinate di inizio della scena partendo a disegnare
         //dall'angolo in alto a sinistra della nostra scena
         float x0 = (w_width - c_width * num_x) / 2;
         float y0 = (w_height - c_height * num_y) / 2;
@@ -91,7 +91,7 @@ public class Scene {
         //doppio ciclo sulla matrice
         for (int i = 0; i < scene.length; i++) {
             for (int j = 0; j < scene[i].length; j++) {
-                //calcolo la posizione x,y dell'angolo in alto a sinistra della 
+                //calcolo la posizione x,y dell'angolo in alto a sinistra della
                 //cella corrente
                 int x = (int) (x0 + i * c_width);
                 int y = (int) (y0 + j * c_height);
@@ -305,9 +305,9 @@ public class Scene {
     public void setCella(int x, int y, int value) {
         scene[x][y] = value;
     }
-    
-    public void setSizeScreen(float w_width, float w_height){
-        this.w_height=w_height;
+
+    public void setSizeScreen(float w_width, float w_height) {
+        this.w_height = w_height;
         this.w_width = w_width;
     }
 }

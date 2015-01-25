@@ -42,10 +42,8 @@
                           <Component id="jLabel3" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="nomeFileField" alignment="1" max="32767" attributes="0"/>
-                              <Group type="103" alignment="2" groupAlignment="2" attributes="0">
-                                  <Component id="exportButton" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="loadButton" alignment="2" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="exportButton" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="loadButton" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace pref="39" max="-2" attributes="0"/>

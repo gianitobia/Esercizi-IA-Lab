@@ -269,7 +269,7 @@ public class MenuPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_num_col_fieldActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-        //leggo le nuove dimensioni della scena e le comunico al metodo 
+        //leggo le nuove dimensioni della scena e le comunico al metodo
         //resizeScene che si preoccuperà di ridimensionare la matrice mantenendo
         // i vecchi dati all'interno
         int num_row = Integer.parseInt(num_row_field.getText());
@@ -328,7 +328,7 @@ public class MenuPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_parkingButtonActionPerformed
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
-        
+
     }//GEN-LAST:event_loadButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -352,6 +352,7 @@ public class MenuPanel extends javax.swing.JPanel {
     private javax.swing.JButton updateButton;
     private javax.swing.JRadioButton wallButton;
     // End of variables declaration//GEN-END:variables
+
     void init(ScenePanel scenePanel) {
         this.scenePanel = scenePanel;
     }
