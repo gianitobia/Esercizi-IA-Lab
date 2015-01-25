@@ -40,8 +40,8 @@ public class MenuPannello extends JPanel {
     private JFileChooser fc;
     private JFileChooser save_fc;
 
-    //variabile che tiene in memoria lo stato di selezione dei radiobutton per 
-    //capire il significato dei numeri memorizzati all'interno vedere a inizio 
+    //variabile che tiene in memoria lo stato di selezione dei radiobutton per
+    //capire il significato dei numeri memorizzati all'interno vedere a inizio
     //file scene
     private int state;
     private Component frame;
@@ -58,7 +58,8 @@ public class MenuPannello extends JPanel {
 
         save_fc = new JFileChooser();
         save_fc.setCurrentDirectory(new File("./"));
-        save_fc.setFileFilter(new CLIPSFilter());
+        //save_fc.setFileFilter(new CLIPSFilter());
+        save_fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         jLabel1 = new javax.swing.JLabel();
         num_row_field = new javax.swing.JTextField();
@@ -321,7 +322,7 @@ public class MenuPannello extends JPanel {
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //controllo che l'input sia intero
-        //leggo le nuove dimensioni della scena e le comunico al metodo 
+        //leggo le nuove dimensioni della scena e le comunico al metodo
         //resizeScene che si preoccuperà di ridimensionare la matrice mantenendo
         // i vecchi dati all'interno
         try {
@@ -374,7 +375,6 @@ public class MenuPannello extends JPanel {
     private void parkingButtonActionPerformed(java.awt.event.ActionEvent evt) {
         setState(9);
     }
-
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
         int returnVal = save_fc.showOpenDialog(this);
