@@ -63,6 +63,8 @@
 	(slot food)
         (slot drink)
 )
+
+
 ;// DEFRULE
 ;//imposta il valore iniziale di ciascuna cella 
 (defrule creation1	
