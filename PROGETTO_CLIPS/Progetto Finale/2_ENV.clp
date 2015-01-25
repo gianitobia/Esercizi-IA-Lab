@@ -24,45 +24,54 @@
 	(slot table-id)
 	(slot clean (allowed-values yes no))
 	(slot l-drink)
-        (slot l-food))
+    (slot l-food)
+)
+	
 (deftemplate orderstatus	;// tiente traccia delle ordinazioni
 	(slot step)
-        (slot time)			;// tempo corrente
+    (slot time)			;// tempo corrente
 	(slot arrivaltime)	;// momento in cui é arrivata l'ordinazione
 	(slot requested-by)	;// tavolo richiedente
 	(slot drink-order)
-        (slot food-order)
-        (slot drink-deliv)
-        (slot food-deliv)
-        (slot answer (allowed-values pending accepted delayed rejected))	
+    (slot food-order)
+    (slot drink-deliv)
+    (slot food-deliv)
+    (slot answer (allowed-values pending 
+								 accepted 
+								 delayed 
+								 rejected))	
 )
+
 (deftemplate cleanstatus
 	(slot step)
-        (slot time)
+    (slot time)
 	(slot arrivaltime)	
 	(slot requested-by)	;// tavolo coinvolto nella richiesta
-        (slot source)           ;// agent se agent ha fatto checkfinish positiva, altrimenti il tavolo	
+    (slot source)           ;// agent se agent ha fatto checkfinish positiva, altrimenti il tavolo	
 )
+
 (deftemplate personstatus 	;// informazioni sulla posizione delle persone
 	(slot step)
-        (slot time)
+    (slot time)
 	(slot ident)
 	(slot pos-r)
 	(slot pos-c)
 	(slot activity)   ;// activity seated se cliente seduto, stand se in piedi, oppure path  		
-        (slot move)			
+    (slot move)			
 )
+
 (deftemplate personmove		;// modella i movimenti delle persone. l'environment deve tenere conto dell'interazione di tanti agenti. Il mondo cambia sia per le azioni del robot, si per le azioni degli operatori. Il modulo environment deve gestire le interazioni. 
 	(slot step)
 	(slot ident)
 	(slot path-id)
 )
+
 (deftemplate event   		;// gli eventi sono le richieste dei tavoli: ordini e finish
 	(slot step)
 	(slot type (allowed-values request finish))
 	(slot source)
 	(slot food)
-        (slot drink)
+    (slot drink)
 )
 
 
@@ -285,26 +294,27 @@
 	(printout t " - " ?tb " orders " ?nf " food e " ?nd " drinks" crlf)
     (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 orders param2 food e param3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))  
 )
+
 (defrule neworder2     
 	(declare (salience 200))
 	(status (step ?i) (time ?t))
-?f1<-	(event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
+	?f1 <- (event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
 	(tablestatus (step ?i) (table-id ?tb) (clean no))
-        (cleanstatus (step ?i) (arrivaltime ?tt&:(< ?tt ?t)) (requested-by ?tb))
-=> 
-	(assert 
-		(orderstatus (step ?i) (time ?t) (arrivaltime ?t) (requested-by ?tb) 
+    (cleanstatus (step ?i) (arrivaltime ?tt&:(< ?tt ?t)) (requested-by ?tb))
+	=> 
+	(assert  (orderstatus (step ?i) (time ?t) (arrivaltime ?t) (requested-by ?tb) 
                              (drink-order ?nd) (food-order ?nf)
                              (drink-deliv 0) (food-deliv 0)
                              (answer pending))
-		(msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order)
-                              (drink-order ?nd) (food-order ?nf))
-	)
+							 (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order)
+                             (drink-order ?nd) (food-order ?nf))
+							 )
 	(retract ?f1)		
 	(printout t crlf " ENVIRONMENT:" crlf)
 	(printout t " - " ?tb " orders " ?nf " food e " ?nd " drinks" crlf)
     (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 orders param2 food e param3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))      
 )
+
 (defrule newfinish      
 	(declare (salience 200))
 	(status (step ?i) (time ?t))
