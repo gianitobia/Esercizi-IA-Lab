@@ -79,8 +79,8 @@
 ;regola per inizare la pianificazione
 (defrule ask-plan (declare (salience 4))
 	?f <- (status (step ?i))
-	(not (planned-action)); Non ci sono azioni da mandare in esecuzione
-	(not (planned-goal))
+	(not (planned-action (step ?st))); Non ci sono azioni da mandare in esecuzione
+	(not (planned-goal (pos_r ?ps) (pos_c ?pc)))
 	(not (TRY ONE GOAL ONLY)) ;?????
 	=>
     (assert (planned-goal (pos_r 3) (pos_c 9)))		;creare regole di pianificazione nel planner
@@ -121,7 +121,7 @@
 )
 
 (defrule end-plan-execute (declare (salience 1))
-    (not (planned-action))
+    (not (planned-action (step ?st)))
     (status (step ?i) (time ?t))    
     ?f <- (status (result no)) ; QUESTA SERVE PER ESEGUIRE UN SOLO GOAL.
     => 
