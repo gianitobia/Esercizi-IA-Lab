@@ -211,7 +211,7 @@ public class MonitorView extends ClipsView implements Observer {
         cp_frame.getLeftTimeTextField().setText(leftTime.toString());
         cp_frame.getStepTextField().setText(step.toString());
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
         }
         mapPanel.repaint();
