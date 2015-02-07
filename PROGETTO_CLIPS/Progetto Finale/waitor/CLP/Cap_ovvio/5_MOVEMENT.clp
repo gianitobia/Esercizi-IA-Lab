@@ -277,7 +277,7 @@
 ;===========================================================================================================================
 ;===========================================================================================================================
 ;Modulo per la generazione di nuovi nodi di A* e la gestione del miglior nodo current
-(defmodule NEW (import CALC_PATH ?ALL) (export ?ALL))
+(defmodule NEW (import MOVEMENT ?ALL) (export ?ALL))
 
 ;Non vengono ricontrollati i nodi in CLOSED(gia' esplorati) xke la funzione distanza che
 ;utilizziamo e` monotona e quindi non succedera' di doverli riaprirli;
@@ -340,7 +340,7 @@
 ;===========================================================================================================================
 ;===========================================================================================================================
 ;Modulo per la conversione tra azioni di generiche di A* --> (planned-action) 
-(defmodule CONVERT (import CALC_PATH ?ALL) (export ?ALL))
+(defmodule CONVERT (import MOVEMENT ?ALL) (export ?ALL))
 
 ;Definizione della base di conoscenza per le rotazioni
 (deftemplate rotation
@@ -467,8 +467,8 @@
 			(planned-action
 					(step ?curr)
 					(action ?act)
-					(pos_r ?rig)
-					(pos_c ?col)
+					(pos_r ?r)
+					(pos_c ?c)
 			)
 	)
 	;esegui una rotazione ?rot (destra o sinitra) per arrivare (o avvicinarci)
@@ -479,4 +479,4 @@
 ;===========================================================================================================================
 ;===========================================================================================================================
 ;Modulo per la cancellazione di tutti i fatti relativi ad un planning gia' eseguito o fallito
-(defmodule DEL_PLANNER (import PLANNER ?ALL) (export ?ALL))
+(defmodule DEL_PLANNER (import MOVEMENT ?ALL) (export ?ALL))

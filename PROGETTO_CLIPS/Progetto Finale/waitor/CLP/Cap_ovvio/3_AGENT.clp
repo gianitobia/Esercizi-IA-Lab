@@ -1,5 +1,7 @@
 ;// AGENT
-(defmodule AGENT (import MAIN ?ALL))
+(defmodule AGENT (import MAIN ?ALL) (export ?ALL))
+
+(deftemplate init-agent (slot done (allowed-values yes no))) ; Ci dice se l'inizializzazione dell'agente è conclusa
 
 (deftemplate K-cell  
 	(slot pos-r) 
@@ -26,6 +28,27 @@
     (slot l-food)
     (slot l_d_waste)
     (slot l_f_waste)
+)
+
+(deftemplate last-perc (slot step))
+
+;Definizone del template per le azioni pieanificate
+(deftemplate planned-action
+	(slot step)
+	(slot action)		;azioni da far effettuare al robot
+	(slot pos_r)		;riga da dove viene effettuata l'azione 
+	(slot pos_c) 		;colonna da dove si effettua l'azione
+)
+
+;definizione del template per i goal a cui bisogna arrivare
+;possiamo definire dei goal a vari livelli di astrazione
+;piu' il valore e' alto piu' l'azione e' specifica
+(deftemplate planned-goal
+	;(slot level)
+	;(slot ordine)		;0 -> N; successione di passi ad uno stesso livello di astrazione
+	;(slot action)		;tipo di azione richiesta dal goal
+	(slot pos_r)		;riga della posizione finale del robot
+	(slot pos_c) 		;colonna della posione finale del robot
 )
 
 ;beginagent1 inizializza l'ambiente e quindi la mappa conosciuta dall'agent
@@ -56,8 +79,8 @@
 ;regola per inizare la pianificazione
 (defrule ask-plan (declare (salience 4))
 	?f <- (status (step ?i))
-	(not (planned-action $?)); Non ci sono azioni da mandare in esecuzione
-	(not (planned-goal $?))
+	(not (planned-action)); Non ci sono azioni da mandare in esecuzione
+	(not (planned-goal))
 	(not (TRY ONE GOAL ONLY)) ;?????
 	=>
     (assert (planned-goal (pos_r 3) (pos_c 9)))		;creare regole di pianificazione nel planner
@@ -98,7 +121,7 @@
 )
 
 (defrule end-plan-execute (declare (salience 1))
-    (not (planned-action $?))
+    (not (planned-action))
     (status (step ?i) (time ?t))    
     ?f <- (status (result no)) ; QUESTA SERVE PER ESEGUIRE UN SOLO GOAL.
     => 

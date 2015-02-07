@@ -479,4 +479,4 @@
 ;===========================================================================================================================
 ;===========================================================================================================================
 ;Modulo per la cancellazione di tutti i fatti relativi ad un planning gia' eseguito o fallito
-(defmodule DEL_PLANNER (import PLANNER ?ALL) (export ?ALL))
+(defmodule DEL_PLANNER (import MOVEMENT ?ALL) (export ?ALL))
