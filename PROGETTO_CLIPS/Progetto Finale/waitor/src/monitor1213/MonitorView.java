@@ -366,6 +366,7 @@ public class MonitorView extends ClipsView implements Observer {
             Graphics2D g2 = (Graphics2D) g;
 
             String[][] mapString = model.getMap();
+            
             int cellDimension = Math.round(MAP_DIMENSION / mapString.length);
 
             for (int i = mapString.length - 1; i >= 0; i--) {
@@ -411,7 +412,7 @@ public class MonitorView extends ClipsView implements Observer {
                         //Nella forma Table_<status>_<table-id>
                         String map_contains = mapString[i][j];
                         String[] table_info = map_contains.split("_"); //prendiamo i tre campi
-
+                        System.out.println("###################    " + map_contains + "   ###################");
                         icon = map_img.get(table_info[0] + "_" + table_info[1]);
 
                         //Imposta il tooltip
