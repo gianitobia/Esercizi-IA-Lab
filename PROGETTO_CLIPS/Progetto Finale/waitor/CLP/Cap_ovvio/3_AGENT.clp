@@ -103,6 +103,7 @@
 ;)
 
 ; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
+; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
 (defrule decode-plan-execute (declare (salience 2))
 	?f <- (status (step ?i))
  	?f2 <- (planned-action (step ?id) (action ?oper) (pos_r ?r) (pos_c ?c)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto

@@ -19,7 +19,7 @@
 )
 
 (defrule invert-move-action (declare (salience 99))
-	(planned-move-inv
+	?f <- (planned-move-inv
 		(step ?curr)
 		(action ?act)
 		(pos_r ?r)
@@ -33,4 +33,5 @@
 					(pos_c ?c)
 			)
 	)
+	(retract ?f)
 )
