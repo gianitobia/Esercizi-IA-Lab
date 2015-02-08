@@ -55,6 +55,7 @@
 (defrule beginagent1 (declare (salience 11))
     (status (step 0))
     (not (exec (step 0)))
+	(not (init-agent (done yes)))
     (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
 	=>
     (assert (K-cell (pos-r ?r) (pos-c ?c) (contains ?x)))
@@ -64,6 +65,7 @@
 (defrule beginagent2 (declare (salience 11))
     (status (step 0))
     (not (exec (step 0)))
+	(not (init-agent (done yes)))
     (initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
 	=> 
     (assert (K-agent (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d)

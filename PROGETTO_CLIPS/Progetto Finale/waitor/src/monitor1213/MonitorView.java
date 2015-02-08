@@ -411,9 +411,12 @@ public class MonitorView extends ClipsView implements Observer {
                     } else if (mapString[i][j].length() >= 5 && mapString[i][j].substring(0, 5).equals("Table")) {
                         //Nella forma Table_<status>_<table-id>
                         String map_contains = mapString[i][j];
-                        String[] table_info = map_contains.split("_"); //prendiamo i tre campi
-                        System.out.println("###################    " + map_contains + "   ###################");
-                        icon = map_img.get(table_info[0] + "_" + table_info[1]);
+                        if (!map_contains.equals("Table")) {
+                            String[] table_info = map_contains.split("_"); //prendiamo i tre campi
+                            icon = map_img.get(table_info[0] + "_" + table_info[1]);
+                        } else {
+                            icon = map_img.get("table_clean");
+                        }
 
                         //Imposta il tooltip
                         //map[i][j].setToolTipText("Table " + table_info[2] + " " + "(" + (i + 1) + ", " + (j + 1) + ")");
