@@ -86,19 +86,21 @@
     (assert (planned-goal (pos_r 3) (pos_c 9)))		;creare regole di pianificazione nel planner
     (assert (TRY ONE GOAL ONLY))
     (modify ?f (result no))
+    (assert (something-to-plan))
+    (focus PLANNER)
 )
 
 ; Esegue una pianificazione ed esecuzione del goal
-(defrule start-planning (declare (salience 3))
-    (status (step ?i) (time ?t))
-    (K-agent (pos-r ?r) (pos-c ?c))
-    (planned-goal (pos_r ?goal-r) (pos_c ?goal-c))
- 	=> 
-	(printout t crlf " == AGENT ==" crlf) (printout t "Starting to plan (" ?r ", "?c ") --> (" ?goal-r ", "?goal-c ")" crlf crlf)
-    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 ?goal-r) (param4 ?goal-c)))      
-    (assert (something-to-plan)) ; Avvisa che A star ha qualcosa da fare
-    (focus PLANNER)
-)
+;(defrule start-planning (declare (salience 3))
+;    (status (step ?i) (time ?t))
+;    (K-agent (pos-r ?r) (pos-c ?c))
+;    (planned-goal (pos_r ?goal-r) (pos_c ?goal-c))
+; 	=> 
+;	(printout t crlf " == AGENT ==" crlf) (printout t "Starting to plan (" ?r ", "?c ") --> (" ?goal-r ", "?goal-c ")" crlf crlf)
+;    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 ?goal-r) (param4 ?goal-c)))      
+;    (assert (something-to-plan)) ; Avvisa che A star ha qualcosa da fare
+;    (focus PLANNER)
+;)
 
 ; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
 (defrule decode-plan-execute (declare (salience 2))

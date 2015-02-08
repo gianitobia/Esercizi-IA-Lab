@@ -11,7 +11,7 @@
 ; deve essere contenuta nel file InitMap.txt
 ;
 ;  la descrizione di quali eventi avvengono durante l'esecuzione è
-;  contenuta nel file history.txt. Questo file conteine anche le informazioni
+;  contenuta nel file history.txt. Questo file contiene anche le informazioni
 ;  per specificare quali sono i cleinti e quali attività svolgono
 ;_______________________________________________________________________________________________________________________
 ;// MAIN                                                
