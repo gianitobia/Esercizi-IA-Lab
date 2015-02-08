@@ -109,7 +109,7 @@
 	(planned-move-inv (step ?step))
 	=>
 	(printout t " movimento ultimato " crlf)
-	(pop-focus)
+	(focus DEL_MOVE)
 )
 
 ;############################################################
@@ -486,4 +486,40 @@
 ;===========================================================================================================================
 ;===========================================================================================================================
 ;Modulo per la cancellazione di tutti i fatti relativi ad un planning gia' eseguito o fallito
-(defmodule DEL_PLANNER (import MOVEMENT ?ALL) (export ?ALL))
+(defmodule DEL_MOVE (import MOVEMENT ?ALL) (export ?ALL))
+
+(defrule del-agentStatus_as (declare (salience 5))
+	?f <- (agentstatus_As (step ?curr))
+	=>
+	(retract ?f)
+)
+
+(defrule del-all-node (declare (salience 6))
+	?f <- (node (ident ?i))
+	=>
+	(retract ?f)
+)
+
+(defrule del-variabili (declare (salience 1))
+	?f <- (current ?c)
+	?f1 <- (lastnode ?ld)
+	?f2 <- (open-worse ?ow)
+	?f3 <- (open-better ?ob)
+	?f4 <- (alreadyclosed ?ac)
+	?f5 <- (numberofnodes ?nn)
+	=>
+	(retract ?f)
+	(retract ?f1)
+	(retract ?f2)
+	(retract ?f3)
+	(retract ?f4)
+	(retract ?f5)
+	(pop-focus)
+	(pop-focus)
+)
+
+(defrule del-exec_as (declare (salience 4))
+	?f <- (exec_as $?)
+	=>
+	(retract ?f)
+)
