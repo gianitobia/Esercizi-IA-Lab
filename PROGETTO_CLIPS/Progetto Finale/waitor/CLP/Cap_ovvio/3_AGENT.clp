@@ -1,4 +1,4 @@
-;// AGENT
+c;// AGENT
 (defmodule AGENT (import MAIN ?ALL) (export ?ALL))
 
 (deftemplate init-agent (slot done (allowed-values yes no))) ; Ci dice se l'inizializzazione dell'agente è conclusa

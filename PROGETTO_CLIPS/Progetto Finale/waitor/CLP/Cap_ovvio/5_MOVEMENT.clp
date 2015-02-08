@@ -105,6 +105,13 @@
 	(retract ?f)
 )
 
+(defrule exit-movement (declare (salience 98))
+	(planned-move-inv (step ?step))
+	=>
+	(printout t " movimento ultimato " crlf)
+	(pop-focus)
+)
+
 ;############################################################
 ;###########         REGOLE DI MOVIMENTO         ############
 ;############################################################
@@ -381,7 +388,7 @@
 	(printout t " forward NORD " crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (pos-r =(+ ?rig 1)))
 	(assert 
-			(planned-action 
+			(planned-move-inv 
 					(step ?curr) 
 					(action Forward)
 					(pos_r ?rig)
@@ -400,7 +407,7 @@
 	(printout t " forward EAST " crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (pos-c =(+ ?col 1)))
 	(assert 
-			(planned-action
+			(planned-move-inv
 					(step ?curr)
 					(action Forward)
 					(pos_r ?rig)
@@ -419,7 +426,7 @@
 	(printout t " forward SOUTH " crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (pos-r =(- ?rig 1)))
 	(assert 
-			(planned-action
+			(planned-move-inv
 					(step ?curr)
 					(action Forward)
 					(pos_r ?rig)
@@ -438,7 +445,7 @@
 	(printout t " forward WEST " crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (pos-c =(- ?col 1)))
 	(assert 
-			(planned-action
+			(planned-move-inv
 					(step ?curr)
 					(action Forward)
 					(pos_r ?rig)
@@ -464,7 +471,7 @@
 	(printout t " Rotation " ?act crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (direction ?turn))
 	(assert 
-			(planned-action
+			(planned-move-inv
 					(step ?curr)
 					(action ?act)
 					(pos_r ?r)
