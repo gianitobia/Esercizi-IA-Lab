@@ -8,22 +8,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import monitor1213.DebugFrame;
-
 
 /**
  *
@@ -31,12 +25,11 @@ import monitor1213.DebugFrame;
  */
 public class ControlPanel extends javax.swing.JFrame implements Observer {
 
-    
     ClipsModel model;
     PropertyMonitor agendaMonitor;
     PropertyMonitor factsMonitor;
     PropertyMonitor debugMonitor;
-        
+
     /**
      * Creates new form ControlPanel
      */
@@ -51,14 +44,14 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         Dimension propertyMonitorDim = new Dimension(624, 325);
 
         agendaMonitor = new PropertyMonitor("Agenda");
-        agendaMonitor.setSize(propertyMonitorDim);          
+        agendaMonitor.setSize(propertyMonitorDim);
         agendaMonitor.setLocation(screenDim.width - agendaMonitor.getWidth(), 0);
-        
+
         factsMonitor = new PropertyMonitor("Facs");
         factsMonitor.setSize(propertyMonitorDim);
         factsMonitor.setLocation(screenDim.width - factsMonitor.getWidth(), agendaMonitor.getHeight());
         factsMonitor.setAutoScroll();
-        
+
         this.model.addObserver((Observer) this);
         agendaMonitor.addWindowListener(new WindowListener() {
             @Override
@@ -123,54 +116,52 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
             public void windowDeactivated(WindowEvent e) {
             }
         });
-        
+
         this.setShortcut();
-        
+
     }
-    
+
     private void setShortcut() {
-                /*SETTO LE SHORTCUT PER I PULSANTI DI RUN, RUN1, STEP, START E RESET
-        runButton.setMnemonic(KeyEvent.VK_R); //Alt+R
-        runOneButton.setMnemonic(KeyEvent.VK_T); //Alt+T
-        stepButton.setMnemonic(KeyEvent.VK_S); //Alt+S
-        loadDefaultFileButton.setMnemonic(KeyEvent.VK_A); //Alt+A
-        resetButton.setMnemonic(KeyEvent.VK_X); //Alt+X*/
-        
-        
+        /*SETTO LE SHORTCUT PER I PULSANTI DI RUN, RUN1, STEP, START E RESET
+         runButton.setMnemonic(KeyEvent.VK_R); //Alt+R
+         runOneButton.setMnemonic(KeyEvent.VK_T); //Alt+T
+         stepButton.setMnemonic(KeyEvent.VK_S); //Alt+S
+         loadDefaultFileButton.setMnemonic(KeyEvent.VK_A); //Alt+A
+         resetButton.setMnemonic(KeyEvent.VK_X); //Alt+X*/
+
         runButton.getInputMap(runButton.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK), "run");
         runOneButton.getInputMap(runOneButton.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK), "run1");
         stepButton.getInputMap(stepButton.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK), "step");
         loadDefaultFileButton.getInputMap(loadDefaultFileButton.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_MASK), "start");
         resetButton.getInputMap(resetButton.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_MASK), "reset");
-        
+
         runButton.getActionMap().put("run", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-              runButton.doClick();
+                runButton.doClick();
             }
         });
         runOneButton.getActionMap().put("run1", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-              runOneButton.doClick();
+                runOneButton.doClick();
             }
         });
         stepButton.getActionMap().put("step", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-              stepButton.doClick();
+                stepButton.doClick();
             }
         });
         loadDefaultFileButton.getActionMap().put("start", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-              loadDefaultFileButton.doClick();
+                loadDefaultFileButton.doClick();
             }
         });
         resetButton.getActionMap().put("reset", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-              resetButton.doClick();
+                resetButton.doClick();
             }
         });
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -476,7 +467,7 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         this.setShortcut();
         visualizeAgendaButton.setEnabled(false);
         visualizeFactsButton.setEnabled(false);
-            
+
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
@@ -491,21 +482,23 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
 
     private void visualizeFactsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizeFactsButtonActionPerformed
         factsMonitor.setVisible(visualizeFactsButton.isSelected());
-        if(visualizeFactsButton.isSelected())
+        if (visualizeFactsButton.isSelected()) {
             try {
                 factsMonitor.setText(model.getFactList());
-        } catch (ClipsException | NullPointerException ex) {
-            System.out.println("The clips core is still not initialized - unable to get the facts list");
+            } catch (ClipsException | NullPointerException ex) {
+                System.out.println("The clips core is still not initialized - unable to get the facts list");
+            }
         }
     }//GEN-LAST:event_visualizeFactsButtonActionPerformed
 
     private void visualizeAgendaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizeAgendaButtonActionPerformed
         agendaMonitor.setVisible(visualizeAgendaButton.isSelected());
-        if(visualizeAgendaButton.isSelected()) 
+        if (visualizeAgendaButton.isSelected()) {
             try {
                 agendaMonitor.setText(model.getAgenda());
-        } catch (ClipsException | NullPointerException ex) {
-            System.out.println("The clips core is still not initialized - unable to check the agend content");
+            } catch (ClipsException | NullPointerException ex) {
+                System.out.println("The clips core is still not initialized - unable to check the agend content");
+            }
         }
     }//GEN-LAST:event_visualizeAgendaButtonActionPerformed
 
@@ -528,8 +521,8 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_runButtonActionPerformed
 
     private void runOneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runOneButtonActionPerformed
-            model.setMode("RUNONE");
-            model.resume();
+        model.setMode("RUNONE");
+        model.resume();
     }//GEN-LAST:event_runOneButtonActionPerformed
 
     private void loadDefaultFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDefaultFileButtonActionPerformed
@@ -565,8 +558,6 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
 
     }//GEN-LAST:event_runOneButtonKeyReleased
 
-    
-    
     /**
      * @param args the command line arguments
      */
@@ -574,7 +565,7 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -602,9 +593,6 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         });
     }
 
-    
-    
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox CLPSelector;
     private javax.swing.JPanel controlPanel;
@@ -635,7 +623,7 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
     public JTextField getTimeTextField() {
         return timeTextField;
     }
-    
+
     public JTextField getLeftTimeTextField() {
         return this.timeLeftTextField;
     }
@@ -647,7 +635,7 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
     public void setTimeTextField(JTextField timeTextField) {
         this.timeTextField = timeTextField;
     }
-    
+
     public void setLeftTimeTextField(JTextField timeLeftTextField) {
         this.timeLeftTextField = timeLeftTextField;
     }
@@ -675,7 +663,8 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
                 visualizeFactsButton.setSelected(false);
             }
             /**
-             * Al termine dell'esecuzione vengono disabilitati tutti i pulsanti ad eccezione di quello di reset, perché inutili
+             * Al termine dell'esecuzione vengono disabilitati tutti i pulsanti
+             * ad eccezione di quello di reset, perché inutili
              */
             String advice = (String) o1;
             if (advice.equals("disposeDone")) {
@@ -685,9 +674,9 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
                 this.runButton.setEnabled(false);
                 this.runOneButton.setEnabled(false);
                 this.stepButton.setEnabled(false);
-                
+
             }
-                
+
         } catch (Exception ex) {
             //System.out.println("[ERRORE] " + ex.toString());
             DebugFrame.appendText("[ERROR] " + ex.toString());
@@ -706,17 +695,19 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
     }
 
     /**
-     * Carica la lista delle strategie disponibili. L'informazione è ottenuta leggendo tutte le cartelle
-     * contenute dentro la cartella CLP nella root del progetto. Ogni cartella contiene tutto il progetto
-     * che implementa la relativa strategia.
-     * @return  il combobox contenente tutte le strategie disponibili
+     * Carica la lista delle strategie disponibili. L'informazione è ottenuta
+     * leggendo tutte le cartelle contenute dentro la cartella CLP nella root
+     * del progetto. Ogni cartella contiene tutto il progetto che implementa la
+     * relativa strategia.
+     *
+     * @return il combobox contenente tutte le strategie disponibili
      */
     private ComboBoxModel loadCLPFolderNames() {
-    
-        String path = System.getProperty("user.dir")+File.separator+"CLP";
+
+        String path = System.getProperty("user.dir") + File.separator + "CLP";
         File folder = new File(path);
         DefaultComboBoxModel result = new DefaultComboBoxModel();
-        File[] listOfFiles = folder.listFiles(); 
+        File[] listOfFiles = folder.listFiles();
         for (File file : listOfFiles) {
             if (file.isDirectory() && !file.isHidden() && !file.getName().startsWith(".")) {
                 result.addElement(file.getName());
@@ -724,20 +715,21 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         }
         return result;
     }
-    
-    
-        /**
-     * Carica la lista degli environment disponibili. L'informazione è ottenuta leggendo tutte le cartelle
-     * contenute dentro la cartella envs nella root del progetto. Ogni cartella contiene tutto il progetto
-     * che implementa la relativa strategia e l'environment.
-     * @return  Il modello per far sì che venga costruita il selector.
+
+    /**
+     * Carica la lista degli environment disponibili. L'informazione è ottenuta
+     * leggendo tutte le cartelle contenute dentro la cartella envs nella root
+     * del progetto. Ogni cartella contiene tutto il progetto che implementa la
+     * relativa strategia e l'environment.
+     *
+     * @return Il modello per far sì che venga costruita il selector.
      */
     private ComboBoxModel loadEnvsFolderNames() {
-    
-        String path = System.getProperty("user.dir")+File.separator+"envs";
+
+        String path = System.getProperty("user.dir") + File.separator + "envs";
         File folder = new File(path);
         DefaultComboBoxModel result = new DefaultComboBoxModel();
-        File[] listOfFiles = folder.listFiles(); 
+        File[] listOfFiles = folder.listFiles();
         for (File file : listOfFiles) {
             if (file.isDirectory() && !file.isHidden() && !file.getName().startsWith(".")) {
                 result.addElement(file.getName());
@@ -745,8 +737,6 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         }
         return result;
     }
-    
-    
 
     private class ClpFileFilter extends FileFilter {
 
@@ -772,5 +762,5 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         public String getDescription() {
             return "Clips files";
         }
-    }    
+    }
 }

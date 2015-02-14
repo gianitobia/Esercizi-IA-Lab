@@ -3,11 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package monitor1213;
 
 import java.awt.Color;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -16,7 +14,6 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
@@ -30,37 +27,39 @@ public class PrintOutWindow extends javax.swing.JFrame {
 
     //enumerazione di colori per la finestra di output
     private final Map<String, Color> sources;
-    
+
     private static MonitorView monitor_view;
-    
+
     //dizionario per le label dello slider della verbosity
     Hashtable<Integer, JLabel> table;
+
     /**
      * Creates new form PintOutWindow
      */
     public PrintOutWindow(MonitorView father) {
         initComponents();
-        
+
         //tabella dei colori
         sources = new HashMap<>();
         sources.put("SYSTEM", Color.red);
         sources.put("AGENT", Color.blue);
         sources.put("PLANNER", Color.darkGray);
         sources.put("ENV", Color.decode("#32CD32"));
-        
+
         table = new Hashtable<>();
         table.put(0, new JLabel("Low"));
         table.put(1, new JLabel("Medium"));
         table.put(2, new JLabel("High"));
         this.jSlider1.setLabelTable(table);
-        
+
         monitor_view = father;
-        
+
         /*imposto l'allineamento centrale per le celle della tabella dell'agentstatus*/
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        for(int i=0; i< jTable1.getColumnModel().getColumnCount(); i++)
+        for (int i = 0; i < jTable1.getColumnModel().getColumnCount(); i++) {
             jTable1.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
     }
 
     /**
@@ -215,9 +214,9 @@ public class PrintOutWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
-        JSlider source = (JSlider)evt.getSource();
+        JSlider source = (JSlider) evt.getSource();
         if (!source.getValueIsAdjusting()) {
-            int fps = (int)source.getValue();
+            int fps = (int) source.getValue();
             monitor_view.setVerbosityMode(fps);
             monitor_view.updateOutput();
         }
@@ -230,7 +229,7 @@ public class PrintOutWindow extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -275,95 +274,104 @@ public class PrintOutWindow extends javax.swing.JFrame {
 
 
     /*
-    Metodi per l'inserimento di testo nella finestra di output.
-    */
-    
+     Metodi per l'inserimento di testo nella finestra di output.
+     */
     //Permette di appendere una normale stringa alla finestra di output
-    
     public void write(String s) {
         try {
-           Document doc = output.getDocument();
-           doc.insertString(doc.getLength(), s+"\n", new SimpleAttributeSet());
-           output.setCaretPosition(output.getDocument().getLength());
-        } catch(BadLocationException exc) {
+            Document doc = output.getDocument();
+            doc.insertString(doc.getLength(), s + "\n", new SimpleAttributeSet());
+            output.setCaretPosition(output.getDocument().getLength());
+        } catch (BadLocationException exc) {
         }
-     }
+    }
+
     /**
-     * Permette di appendere alla finestra di output una stringa di un determinato colore
+     * Permette di appendere alla finestra di output una stringa di un
+     * determinato colore
+     *
      * @param s la strinfa da appendere
-     * @param color una stringa rappresentante il colore.
-     *              Il colore corrispondente verrà recuperato dalla hasmap definita nel costruttore della classe
-     *  
+     * @param color una stringa rappresentante il colore. Il colore
+     * corrispondente verrà recuperato dalla hasmap definita nel costruttore
+     * della classe
+     *
      */
     public void write(String s, String color) {
         try {
-           Document doc = output.getDocument();
-           SimpleAttributeSet keyWord = new SimpleAttributeSet();
-           StyleConstants.setForeground(keyWord, sources.get(color));
+            Document doc = output.getDocument();
+            SimpleAttributeSet keyWord = new SimpleAttributeSet();
+            StyleConstants.setForeground(keyWord, sources.get(color));
 
             //StyleConstants.setBackground(keyWord, color);
-           
-           doc.insertString(doc.getLength(), s+"\n", keyWord);
+            doc.insertString(doc.getLength(), s + "\n", keyWord);
             output.setCaretPosition(output.getDocument().getLength());
-        } catch(BadLocationException exc) {
+        } catch (BadLocationException exc) {
         }
-     }
-    
+    }
+
     /**
-     * Permette di appendere alla finestra di output una stringa di un determinato colore in bold
+     * Permette di appendere alla finestra di output una stringa di un
+     * determinato colore in bold
+     *
      * @param s la strinfa da appendere
-     * @param color una stringa rappresentante il colore.
-     *              Il colore corrispondente verrà recuperato dalla hasmap definita nel costruttore della classe
+     * @param color una stringa rappresentante il colore. Il colore
+     * corrispondente verrà recuperato dalla hasmap definita nel costruttore
+     * della classe
      * @param bold se true scrive la stringa in bold
-     * 
+     *
      */
     public void write(String s, String color, Boolean bold) {
         try {
-           Document doc = output.getDocument();
-           SimpleAttributeSet keyWord = new SimpleAttributeSet();
-           StyleConstants.setForeground(keyWord, sources.get(color));
+            Document doc = output.getDocument();
+            SimpleAttributeSet keyWord = new SimpleAttributeSet();
+            StyleConstants.setForeground(keyWord, sources.get(color));
 
             //StyleConstants.setBackground(keyWord, color);
-           if(bold)
-               StyleConstants.setBold(keyWord, true);
-           
-           doc.insertString(doc.getLength(), s+"\n", keyWord);
+            if (bold) {
+                StyleConstants.setBold(keyWord, true);
+            }
+
+            doc.insertString(doc.getLength(), s + "\n", keyWord);
             output.setCaretPosition(output.getDocument().getLength());
-        } catch(BadLocationException exc) {
+        } catch (BadLocationException exc) {
         }
-     }
-    
+    }
+
     /**
      * Metodo che resetta il documento contenuto nella finestra.
+     *
      * @param s
-     * @param color 
+     * @param color
      */
     public void resetDocument() {
         try {
-           Document doc = output.getDocument();
-           doc.remove(0, doc.getLength());
-        } catch(BadLocationException exc) {
+            Document doc = output.getDocument();
+            doc.remove(0, doc.getLength());
+        } catch (BadLocationException exc) {
         }
-     }
+    }
+
     /**
-     * aggiorna la tabella relativa allo stato dell'agente.
-     * Può essere personalizzata a seconda delle necesità del dominio in uso
-     * Nel caso specifico inserisce in tabella i valori dei vari oggetti che l'agente può portare/contenere
+     * aggiorna la tabella relativa allo stato dell'agente. Può essere
+     * personalizzata a seconda delle necesità del dominio in uso Nel caso
+     * specifico inserisce in tabella i valori dei vari oggetti che l'agente può
+     * portare/contenere
+     *
      * @param step lo step corrente
      * @param food il numero di food
      * @param drink il numero di drink
      * @param food_waste la presenza di food_waste
      * @param drink_waste la presenza di drink_waste
      */
-    public void updateAgentStatusWindow(int step, int food, int drink, String food_waste, String drink_waste){
-            //aggiorno la label indicante lo step
-            this.AgentStatusStepLabel.setText("(Step "+step+")");
-            
-            //aggiorno i valori nella tabella
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            model.setNumRows(0);
-            model.addRow(new Object[]{ food, drink, food_waste, drink_waste}
-            ); 
+    public void updateAgentStatusWindow(int step, int food, int drink, String food_waste, String drink_waste) {
+        //aggiorno la label indicante lo step
+        this.AgentStatusStepLabel.setText("(Step " + step + ")");
+
+        //aggiorno i valori nella tabella
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setNumRows(0);
+        model.addRow(new Object[]{food, drink, food_waste, drink_waste}
+        );
     }
 
     public JSlider getVerboseSlider() {

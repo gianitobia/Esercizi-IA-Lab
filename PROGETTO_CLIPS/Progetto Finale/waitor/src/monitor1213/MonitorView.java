@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -53,6 +54,7 @@ public class MonitorView extends ClipsView implements Observer {
     // L'attribuzione è effettuata nel costruttore.
     private final Map<String, BufferedImage> map_img;
     private final Map<String, BufferedImage> map_img_robot;
+    private Dimension dim;
 
     /**
      * È il costruttore da chiamare nel main per avviare l'intero sistema, apre
@@ -149,9 +151,10 @@ public class MonitorView extends ClipsView implements Observer {
      *
      */
     private void initializeInterface() {
+        dim = Toolkit.getDefaultToolkit().getScreenSize();
         view = new JFrame();
         view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        view.setSize(new Dimension(689, 160));
+        view.setSize(new Dimension((int) dim.getWidth() - 720, 160));
         view.setResizable(true);
         view.setTitle("Waitor");
         view.setLayout(new BorderLayout());
@@ -160,7 +163,8 @@ public class MonitorView extends ClipsView implements Observer {
         view.add(cp_JPanel, BorderLayout.NORTH);
 
         outputFrame = new PrintOutWindow(this);
-        outputFrame.setLocation(view.getX() + view.getWidth() + 10, view.getY());
+        outputFrame.setSize(700, 500);
+        outputFrame.setLocation((int) dim.getWidth() - 710, view.getY());
         outputFrame.setVisible(true);
 
         //comando inserito in questa posizione per settare il focus iniziale sulla finestra principale e non su quella di output
@@ -194,7 +198,7 @@ public class MonitorView extends ClipsView implements Observer {
 
         mapPanel = new MapPanel();
         view.add(mapPanel);
-        view.setSize(689, 800);
+        view.setSize(view.getWidth(), (int) (dim.getHeight() * 3 / 4));
         view.validate();
     }
 
@@ -361,13 +365,24 @@ public class MonitorView extends ClipsView implements Observer {
             super();
         }
 
+        @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
 
             String[][] mapString = model.getMap();
-            
-            int cellDimension = Math.round(MAP_DIMENSION / mapString.length);
+
+            int cellWidth = Math.round((this.getWidth() - 100) / mapString.length);
+            int cellHeight = Math.round((this.getHeight() - 100) / mapString[0].length);
+
+            if (cellWidth > cellHeight) {
+                cellWidth = cellHeight;
+            } else {
+                cellHeight = cellWidth;
+            }
+
+            int x0 = (this.getWidth() - cellWidth * mapString.length) / 2;
+            int y0 = (this.getHeight() - cellHeight * mapString[0].length) / 2;
 
             for (int i = mapString.length - 1; i >= 0; i--) {
                 for (int j = 0; j < mapString[0].length; j++) {
@@ -427,7 +442,7 @@ public class MonitorView extends ClipsView implements Observer {
                         //map[i][j].setToolTipText("(" + (i + 1) + ", " + (j + 1) + ")");
                     }
 
-                    g2.drawImage(icon, cellDimension * j, cellDimension * (mapString.length - i), cellDimension, cellDimension, this);
+                    g2.drawImage(icon, x0 + cellWidth * j, y0 + cellHeight * (mapString.length - i), cellWidth, cellHeight, this);
 
                 }
             }
