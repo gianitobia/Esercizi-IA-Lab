@@ -2,70 +2,84 @@
 ;// ENV                                                                                                                   
 ;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 (defmodule ENV (import MAIN ?ALL))
+
 ;// DEFTEMPLATE
-(deftemplate cell  (slot pos-r) (slot pos-c) 
-                   (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser)))
+
+;Definizione della cella
+(deftemplate cell  
+	(slot pos-r) 
+	(slot pos-c) 
+    (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket
+                                        RecyclableBasket DrinkDispenser FoodDispenser))
+)
+
+;Definizione stato agente
 (deftemplate agentstatus 
 	(slot step)
     (slot time) 
 	(slot pos-r) 
 	(slot pos-c) 
 	(slot direction) 
-	(slot l-drink)
-    (slot l-food)
-    (slot l_d_waste)
-    (slot l_f_waste)
+	(slot l-drink)			;numero di cibi caricati;			Drink + Food <= 4
+    (slot l-food)			;numero di bevande caricate;
+    (slot l_d_waste)		;true appena carica dei rifiuti da buttare nei riciclabili
+    (slot l_f_waste)		;true appena carica dei rifiuti da buttate nel cestino
 )
 
+;Defizinizione dello stato di ciascuno tavolo
 (deftemplate tablestatus	
 	(slot step)
     (slot time)
 	(slot table-id)
-	(slot clean (allowed-values yes no))
+	(slot clean (allowed-values yes no))		;Value = no => tavolo deve essere pulito
 	(slot l-drink)
     (slot l-food)
 )
-	
+
+;Definzione del'ordine fatto da un tavolo
 (deftemplate orderstatus	;// tiente traccia delle ordinazioni
 	(slot step)
-    (slot time)			;// tempo corrente
-	(slot arrivaltime)	;// momento in cui é arrivata l'ordinazione
-	(slot requested-by)	;// tavolo richiedente
+    (slot time)				;// tempo corrente
+	(slot arrivaltime)		;// momento in cui é arrivata l'ordinazione
+	(slot requested-by)		;// tavolo richiedente
 	(slot drink-order)
     (slot food-order)
     (slot drink-deliv)
     (slot food-deliv)
-    (slot answer (allowed-values pending 
-								 accepted 
-								 delayed 
-								 rejected))	
+    (slot answer (allowed-values pending
+								 accepted
+								 delayed
+								 rejected))		;NON deve mai assumure valore Rejected
 )
 
+;Percezione per la pulizia dello stato
 (deftemplate cleanstatus
 	(slot step)
     (slot time)
 	(slot arrivaltime)	
-	(slot requested-by)	;// tavolo coinvolto nella richiesta
+	(slot requested-by)		;// tavolo coinvolto nella richiesta
     (slot source)           ;// agent se agent ha fatto checkfinish positiva, altrimenti il tavolo	
 )
 
+;Definizione status di ciascuna persona
 (deftemplate personstatus 	;// informazioni sulla posizione delle persone
 	(slot step)
     (slot time)
-	(slot ident)
+	(slot ident)			;//identificativo della persona
 	(slot pos-r)
 	(slot pos-c)
-	(slot activity)   ;// activity seated se cliente seduto, stand se in piedi, oppure path  		
+	(slot activity)   		;// activity seated se cliente seduto, stand se in piedi, oppure path  		
     (slot move)			
 )
 
-(deftemplate personmove		;// modella i movimenti delle persone. l'environment deve tenere conto dell'interazione di tanti agenti. Il mondo cambia sia per le azioni del robot, si per le azioni degli operatori. Il modulo environment deve gestire le interazioni. 
+;// modella i movimenti delle persone. l'environment deve tenere conto dell'interazione di tanti agenti. Il mondo cambia sia per le azioni del robot, si per le azioni degli operatori. Il modulo environment deve gestire le interazioni.
+(deftemplate personmove
 	(slot step)
 	(slot ident)
 	(slot path-id)
 )
 
+;Definizione degli eventi che devono essere interpretati dall'agent;
 (deftemplate event   		;// gli eventi sono le richieste dei tavoli: ordini e finish
 	(slot step)
 	(slot type (allowed-values request finish))
@@ -74,30 +88,32 @@
     (slot drink)
 )
 
-
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;/////////////////////////////// 					REGOLE DI CREAZIONE					/////////////////////////////////////
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ;// DEFRULE
 ;//imposta il valore iniziale di ciascuna cella 
-(defrule creation1	
-     (declare (salience 25))
-     (create-map)
-     (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
-=>
-     (assert (cell (pos-r ?r) (pos-c ?c) (contains ?x)))
+(defrule creation1	(declare (salience 25))
+	(create-map)
+    (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
+	=>
+    (assert (cell (pos-r ?r) (pos-c ?c) (contains ?x)))
 )
-(defrule creation2	
-	(declare (salience 24))
-?f1<-	(create-history) 
-=>
+
+(defrule creation2	(declare (salience 24))
+	?f1<-	(create-history) 
+	=>
    	(load-facts "history.txt")
-        (retract ?f1)
+    (retract ?f1)
 )
-(defrule creation3
-         (declare (salience 23))
-         (create-initial-setting)
-         (Table (table-id ?tb) (pos-r ?r) (pos-c ?c))
-=> 
-         (assert (tablestatus (step 0) (time 0) (table-id ?tb) (clean yes) (l-drink 0) (l-food 0)))
+
+(defrule creation3	(declare (salience 23))
+	(create-initial-setting)
+    (Table (table-id ?tb) (pos-r ?r) (pos-c ?c))
+	=> 
+    (assert (tablestatus (step 0) (time 0) (table-id ?tb) (clean yes) (l-drink 0) (l-food 0)))
 )
+
 (defrule creation411
          (declare (salience 22))
          (create-initial-setting)
@@ -270,24 +286,38 @@
                  (penalty 0))
          (retract ?f1 ?f2)
 )
-;// __________________________________________________________________________________________
-;// REGOLE PER GESTIONE EVENTI    
-;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-;//
-(defrule neworder1    
-	(declare (salience 200))
+
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;/////////////////////////////// 					REGOLE GESTIONE EVENTI					/////////////////////////////////////
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+;regola per la generazione di un nuovo ordine da parte di un tavolo pulito
+;Questa regola scatta se:
+;	- C'e' una richiesta di ordine da un tavolo
+;	- Non ne sia stata gia' fatta un altra dallo stesso
+(defrule neworder1	(declare (salience 200))
 	(status (step ?i) (time ?t))
-?f1<-	(event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
+	?f1 <- (event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
 	(tablestatus (step ?i) (table-id ?tb) (clean yes))
-        (not (orderstatus (step ?i) (requested-by ?tb))) 
-=> 
+    (not (orderstatus (step ?i) (requested-by ?tb))) 
+	=> 
 	(assert 
-		(orderstatus (step ?i) (time ?t) (arrivaltime ?t) (requested-by ?tb) 
-                             (drink-order ?nd) (food-order ?nf)
-                             (drink-deliv 0) (food-deliv 0)
-                             (answer pending))
-		(msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order)
-                              (drink-order ?nd) (food-order ?nf))
+		(orderstatus (step ?i) 
+					 (time ?t) 
+					 (arrivaltime ?t) 
+					 (requested-by ?tb) 
+                     (drink-order ?nd) (food-order ?nf)
+                     (drink-deliv 0) (food-deliv 0)
+                     (answer pending)
+		)
+		
+		(msg-to-agent (request-time ?t) 
+					  (step ?i) 
+					  (sender ?tb) 
+					  (type order)
+                      (drink-order ?nd) 
+					  (food-order ?nf)
+		)
 	)
 	(retract ?f1)		
 	(printout t crlf " ENVIRONMENT:" crlf)
@@ -295,43 +325,70 @@
     (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 orders param2 food e param3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))  
 )
 
-(defrule neworder2     
-	(declare (salience 200))
+;Regola per la generazione di un nuovo ordine da parte di un tavolo sporco
+;Questa regola scatta se:
+;	- C'e' una richiesta di ordine da un tavolo
+;	- C'e' una richesta di pulito il tavolo
+(defrule neworder2	(declare (salience 200))
 	(status (step ?i) (time ?t))
 	?f1 <- (event (step ?i) (type request) (source ?tb) (food ?nf) (drink ?nd))
 	(tablestatus (step ?i) (table-id ?tb) (clean no))
     (cleanstatus (step ?i) (arrivaltime ?tt&:(< ?tt ?t)) (requested-by ?tb))
 	=> 
-	(assert  (orderstatus (step ?i) (time ?t) (arrivaltime ?t) (requested-by ?tb) 
-                             (drink-order ?nd) (food-order ?nf)
-                             (drink-deliv 0) (food-deliv 0)
-                             (answer pending))
-							 (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order)
-                             (drink-order ?nd) (food-order ?nf))
-							 )
+	(assert  
+		(orderstatus (step ?i) 
+					 (time ?t) 
+					 (arrivaltime ?t) 
+					 (requested-by ?tb) 
+                     (drink-order ?nd) (food-order ?nf)
+                     (drink-deliv 0) (food-deliv 0)
+                     (answer pending)
+		)
+	 	
+		(msg-to-agent (request-time ?t) 
+					  (step ?i) 
+					  (sender ?tb)
+					  (type order)
+                      (drink-order ?nd) (food-order ?nf)
+		)
+	)
 	(retract ?f1)		
 	(printout t crlf " ENVIRONMENT:" crlf)
 	(printout t " - " ?tb " orders " ?nf " food e " ?nd " drinks" crlf)
     (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 orders param2 food e param3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))      
 )
 
-(defrule newfinish      
-	(declare (salience 200))
+;Regola per la gestione della terminazione di un ordine per un tavolo
+;Questa regola scatta se:
+;	- Il tavolo e` sporco
+;	- Non ci sono ordini o richieste di pulizia presenti
+(defrule newfinish	(declare (salience 200))
 	(status (step ?i) (time ?t))
-?f1<-	(event (step ?i) (type finish) (source ?tb))
+	?f1 <- (event (step ?i) (type finish) (source ?tb))
 	(tablestatus (step ?i) (table-id ?tb) (clean no))
-        (not (cleanstatus (step ?i) (arrivaltime ?tt&:(< ?tt ?t)) (requested-by ?tb))) ;non c'è già stato un finish
-        (not (orderstatus (step ?i) (time ?t) (requested-by ?tb)))   ;l'ordine è stato completato
+    (not (cleanstatus (step ?i) (arrivaltime ?tt&:(< ?tt ?t)) (requested-by ?tb))) ;non c'è già stato un finish
+    (not (orderstatus (step ?i) (time ?t) (requested-by ?tb)))   ;l'ordine è stato completato
     => 
 	(assert 	
-		(cleanstatus (step ?i) (time ?t) (arrivaltime ?t) (requested-by ?tb) (source ?tb))
-                (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type finish))
+		(cleanstatus (step ?i) 
+					 (time ?t) 
+					 (arrivaltime ?t) 
+					 (requested-by ?tb) 
+					 (source ?tb)
+		)
+        
+		(msg-to-agent (request-time ?t) 
+					  (step ?i) 
+					  (sender ?tb) 
+					  (type finish)
+		)
 	)
 	(retract ?f1)
 	(printout t crlf " ENVIRONMENT:" crlf)
 	(printout t " - " ?tb " declares finish " crlf)
     (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 declares finish.") (param1 ?tb)))      
 )
+
 ;// __________________________________________________________________________________________
 ;// GENERA EVOLUZIONE TEMPORALE       
 ;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  

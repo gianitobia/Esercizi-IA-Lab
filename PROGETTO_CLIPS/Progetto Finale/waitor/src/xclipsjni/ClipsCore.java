@@ -226,8 +226,13 @@ public class ClipsCore {
             String[][] result = new String[facts.size()][slots.length];
             for (int i = 0; i < facts.size(); i++) {
                 for (int j = 0; j < slots.length; j++) {
-                    result[i][j] = facts.get(i).getFactSlot(slots[j]).toString();
-                    System.out.println(result[i][j]);
+                    PrimitiveValue fact = facts.get(i);
+                    PrimitiveValue factSlot = fact.getFactSlot(slots[j]);
+                    if (factSlot != null) {
+                        result[i][j] = factSlot.toString();
+                    } else {
+                        result[i][j] = "";
+                    }
                 }
             }
             return result;

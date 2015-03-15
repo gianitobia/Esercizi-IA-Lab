@@ -80,15 +80,17 @@
 
 ;regola per inizare la pianificazione
 (defrule ask-plan (declare (salience 4))
-	?f <- (status (step ?i))
+	?f <- (status (step ?i) (time ?t))
+	(K-agent (pos-r ?r) (pos-c ?c))
 	(not (planned-action (step ?st))); Non ci sono azioni da mandare in esecuzione
-	(not (planned-goal (pos_r ?ps) (pos_c ?pc)))
+	(not (planned-goal (pos_r ?pr) (pos_c ?pc)))
 	(not (TRY ONE GOAL ONLY)) ;?????
 	=>
     (assert (planned-goal (pos_r 3) (pos_c 9)))		;creare regole di pianificazione nel planner
     (assert (TRY ONE GOAL ONLY))
     (modify ?f (result no))
     (assert (something-to-plan))
+    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 3) (param4 9)))      
     (focus PLANNER)
 )
 

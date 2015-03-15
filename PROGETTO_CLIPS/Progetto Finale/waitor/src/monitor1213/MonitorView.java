@@ -119,7 +119,7 @@ public class MonitorView extends ClipsView implements Observer {
         //System.out.println("actionDone");
         try {
             updateMap();
-//            updateOutput();
+            updateOutput();
         } catch (IOException ex) {
             Logger.getLogger(MonitorView.class.getName()).log(Level.SEVERE, null, ex);
         }
