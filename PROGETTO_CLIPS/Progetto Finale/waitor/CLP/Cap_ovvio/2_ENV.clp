@@ -26,7 +26,7 @@
 	(slot l-drink)
     (slot l-food)
 )
-	
+
 (deftemplate orderstatus	;// tiente traccia delle ordinazioni
 	(slot step)
     (slot time)			;// tempo corrente
@@ -1156,7 +1156,7 @@
 ;// REGOLE PER il prelievo di drink da drink Dispenser
 ;// Operazione OK
 (defrule load-drink_OK
-	(declare (salience 20))    
+	(declare (salience 20))    	
 ?f2<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action LoadDrink) (param1 ?x) (param2 ?y))
 	(DrinkDispenser (DD-id ?dd) (pos-r ?x) (pos-c ?y))
