@@ -389,9 +389,10 @@
     (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 declares finish.") (param1 ?tb)))      
 )
 
-;// __________________________________________________________________________________________
-;// GENERA EVOLUZIONE TEMPORALE       
-;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;/////////////////////////////// 					EVOLUZIONE TEMPORALE					/////////////////////////////////////
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ;// per ogni istante di tempo che intercorre fra l'informazione di finish di un tavolo  e 
 ;//  pulitura (clean) del tavolo,  l'agente prende 3 penalità
 (defrule CleanEvolution1       
@@ -413,57 +414,59 @@
 => 
 	(modify ?f1 (time ?t) (step ?i))
 )
+
 ;// per ogni istante di tempo che intercorre fra la request e la inform, l'agente prende 50 penalità
-(defrule RequestEvolution1       
-	(declare (salience 10))
+(defrule RequestEvolution1	(declare (salience 10))
 	(status (time ?t) (step ?i))
-?f1<-	(orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb)
-                     (answer pending))
-	(not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)
-                     (answer ~pending)))
-?f2<- (penalty ?p)
-=> 
+	?f1 <- (orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb) (answer pending))
+	(not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb) (answer ~pending)))
+	?f2 <- (penalty ?p)
+	=> 
 	(modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) 50))))
 	(retract ?f2)
 )
+
 ;// penalità perchè l'ordine è stato accepted e non è ancora stato completato
-(defrule RequestEvolution2       
-	(declare (salience 10))
-        (status (time ?t) (step ?i))
-?f1<-	(orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb)
-                     (answer accepted)
-                     (drink-order ?nd) (food-order ?nf) (drink-deliv ?dd) (food-deliv ?df))
-        (not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)))
-?f2<-	(penalty ?p)
-=> 
-        (modify ?f1 (time ?t) (step ?i))
+;Gli ordini devono essere accettati anche se ne sto portando a termine altri
+;pertanto prendo penalita' per ciascun ordine che accetto ma che non riesco a servire
+(defrule RequestEvolution2	(declare (salience 10))
+	(status (time ?t) (step ?i))
+	?f1 <- (orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) 
+						(requested-by ?tb) (answer accepted) (drink-order ?nd)
+						(food-order ?nf) (drink-deliv ?dd) (food-deliv ?df))
+    (not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)))
+	?f2 <- (penalty ?p)	
+	=> 
+    (modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) (max 1 (* (+ (- ?nd ?dd) (- ?nf ?df)) 2))))))
 	(retract ?f2)
 )
-;// penalità perchè l'ordine è stato delayed e non è ancora stato completato 
-(defrule RequestEvolution3       
-	(declare (salience 10))
-        (status (time ?t) (step ?i))
-?f1<-	(orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb)
-                     (answer delayed)
-                     (drink-order ?nd) (food-order ?nf) (drink-deliv ?dd) (food-deliv ?df))
-        (not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)))
-?f2<-	(penalty ?p)
-=> 
-        (modify ?f1 (time ?t) (step ?i))
+
+;// penalità perchè l'ordine è stato delayed e non è ancora stato completato
+;Rispondo con deleyed solo se il tavolo deve essere pulino prima che possa portare il nuovo ordine richiesto
+(defrule RequestEvolution3 (declare (salience 10))
+    (status (time ?t) (step ?i))
+	?f1 <- (orderstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) 
+						(requested-by ?tb) (answer delayed) (drink-order ?nd) 
+						(food-order ?nf) (drink-deliv ?dd) (food-deliv ?df))
+    (not (orderstatus (step ?i) (arrivaltime ?at) (requested-by ?tb)))
+	?f2 <- (penalty ?p)
+	=> 
+    (modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) (max 1 (+ (- ?nd ?dd) (- ?nf ?df)))))))
 	(retract ?f2)
 )
-;// 
-(defrule RequestEvolution4       
-	(declare (salience 10))
-        (status (time ?t) (step ?i))
-?f1<-	(tablestatus (step = (- ?i 1)) (time ?tt) (table-id ?tb))
-        (not (tablestatus (step ?i)  (table-id ?tb)))
-=> 
-        (modify ?f1 (time ?t) (step ?i))
+
+;//SE NON CI SONO RICHIESTA AGGIUNTIVE FACCIO SCORRERE IL TEMPO NORMALMENTE
+(defrule RequestEvolution4	(declare (salience 10))
+	(status (time ?t) (step ?i))
+	?f1 <- (tablestatus (step = (- ?i 1)) (time ?tt) (table-id ?tb))
+    (not (tablestatus (step ?i)  (table-id ?tb)))
+	=>
+	(modify ?f1 (time ?t) (step ?i))
 )
+
 ;// __________________________________________________________________________________________
 ;// GENERA MOVIMENTI PERSONE                    
 ;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
@@ -579,39 +582,42 @@
 	(not (move-path ?m =(+ ?s 1) ?id ?r ?c))
         => (modify  ?f1  (time ?t) (step ?i) (activity stand) (move NA)) 
         )
-;// __________________________________________________________________________________________
-;// REGOLE PER GESTIONE INFORM (in caso di request) DALL'AGENTE 
-;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-;//
+
+
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;///////////////////////// 		REGOLE PER GESTIONE INFORM (in caso di request) DALL'AGENTE		/////////////////////////////////
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ;// l'agente ha inviato inform che l'ordine è accettato (e va bene)
-(defrule msg-order-accepted-OK    
-	(declare (salience 20))
-?f1<-	(status (step ?i) (time ?t))
+(defrule msg-order-accepted-OK	(declare (salience 20))
+	?f1 <- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 accepted))
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-?f3<-	(agentstatus (step ?i) (time ?t))
+	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3 <- (agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean yes))	
-=> 
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer accepted))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
 )
+
 ;// l'agente ha inviato inform che l'ordine è accettato (e ma non sono vere le condizioni)
-(defrule msg-order-accepted-KO1    
-	(declare (salience 20))
-?f1<-	(status (step ?i) (time ?t))
+; ACCETTA UN ORDINE SU UN TAVOLO CHE DEVE ESSERE PULITO
+(defrule msg-order-accepted-KO1	(declare (salience 20))
+	?f1 <- (status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 accepted))
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-?f3<-	(agentstatus (step ?i) (time ?t))
+	?f2 <- (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3 <- (agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean no))	
-?f4<-   (penalty ?p)	
-=> 
+	?f4 <- (penalty ?p)	
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer accepted))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
-        (assert (penalty (+ ?p 500000)))
+    (assert (penalty (+ ?p 500000)))
 	(retract ?f4)
 )
+
 ;// l'agente ha inviato inform che l'ordine è delayed (e va bene)
 (defrule msg-order-delayed-OK    
 	(declare (salience 20))
@@ -626,6 +632,7 @@
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer delayed))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
 )
+
 ;// l'agente ha inviato inform che l'ordine è delayed (e non va bene dovrebbe essere accepted)
 (defrule msg-order-delayed-KO1    
 	(declare (salience 20))
@@ -642,6 +649,7 @@
         (assert (penalty (+ ?p 500000)))
 	(retract ?f4)
 )
+
 ;// l'agente ha inviato inform che l'ordine è rejected (e non va bene dovrebbe essere accepted)
 (defrule msg-order-rejected-KO1    
 	(declare (salience 20))
@@ -658,6 +666,7 @@
         (assert (penalty (+ ?p 5000000)))
 	(retract ?f4)
 )
+
 ;// l'agente ha inviato inform che l'ordine è rejected (e non va bene dovrebbe essere delayed)
 (defrule msg-order-rejected-KO2    
 	(declare (salience 20))
@@ -675,6 +684,7 @@
         (assert (penalty (+ ?p 5000000)))
 	(retract ?f4)
 )
+
 ;// l'agente invia un'inform  per un servizio che non è più pending
 (defrule msg-mng-KO1    
 	(declare (salience 20))
@@ -689,6 +699,7 @@
         (assert (penalty (+ ?p 10000)))
         (retract ?f4)
 )
+
 ;// arriva un'inform per una richiesta not fatta dal tavolo
 (defrule msg-mng-KO2    
 	(declare (salience 20))
@@ -703,6 +714,7 @@
 	(assert (penalty (+ ?p 500000)))
 	(retract ?f4)
 )
+
 ;// Regole per il CheckFinish
 ;// Operazione OK- risposta yes
 (defrule CheckFinish_OK_YES
