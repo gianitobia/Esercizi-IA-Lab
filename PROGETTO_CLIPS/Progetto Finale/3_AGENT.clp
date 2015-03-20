@@ -146,31 +146,69 @@
 
 ;Si e' deciso di informare l'agente 
 (defrule inform-ENV-accepted (declare (salience 10))
-	(msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
+	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
 	(not (pulisci-table (table-id ?tb)))
+	(not (exec (step ?i))
 	=>
-	;aggiornare il count delle exec
 	;(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 accepted)))
 	;Accodare l'ordine
+	;Tornare al MAIN
+	(retract ?f)
 )
-
-
 
 (defrule inform-ENV-delayed (declare (salience 10))
-	(msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
+	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
 	(pulisci-table (table-id ?tb))
+	(not (exec (step ?i))
 	=>
-	;aggiornare il cont delle exec
 	;(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 delayed)))
 	;Accodare l'ordine
+	;Tornare al MAIN
+	(retract ?f)
 )
 
+;Regola che blocca il robot mentre sta eseguendo il piano ed invia una inform di ordine accepted 
+(defrule inform-ENV-accepted-busy (declare (salience 10))
+	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
+	(not (pulisci-table (table-id ?tb)))
+	=>
+	(assert 
+		(inform-temp ?i Inform ?tb ?t accepted)
+		(posticipate 1)
+	)
+	(retract ?f)
+	(focus POSTICIPATE)
+	;aggiornare il cont delle exec
+	;asserire la nuova exect di inform
+	;accodare l'ordine
+	
+)
 
+;Regola che blocca il robot mentre sta eseguendo il piano ed invia una inform di ordine accepted 
+(defrule inform-ENV-deleyed-busy (declare (salience 10))
+	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
+	(pulisci-table (table-id ?tb))
+	=>
+	(assert 
+		(inform-temp ?i Inform ?tb ?t deleyed)
+		(posticipate yes)
+	)
+	(retract ?f)
+	(focus POSTICIPATE)
+	;aggiornare il cont delle exec
+	;asserire la nuova exect di inform
+	;accodare l'ordine	
+)
 
-
-
-
-
+(defrule inform-ENV-exec-inform-busy (declare (salience 11))
+	?f1 <- (inform-temp ?i Inform ?tb ?t ?type)
+	?f2 <- (posticipate-exec)
+	=>
+	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 ?type)))
+	(retract ?f1 ?f2)
+    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 ?oper)))      
+    (focus MAIN)
+)
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ;// 								REGOLE PER INTERPRETARE LE PERCEZIONI VISIVE (N, S, E, O)          					  //
@@ -208,105 +246,154 @@
 	(modify ?f9 (contains ?x9))
 	(modify ?fs (step ?s))
 )
- ; Le percezioni modificano le K-cell (agente orientato east)
- (defrule k-percept-east
- 	(declare (salience 2))
-     (status (step ?s))
-     ?ka <- (K-agent)
-     ?fs <- (last-perc (step ?old-s))
-     (test (> ?s ?old-s))
-     (perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction east) 
-     (perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-     (perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-     (perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
-     ?f1 <- (K-cell (pos-r ?r)   (pos-c =(+ ?c 1)))
-     ?f2 <- (K-cell (pos-r ?r)   (pos-c =(+ ?c 1)))
-     ?f3 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)))
-     ?f4 <- (K-cell (pos-r =(+ ?r 1)) (pos-c ?c))
-     ?f5 <- (K-cell (pos-r ?r)   (pos-c ?c))
-     ?f6 <- (K-cell (pos-r =(- ?r 1)) (pos-c ?c))
-     ?f7 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1))) 
-     ?f8 <- (K-cell (pos-r ?r)   (pos-c =(- ?c 1)))  
-     ?f9 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)))
- => 
-     (modify ?ka (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction east)) ; Modifica il K-agent       
-     (modify ?f1 (contains ?x1))
-     (modify ?f2 (contains ?x2))
-     (modify ?f3 (contains ?x3))
-     (modify ?f4 (contains ?x4))
-     (modify ?f5 (contains ?x5))
-     (modify ?f6 (contains ?x6))
-     (modify ?f7 (contains ?x7))
-     (modify ?f8 (contains ?x8))
-     (modify ?f9 (contains ?x9))
-     (modify ?fs (step ?s))
- )
- ; Le percezioni modificano le K-cell (agente orientato south)
- (defrule k-percept-south
- 	(declare (salience 2))
-     (status (step ?s))
-     ?ka <- (K-agent)
-     ?fs <- (last-perc (step ?old-s))
-     (test (> ?s ?old-s))
-     (perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction south) 
-     (perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-     (perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-     (perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
-     ?f1 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)))
-     ?f2 <- (K-cell (pos-r =(- ?r 1)) (pos-c ?c))
-     ?f3 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)))
-     ?f4 <- (K-cell (pos-r ?r)   (pos-c =(+ ?c 1)))
-     ?f5 <- (K-cell (pos-r ?r)   (pos-c ?c))
-     ?f6 <- (K-cell (pos-r ?r)   (pos-c =(- ?c 1)))
-     ?f7 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)))
-     ?f8 <- (K-cell (pos-r =(+ ?r 1)) (pos-c ?c))
-     ?f9 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)))
- => 
-     (modify ?ka (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction south)) ; Modifica il K-agent        
-     (modify ?f1 (contains ?x1))
-     (modify ?f2 (contains ?x2))
-     (modify ?f3 (contains ?x3))
-     (modify ?f4 (contains ?x4))
-     (modify ?f5 (contains ?x5))
-     (modify ?f6 (contains ?x6))
-     (modify ?f7 (contains ?x7))
-     (modify ?f8 (contains ?x8))
-     (modify ?f9 (contains ?x9))
-     (modify ?fs (step ?s))
- )
- ; Le percezioni modificano le K-cell (agente orientato north)
- (defrule k-percept-north
- 	(declare (salience 2))
-     (status (step ?s))
-     ?ka <- (K-agent)
-     ?fs <- (last-perc (step ?old-s))
-     (test (> ?s ?old-s))
-     (perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction north) 
-     (perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-     (perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-     (perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
-     ?f1 <- (K-cell (pos-r =(+ ?r 1))    (pos-c =(- ?c 1)))
-     ?f2 <- (K-cell (pos-r =(+ ?r 1)) (pos-c ?c))
-     ?f3 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)))
-     ?f4 <- (K-cell (pos-r ?r)       (pos-c =(- ?c 1)))
-     ?f5 <- (K-cell (pos-r ?r)       (pos-c ?c))
-     ?f6 <- (K-cell (pos-r ?r)       (pos-c =(+ ?c 1)))
-     ?f7 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)))
-     ?f8 <- (K-cell (pos-r =(- ?r 1)) (pos-c ?c))
-     ?f9 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)))
- => 
-     (modify ?ka (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction north)) ; Modifica il K-agent
-     (modify ?f1 (contains ?x1))
-     (modify ?f2 (contains ?x2))
-     (modify ?f3 (contains ?x3))
-     (modify ?f4 (contains ?x4))
-     (modify ?f5 (contains ?x5))
-     (modify ?f6 (contains ?x6))
-     (modify ?f7 (contains ?x7))
-     (modify ?f8 (contains ?x8))
-     (modify ?f9 (contains ?x9))
-     (modify ?fs (step ?s))
- )
+
+; Le percezioni modificano le K-cell (agente orientato east)
+(defrule k-percept-east	(declare (salience 2))
+	(status (step ?s))
+	?ka <- (K-agent)
+	?fs <- (last-perc (step ?old-s))
+	(test (> ?s ?old-s))
+	(perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction east) 
+	(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+	(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+	(perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
+	?f1 <- (K-cell (pos-r ?r)   (pos-c =(+ ?c 1)))
+	?f2 <- (K-cell (pos-r ?r)   (pos-c =(+ ?c 1)))
+	?f3 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)))
+	?f4 <- (K-cell (pos-r =(+ ?r 1)) (pos-c ?c))
+	?f5 <- (K-cell (pos-r ?r)   (pos-c ?c))
+	?f6 <- (K-cell (pos-r =(- ?r 1)) (pos-c ?c))
+	?f7 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1))) 
+	?f8 <- (K-cell (pos-r ?r)   (pos-c =(- ?c 1)))  
+	?f9 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)))
+	=> 
+	(modify ?ka (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction east)) ; Modifica il K-agent       
+	(modify ?f1 (contains ?x1))
+	(modify ?f2 (contains ?x2))
+	(modify ?f3 (contains ?x3))
+	(modify ?f4 (contains ?x4))
+	(modify ?f5 (contains ?x5))
+	(modify ?f6 (contains ?x6))
+	(modify ?f7 (contains ?x7))
+	(modify ?f8 (contains ?x8))
+	(modify ?f9 (contains ?x9))
+	(modify ?fs (step ?s))
+)
+ 
+; Le percezioni modificano le K-cell (agente orientato south)
+(defrule k-percept-south	(declare (salience 2))
+	(status (step ?s))
+	?ka <- (K-agent)
+	?fs <- (last-perc (step ?old-s))
+	(test (> ?s ?old-s))
+	(perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction south) 
+	(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+	(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+	(perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
+	?f1 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)))
+	?f2 <- (K-cell (pos-r =(- ?r 1)) (pos-c ?c))
+	?f3 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)))
+	?f4 <- (K-cell (pos-r ?r)   (pos-c =(+ ?c 1)))
+	?f5 <- (K-cell (pos-r ?r)   (pos-c ?c))
+	?f6 <- (K-cell (pos-r ?r)   (pos-c =(- ?c 1)))
+	?f7 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)))
+	?f8 <- (K-cell (pos-r =(+ ?r 1)) (pos-c ?c))
+	?f9 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)))
+	=> 
+	(modify ?ka (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction south)) ; Modifica il K-agent        
+	(modify ?f1 (contains ?x1))
+	(modify ?f2 (contains ?x2))
+	(modify ?f3 (contains ?x3))
+	(modify ?f4 (contains ?x4))
+	(modify ?f5 (contains ?x5))
+	(modify ?f6 (contains ?x6))
+	(modify ?f7 (contains ?x7))
+	(modify ?f8 (contains ?x8))
+	(modify ?f9 (contains ?x9))
+	(modify ?fs (step ?s))
+)
+
+; Le percezioni modificano le K-cell (agente orientato north)
+(defrule k-percept-north	(declare (salience 2))
+	(status (step ?s))
+	?ka <- (K-agent)
+	?fs <- (last-perc (step ?old-s))
+	(test (> ?s ?old-s))
+	(perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction north) 
+	(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+	(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+	(perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
+	?f1 <- (K-cell (pos-r =(+ ?r 1))    (pos-c =(- ?c 1)))
+	?f2 <- (K-cell (pos-r =(+ ?r 1)) (pos-c ?c))
+	?f3 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)))
+	?f4 <- (K-cell (pos-r ?r)       (pos-c =(- ?c 1)))
+	?f5 <- (K-cell (pos-r ?r)       (pos-c ?c))
+	?f6 <- (K-cell (pos-r ?r)       (pos-c =(+ ?c 1)))
+	?f7 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)))
+	?f8 <- (K-cell (pos-r =(- ?r 1)) (pos-c ?c))
+	?f9 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)))
+	=> 
+	(modify ?ka (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction north)) ; Modifica il K-agent
+	(modify ?f1 (contains ?x1))
+	(modify ?f2 (contains ?x2))
+	(modify ?f3 (contains ?x3))
+	(modify ?f4 (contains ?x4))
+	(modify ?f5 (contains ?x5))
+	(modify ?f6 (contains ?x6))
+	(modify ?f7 (contains ?x7))
+	(modify ?f8 (contains ?x8))
+	(modify ?f9 (contains ?x9))
+	(modify ?fs (step ?s))
+)
+ 
+(defmodule POSTICIPATE (import AGENT ?ALL) (export ?ALL))
+
+(defrule posticipate-exec-start (declare (salience 20))
+	?f <- (posticipate ?passi)
+	=>
+	(step ?passi)
+	(start yes)
+	(retract ?f)
+)
+
+
+(defrule posticipate-exec-begin (declare (salience 10))
+	?f <- (exec (step ?i) (action ?a) (param1 ?p1) (param2 ?p2) (param3 ?p3)))
+	(not (step-modifyed ?i))
+	(start yes)
+	=>
+	(assert (post-exec ?i ?a ?p1 ?p2 ?p3))
+	(assert (step-modifyed ?i))
+	(retract ?f)
+)
+
+(defrule posticipate-exec (declare (salience 10))
+	?f1 <- (post-exec ?i ?a ?p1 ?p2 ?p3)
+	?f2 <- (step-modifyed ?i)
+	(step ?passi)
+	=>
+	(assert (exec (step =(+ ?i ?passi)) (action ?a) (param1 ?p1) (param2 ?p2) (param3 ?p3)))
+	(retract ?f2)
+	(assert (step-modifyed =(+ ?i ?passi)))
+	(retract ?f1)
+)
+
+(defrule posticipate-exec-end (declare (salience 9))
+	?f1 <- (start yes)
+	?f2 <- (passi ?p)
+	=>
+	(retract ?f1 ?f2)
+	(assert (posticipate-exec))
+)
+
+;cancello tutti gli step di modifica prima di uscire dal modulo
+(defrule clean-all (declare (salience 8))
+	?f <- (step-modifyed ?i)
+	=>
+	(retract ?f)
+	(pop-focus)
+)
+ 
 ; alcune azioni per testare il sistema
 ; (assert (exec (step 0) (action Forward)))
 ; (assert (exec (step 1) (action Inform) (param1 T4) (param2 2) (param3 accepted)))
