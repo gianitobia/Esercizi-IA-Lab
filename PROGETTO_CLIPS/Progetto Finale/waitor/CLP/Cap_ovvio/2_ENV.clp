@@ -325,7 +325,7 @@
     => 
 	(assert 	
 		(cleanstatus (step ?i) (time ?t) (arrivaltime ?t) (requested-by ?tb) (source ?tb))
-                (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type finish))
+        (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type finish))
 	)
 	(retract ?f1)
 	(printout t crlf " ENVIRONMENT:" crlf)
