@@ -1,0 +1,7 @@
+(clear)
+(load "1_MAIN.clp")
+(load "2_ENV.clp")
+(load "3_AGENT.clp")
+(load "4_PLANNER.clp")
+(load "5_MOVEMENT.clp")
+(reset)

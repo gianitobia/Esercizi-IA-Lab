@@ -55,6 +55,7 @@
 (defrule beginagent1 (declare (salience 11))
     (status (step 0))
     (not (exec (step 0)))
+	(not (init-agent (done yes)))
     (prior-cell (pos-r ?r) (pos-c ?c) (contains ?x)) 
 	=>
     (assert (K-cell (pos-r ?r) (pos-c ?c) (contains ?x)))
@@ -64,6 +65,7 @@
 (defrule beginagent2 (declare (salience 11))
     (status (step 0))
     (not (exec (step 0)))
+	(not (init-agent (done yes)))
     (initial_agentposition (pos-r ?r) (pos-c ?c) (direction ?d))
 	=> 
     (assert (K-agent (step 0) (time 0) (pos-r ?r) (pos-c ?c) (direction ?d)
@@ -78,28 +80,33 @@
 
 ;regola per inizare la pianificazione
 (defrule ask-plan (declare (salience 4))
-	?f <- (status (step ?i))
-	(not (planned-action $?)); Non ci sono azioni da mandare in esecuzione
-	(not (planned-goal $?))
+	?f <- (status (step ?i) (time ?t))
+	(K-agent (pos-r ?r) (pos-c ?c))
+	(not (planned-action (step ?st))); Non ci sono azioni da mandare in esecuzione
+	(not (planned-goal (pos_r ?pr) (pos_c ?pc)))
 	(not (TRY ONE GOAL ONLY)) ;?????
 	=>
     (assert (planned-goal (pos_r 3) (pos_c 9)))		;creare regole di pianificazione nel planner
     (assert (TRY ONE GOAL ONLY))
     (modify ?f (result no))
-)
-
-; Esegue una pianificazione ed esecuzione del goal
-(defrule start-planning (declare (salience 3))
-    (status (step ?i) (time ?t))
-    (K-agent (pos-r ?r) (pos-c ?c))
-    (planned-goal (pos_r ?goal-r) (pos_c ?goal-c))
- 	=> 
-	(printout t crlf " == AGENT ==" crlf) (printout t "Starting to plan (" ?r ", "?c ") --> (" ?goal-r ", "?goal-c ")" crlf crlf)
-    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 ?goal-r) (param4 ?goal-c)))      
-    (assert (something-to-plan)) ; Avvisa che A star ha qualcosa da fare
+    (assert (something-to-plan))
+    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 3) (param4 9)))      
     (focus PLANNER)
 )
 
+; Esegue una pianificazione ed esecuzione del goal
+;(defrule start-planning (declare (salience 3))
+;    (status (step ?i) (time ?t))
+;    (K-agent (pos-r ?r) (pos-c ?c))
+;    (planned-goal (pos_r ?goal-r) (pos_c ?goal-c))
+; 	=> 
+;	(printout t crlf " == AGENT ==" crlf) (printout t "Starting to plan (" ?r ", "?c ") --> (" ?goal-r ", "?goal-c ")" crlf crlf)
+;    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 ?goal-r) (param4 ?goal-c)))      
+;    (assert (something-to-plan)) ; Avvisa che A star ha qualcosa da fare
+;    (focus PLANNER)
+;)
+
+; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
 ; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
 (defrule decode-plan-execute (declare (salience 2))
 	?f <- (status (step ?i))
@@ -121,7 +128,7 @@
 )
 
 (defrule end-plan-execute (declare (salience 1))
-    (not (planned-action $?))
+    (not (planned-action (step ?st)))
     (status (step ?i) (time ?t))    
     ?f <- (status (result no)) ; QUESTA SERVE PER ESEGUIRE UN SOLO GOAL.
     => 
@@ -139,7 +146,6 @@
 ;    (printout t crlf crlf)
 ;    (modify ?f (result no))
 ;)
-
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ;// 											REGOLE GESTIONE MESSAGGI CON ENV			          					  //
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -393,7 +399,7 @@
 	(retract ?f)
 	(pop-focus)
 )
- 
+
 ; alcune azioni per testare il sistema
 ; (assert (exec (step 0) (action Forward)))
 ; (assert (exec (step 1) (action Inform) (param1 T4) (param2 2) (param3 accepted)))
