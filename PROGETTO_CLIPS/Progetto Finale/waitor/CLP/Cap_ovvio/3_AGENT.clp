@@ -110,7 +110,7 @@
 ; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
 (defrule decode-plan-execute (declare (salience 2))
 	?f <- (status (step ?i))
- 	?f2 <- (planned-action (step ?id) (action ?oper) (pos_r ?r) (pos_c ?c)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
+ 	?f2 <- (planned-action (step ?i) (action ?oper) (pos_r ?r) (pos_c ?c)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
 	=>
     (modify ?f (result no)) ; CHIEDERE AL PROF
     (retract ?f2)
@@ -153,30 +153,34 @@
 ;Si e' deciso di informare l'agente 
 (defrule inform-ENV-accepted (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
-	(not (pulisci-table (table-id ?tb)))
-	(not (exec (step ?i))
+	(not (pulisci-table ?tb))
+	(not (planned-action (step ?i)))
 	=>
-	;(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 accepted)))
+	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 accepted)))
+	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform-accepted)))
 	;Accodare l'ordine
 	;Tornare al MAIN
 	(retract ?f)
+	(focus MAIN)
 )
 
 (defrule inform-ENV-delayed (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
-	(pulisci-table (table-id ?tb))
-	(not (exec (step ?i))
+	(pulisci-table ?tb)
+	(not (planned-action (step ?i)))
 	=>
-	;(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 delayed)))
+	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 delayed)))
+	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform-delayed)))
 	;Accodare l'ordine
 	;Tornare al MAIN
 	(retract ?f)
+	(focus MAIN)
 )
 
 ;Regola che blocca il robot mentre sta eseguendo il piano ed invia una inform di ordine accepted 
 (defrule inform-ENV-accepted-busy (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
-	(not (pulisci-table (table-id ?tb)))
+	(not (pulisci-table ?tb))
 	=>
 	(assert 
 		(inform-temp ?i Inform ?tb ?t accepted)
@@ -193,7 +197,7 @@
 ;Regola che blocca il robot mentre sta eseguendo il piano ed invia una inform di ordine accepted 
 (defrule inform-ENV-deleyed-busy (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
-	(pulisci-table (table-id ?tb))
+	(pulisci-table ?tb)
 	=>
 	(assert 
 		(inform-temp ?i Inform ?tb ?t deleyed)
@@ -212,7 +216,7 @@
 	=>
 	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 ?type)))
 	(retract ?f1 ?f2)
-    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 ?oper)))      
+    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform)))      
     (focus MAIN)
 )
 
@@ -357,47 +361,49 @@
 (defrule posticipate-exec-start (declare (salience 20))
 	?f <- (posticipate ?passi)
 	=>
-	(step ?passi)
-	(start yes)
+	(assert 
+		(step ?passi)
+		(start yes)
+	)
 	(retract ?f)
 )
 
-
 (defrule posticipate-exec-begin (declare (salience 10))
-	?f <- (exec (step ?i) (action ?a) (param1 ?p1) (param2 ?p2) (param3 ?p3)))
+	?f <- (planned-action (step ?i) (action ?oper) (pos_r ?r) (pos_c ?c))
 	(not (step-modifyed ?i))
 	(start yes)
 	=>
-	(assert (post-exec ?i ?a ?p1 ?p2 ?p3))
+	(assert (post-exec ?i ?oper ?r ?c))
 	(assert (step-modifyed ?i))
 	(retract ?f)
 )
 
-(defrule posticipate-exec (declare (salience 10))
-	?f1 <- (post-exec ?i ?a ?p1 ?p2 ?p3)
+
+(defrule posticipate-exec (declare (salience 9))
+	?f1 <- (post-exec ?i ?oper ?r ?c)
 	?f2 <- (step-modifyed ?i)
 	(step ?passi)
+	
 	=>
-	(assert (exec (step =(+ ?i ?passi)) (action ?a) (param1 ?p1) (param2 ?p2) (param3 ?p3)))
+	(assert (planned-action (step =(+ ?i ?passi)) (action ?oper) (pos_r ?r) (pos_c ?c)))
 	(retract ?f2)
 	(assert (step-modifyed =(+ ?i ?passi)))
 	(retract ?f1)
 )
 
-(defrule posticipate-exec-end (declare (salience 9))
+(defrule posticipate-exec-end (declare (salience 8))
 	?f1 <- (start yes)
-	?f2 <- (passi ?p)
+	?f2 <- (step ?p)
 	=>
 	(retract ?f1 ?f2)
 	(assert (posticipate-exec))
 )
 
 ;cancello tutti gli step di modifica prima di uscire dal modulo
-(defrule clean-all (declare (salience 8))
+(defrule clean-all (declare (salience 7))
 	?f <- (step-modifyed ?i)
 	=>
 	(retract ?f)
-	(pop-focus)
 )
 
 ; alcune azioni per testare il sistema
