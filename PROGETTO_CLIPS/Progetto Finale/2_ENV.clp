@@ -3,9 +3,14 @@
 ;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 (defmodule ENV (import MAIN ?ALL))
 ;// DEFTEMPLATE
-(deftemplate cell  (slot pos-r) (slot pos-c) 
-                   (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket
-                                                      RecyclableBasket DrinkDispenser FoodDispenser)))
+(deftemplate cell  
+	(slot pos-r) 
+	(slot pos-c) 
+    (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket
+                                        RecyclableBasket DrinkDispenser FoodDispenser))
+
+)
+
 (deftemplate agentstatus 
 	(slot step)
     (slot time) 
