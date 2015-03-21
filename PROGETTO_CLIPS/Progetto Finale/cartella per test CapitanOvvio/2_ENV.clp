@@ -4,25 +4,15 @@
 (defmodule ENV (import MAIN ?ALL))
 
 ;// DEFTEMPLATE
-<<<<<<< HEAD:PROGETTO_CLIPS/Progetto Finale/2_ENV.clp
-=======
-
 ;Definizione della cella
->>>>>>> FETCH_HEAD:PROGETTO_CLIPS/Progetto Finale/cartella per test CapitanOvvio/2_ENV.clp
 (deftemplate cell  
 	(slot pos-r) 
 	(slot pos-c) 
     (slot contains (allowed-values Wall Person  Empty Parking Table Seat TrashBasket
                                         RecyclableBasket DrinkDispenser FoodDispenser))
-<<<<<<< HEAD:PROGETTO_CLIPS/Progetto Finale/2_ENV.clp
-
-)
-
-=======
 )
 
 ;Definizione stato agente
->>>>>>> FETCH_HEAD:PROGETTO_CLIPS/Progetto Finale/cartella per test CapitanOvvio/2_ENV.clp
 (deftemplate agentstatus 
 	(slot step)
     (slot time) 

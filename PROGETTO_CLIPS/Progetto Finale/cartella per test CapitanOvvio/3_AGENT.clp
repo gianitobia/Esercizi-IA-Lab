@@ -225,7 +225,7 @@
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ; Le percezioni modificano le K-cell (agente orientato west)
-(defrule k-percept-west (declare (salience 2))
+(defrule k-percept-west (declare (salience 20))
 	(status (step ?s))
 	?ka <- (K-agent) ; recupera il K-agent
 	?fs <- (last-perc (step ?old-s))
@@ -258,7 +258,7 @@
 )
 
 ; Le percezioni modificano le K-cell (agente orientato east)
-(defrule k-percept-east	(declare (salience 2))
+(defrule k-percept-east	(declare (salience 20))
 	(status (step ?s))
 	?ka <- (K-agent)
 	?fs <- (last-perc (step ?old-s))
@@ -291,7 +291,7 @@
 )
  
 ; Le percezioni modificano le K-cell (agente orientato south)
-(defrule k-percept-south	(declare (salience 2))
+(defrule k-percept-south	(declare (salience 20))
 	(status (step ?s))
 	?ka <- (K-agent)
 	?fs <- (last-perc (step ?old-s))
@@ -324,7 +324,7 @@
 )
 
 ; Le percezioni modificano le K-cell (agente orientato north)
-(defrule k-percept-north	(declare (salience 2))
+(defrule k-percept-north	(declare (salience 20))
 	(status (step ?s))
 	?ka <- (K-agent)
 	?fs <- (last-perc (step ?old-s))
@@ -360,50 +360,45 @@
 
 (defrule posticipate-exec-start (declare (salience 20))
 	?f <- (posticipate ?passi)
+	(status (step ?st))
 	=>
 	(assert 
 		(step ?passi)
-		(start yes)
+		(start ?st)
+		(back 1)
 	)
 	(retract ?f)
 )
 
 (defrule posticipate-exec-begin (declare (salience 10))
-	?f <- (planned-action (step ?i) (action ?oper) (pos_r ?r) (pos_c ?c))
-	(not (step-modifyed ?i))
-	(start yes)
+	(planned-action (step ?i))
+	?f <- (start ?i)
+	(back 1)
 	=>
-	(assert (post-exec ?i ?oper ?r ?c))
-	(assert (step-modifyed ?i))
+	(assert (start =(+ ?i 1)))
 	(retract ?f)
 )
-
 
 (defrule posticipate-exec (declare (salience 9))
-	?f1 <- (post-exec ?i ?oper ?r ?c)
-	?f2 <- (step-modifyed ?i)
+	(start ?i)
 	(step ?passi)
-	
+	?f1 <- (back ?b)
+	?f2 <- (planned-action (step =(- ?i ?b)))
 	=>
-	(assert (planned-action (step =(+ ?i ?passi)) (action ?oper) (pos_r ?r) (pos_c ?c)))
-	(retract ?f2)
-	(assert (step-modifyed =(+ ?i ?passi)))
+	(assert (back =(+ ?b 1)))
 	(retract ?f1)
+	(modify ?f2 (step =(+ (- ?i ?b) ?passi)))
 )
+
 
 (defrule posticipate-exec-end (declare (salience 8))
-	?f1 <- (start yes)
+	?f1 <- (start ?st)
 	?f2 <- (step ?p)
+	?f3 <- (back ?b)
 	=>
-	(retract ?f1 ?f2)
+	(retract ?f1 ?f2 ?f3)
 	(assert (posticipate-exec))
-)
-
-;cancello tutti gli step di modifica prima di uscire dal modulo
-(defrule clean-all (declare (salience 7))
-	?f <- (step-modifyed ?i)
-	=>
-	(retract ?f)
+	(pop-focus)
 )
 
 ; alcune azioni per testare il sistema
