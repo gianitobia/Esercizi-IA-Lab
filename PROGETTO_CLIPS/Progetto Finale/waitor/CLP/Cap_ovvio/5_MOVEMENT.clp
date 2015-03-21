@@ -117,6 +117,7 @@
 	(planned-move-inv (step ?step))
 	=>
 	(printout t " movimento ultimato " crlf)
+	(assert (deleted no))
 	(focus DEL_MOVE)
 )
 

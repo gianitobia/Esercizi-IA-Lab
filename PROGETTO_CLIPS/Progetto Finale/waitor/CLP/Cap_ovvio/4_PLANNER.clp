@@ -18,7 +18,22 @@
 	(focus MOVEMENT)
 )
 
-(defrule invert-move-action (declare (salience 99))
+;Cancelliamo l'ultimo step di a* in modo da non finire sulla casella dell'obiettivo
+(defrule delete-last-step (declare (salience 99))
+	?f2 <- (deleted no)
+	?f1 <- (planned-move-inv
+				(step ?curr)
+				(action ?act)
+				(pos_r ?r)
+				(pos_c ?c)
+	)
+	=>
+	(printout t "Step cancellato: " ?curr crlf)
+	(retract ?f1 ?f2)
+)
+	
+
+(defrule invert-move-action (declare (salience 98))
 	?f <- (planned-move-inv
 		(step ?curr)
 		(action ?act)
