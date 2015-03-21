@@ -53,31 +53,36 @@
 ;regola che si attiva al raggiungimento del goal
 (defrule achieved-goal (declare (salience 100))
      (current ?id)
+     (status (step ?i) (time ?t))
      (goal ?r ?c)
      (node (ident ?id) (pos-r ?r) (pos-c ?c) (gcost ?g))  
      => 
-     (assert (stampa ?id))
+	 (printout t " Esiste soluzione per goal (" ?r "," ?c ") con costo "  ?g crlf)
+	 (assert (printGUI (time ?t) (step ?i) (source "PLANNER") (verbosity 2) (text  "Solution exists for goal(%p1, %p2) with cost %p3") (param1 ?r) (param2 ?c) (param3 ?g)))      
+	 (assert (stampa ?id))
 )
 
 ;stampa la soluzione trovata
 (defrule stampaSol (declare (salience 101))
 	?f <- (stampa ?id)
+    (status (step ?i) (time ?t))
     (node (ident ?id) (father ?anc&~NA))
 	;trova le azioni ad alto livello di A*
 	;e segna che ci sono azioni da convertire 
 	(exec_as ?anc ?id ?oper ?r ?c) 						
 	=> 
-	(printout t ?id " Eseguo azione " ?oper " da stato (" ?r "," ?c ") " crlf)
-	(assert (azione ?anc ?id ?oper ?r ?c))
+	(printout t " Pianificata azione " ?oper " da stato (" ?r "," ?c ") " crlf)
+	(assert (printGUI (time ?t) (step ?i) (source "PLANNER") (verbosity 2) (text  "Planned action %p3 from cell  (%p1, %p2)") (param1 ?r) (param2 ?c) (param3 ?oper)))      
+    (assert (azione ?anc ?id ?oper ?r ?c))
     (assert (stampa ?anc))
 	(assert (print yes))
     (retract ?f)
-	
 )
 
 ;stampa le statistiche sull'esecuzione di A*
 (defrule stampa-fine (declare (salience 102))
 	?f1 <- (print yes)
+    (status (step ?i) (time ?t))
 	(stampa ?id)
 	(node (ident ?id) (father ?anc&NA))
 	(open-worse ?worse)
@@ -91,6 +96,9 @@
 	(printout t " stati generati gi� in open (open-better) " ?better crlf)
 	(printout t crlf)
 	(printout t crlf)
+    (assert (printGUI (time ?t) (step ?i) (source "PLANNER") (verbosity 2)  (text  "Stati espansi: %p1") (param1 ?n)))      
+    (assert (printGUI (time ?t) (step ?i) (source "PLANNER") (verbosity 2) (text  "Stati generati già in closed: %p1")  (param1 ?closed)))  
+    (assert (printGUI (time ?t) (step ?i) (source "PLANNER") (verbosity 2) (text  "Stati generati già in open (open-worse e open-better): %p1 e %p2") (param1 ?worse) (param2 ?better))) 
 	(retract ?f1)
 )
 
@@ -103,6 +111,13 @@
 	(assert (convert-action ?anc ?id ?oper ?r ?c))
 	(focus CONVERT)
 	(retract ?f)
+)
+
+(defrule exit-movement (declare (salience 98))
+	(planned-move-inv (step ?step))
+	=>
+	(printout t " movimento ultimato " crlf)
+	(focus DEL_MOVE)
 )
 
 ;############################################################
@@ -277,7 +292,7 @@
 ;===========================================================================================================================
 ;===========================================================================================================================
 ;Modulo per la generazione di nuovi nodi di A* e la gestione del miglior nodo current
-(defmodule NEW (import CALC_PATH ?ALL) (export ?ALL))
+(defmodule NEW (import MOVEMENT ?ALL) (export ?ALL))
 
 ;Non vengono ricontrollati i nodi in CLOSED(gia' esplorati) xke la funzione distanza che
 ;utilizziamo e` monotona e quindi non succedera' di doverli riaprirli;
@@ -340,7 +355,7 @@
 ;===========================================================================================================================
 ;===========================================================================================================================
 ;Modulo per la conversione tra azioni di generiche di A* --> (planned-action) 
-(defmodule CONVERT (import CALC_PATH ?ALL) (export ?ALL))
+(defmodule CONVERT (import MOVEMENT ?ALL) (export ?ALL))
 
 ;Definizione della base di conoscenza per le rotazioni
 (deftemplate rotation
@@ -381,7 +396,7 @@
 	(printout t " forward NORD " crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (pos-r =(+ ?rig 1)))
 	(assert 
-			(planned-action 
+			(planned-move-inv 
 					(step ?curr) 
 					(action Forward)
 					(pos_r ?rig)
@@ -400,7 +415,7 @@
 	(printout t " forward EAST " crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (pos-c =(+ ?col 1)))
 	(assert 
-			(planned-action
+			(planned-move-inv
 					(step ?curr)
 					(action Forward)
 					(pos_r ?rig)
@@ -419,7 +434,7 @@
 	(printout t " forward SOUTH " crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (pos-r =(- ?rig 1)))
 	(assert 
-			(planned-action
+			(planned-move-inv
 					(step ?curr)
 					(action Forward)
 					(pos_r ?rig)
@@ -438,7 +453,7 @@
 	(printout t " forward WEST " crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (pos-c =(- ?col 1)))
 	(assert 
-			(planned-action
+			(planned-move-inv
 					(step ?curr)
 					(action Forward)
 					(pos_r ?rig)
@@ -464,11 +479,11 @@
 	(printout t " Rotation " ?act crlf)
 	(modify ?f2 (step =(+ ?curr 1)) (direction ?turn))
 	(assert 
-			(planned-action
+			(planned-move-inv
 					(step ?curr)
 					(action ?act)
-					(pos_r ?rig)
-					(pos_c ?col)
+					(pos_r ?r)
+					(pos_c ?c)
 			)
 	)
 	;esegui una rotazione ?rot (destra o sinitra) per arrivare (o avvicinarci)
@@ -479,4 +494,40 @@
 ;===========================================================================================================================
 ;===========================================================================================================================
 ;Modulo per la cancellazione di tutti i fatti relativi ad un planning gia' eseguito o fallito
-(defmodule DEL_PLANNER (import MOVEMENT ?ALL) (export ?ALL))
+(defmodule DEL_MOVE (import MOVEMENT ?ALL) (export ?ALL))
+
+(defrule del-agentStatus_as (declare (salience 5))
+	?f <- (agentstatus_As (step ?curr))
+	=>
+	(retract ?f)
+)
+
+(defrule del-all-node (declare (salience 6))
+	?f <- (node (ident ?i))
+	=>
+	(retract ?f)
+)
+
+(defrule del-variabili (declare (salience 1))
+	?f <- (current ?c)
+	?f1 <- (lastnode ?ld)
+	?f2 <- (open-worse ?ow)
+	?f3 <- (open-better ?ob)
+	?f4 <- (alreadyclosed ?ac)
+	?f5 <- (numberofnodes ?nn)
+	=>
+	(retract ?f)
+	(retract ?f1)
+	(retract ?f2)
+	(retract ?f3)
+	(retract ?f4)
+	(retract ?f5)
+	(pop-focus)
+	(pop-focus)
+)
+
+(defrule del-exec_as (declare (salience 4))
+	?f <- (exec_as $?)
+	=>
+	(retract ?f)
+)
