@@ -35,7 +35,7 @@
 	(K-agent (step ?st) (pos-r ?r) (pos-c ?c) (direction ?d))
 	=>
 	(assert
-		(agentstatus_As (step 0) (pos-r ?r) (pos-c ?c) (direction ?d))
+		(agentstatus_As (step ?st) (pos-r ?r) (pos-c ?c) (direction ?d))
         (node (ident 0) (gcost 0) (fcost 0) (father NA) (pos-r ?r) (pos-c ?c) (open yes)) 
         (current 0)
         (lastnode 0)
