@@ -35,9 +35,13 @@
 ;Definizone del template per le azioni pieanificate
 (deftemplate planned-action
 	(slot step)
-	(slot action)		;azioni da far effettuare al robot
+	(slot action (allowed-values Forward Turnright Turnleft Wait 
+                        LoadDrink LoadFood DeliveryFood DeliveryDrink 
+                        CleanTable EmptyFood Release CheckFinish Inform)
+	)		;azioni da far effettuare al robot
 	(slot pos_r)		;riga da dove viene effettuata l'azione 
 	(slot pos_c) 		;colonna da dove si effettua l'azione
+	(slot param3)		;possibile terzo parametro da usare per le quantitá
 )
 
 ;definizione del template per i goal a cui bisogna arrivare
@@ -83,11 +87,7 @@
 	?f <- (status (step ?i) (time ?t))
 	(K-agent (pos-r ?r) (pos-c ?c))
 	(not (planned-action (step ?st))); Non ci sono azioni da mandare in esecuzione
-	(not (planned-goal (pos_r ?pr) (pos_c ?pc)))
-	(not (TRY ONE GOAL ONLY)) ;?????
 	=>
-    (assert (planned-goal (pos_r 3) (pos_c 9)))		;creare regole di pianificazione nel planner
-    (assert (TRY ONE GOAL ONLY))
     (modify ?f (result no))
     (assert (something-to-plan))
     (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 3) (param4 9)))      
@@ -400,32 +400,3 @@
 	(assert (posticipate-exec))
 	(pop-focus)
 )
-
-; alcune azioni per testare il sistema
-; (assert (exec (step 0) (action Forward)))
-; (assert (exec (step 1) (action Inform) (param1 T4) (param2 2) (param3 accepted)))
-; (assert (exec (step 2) (action LoadDrink) (param1 7) (param2 7)))
-; (assert (exec (step 3) (action LoadFood) (param1 7) (param2 5)))
-; (assert (exec (step 4) (action Forward)))
-; (assert (exec (step 5) (action DeliveryDrink) (param1 5) (param2 6)))
-; (assert (exec (step 6) (action DeliveryFood) (param1 5) (param2 6)))
-; (assert (exec (step 7) (action Inform) (param1 T3) (param2 20) (param3 delayed)))
-; (assert (exec (step 8) (action Inform) (param1 T3) (param2 16) (param3 delayed)))
-; (assert (exec (step 9) (action Turnleft)))
-; (assert (exec (step 10) (action Turnleft)))
-; (assert (exec (step 11) (action CleanTable) (param1 5) (param2 6)))
-; (assert (exec (step 12) (action Forward)))
-; (assert (exec (step 13) (action Forward)))
-; (assert (exec (step 14) (action Release) (param1 8) (param2 7)))
-; (assert (exec (step 15) (action EmptyFood) (param1 8) (param2 5)))
-; (assert (exec (step 16) (action Release) (param1 8) (param2 7)))
-; (assert (exec (step 7) (action Inform) (param1 T3) (param2 16) (param3 delayed)))
-; (assert (exec (step 8) (action Turnleft)))
-; (assert (exec (step 9) (action Turnleft)))
-; (assert (exec (step 10) (action CheckFinish) (param1 5) (param2 6)))
-; (assert (exec (step 11) (action CleanTable) (param1 5) (param2 6)))
-; (assert (exec (step 12) (action CheckFinish) (param1 5) (param2 6)))
-; (assert (exec (step 13) (action Forward)))
-; (assert (exec (step 14) (action Release) (param1 8) (param2 7)))
-; (assert (exec (step 15) (action EmptyFood) (param1 8) (param2 5)))
-; (assert (exec (step 16) (action Release) (param1 8) (param2 7)))
