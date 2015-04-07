@@ -19,6 +19,13 @@
 	(slot param2)
 	(slot param3)
 )
+
+(defrule deleteMacroStep (declare (salience 350))
+	(not (MacroAction))
+	?f <- (macrostep ?i)
+	=>
+	(retract ?f)
+)
 ;;ZONA DI CONVERSIONE DA MACRO A PLANNEDACTION
 ;;Nel caso in cui viene trovato una macro di tipo Move si scatena il modulo Movement
 (defrule convertMacroToMove (declare (salience 300))
@@ -138,7 +145,7 @@
 	(pop-focus)
 )
 
-;
+;Nel caso in cui non ci siano Macro da eseguire ma ci siano ordini in attesa, passiamo il focus all'order management
 (defrule createNewMacros (declare (salience 290))
 	?s <- (something-to-plan)
 	(step ?curr)
