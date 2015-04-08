@@ -1,5 +1,6 @@
 (defmodule ORDER_MANAGEMENT (import PLANNER ?ALL) (export ?ALL))
 
+;regola che converte tutti gli ordini di checkFinish in una sequenza di MacroAction
 (defrule rec_message_finish (declare (salience 14))
 	?f <- (createMacro)
 	(coda-ordini (time ?t) (step ?i) (sender ?tb) (tipo finish))
@@ -15,6 +16,7 @@
 	)
 )
 
+;regola che converte tutti gli ordini di Order con numero di porzione di cibi pari a 0 in una sequenza di MacroAction
 (defrule rec_message_order1 (declare (salience 12))
 	?f <- (createMacro)
 	(coda-ordini (time ?t) (step ?i) (sender ?tb) (tipo order)
@@ -33,6 +35,8 @@
 	)
 )
 
+;regola che converte tutti gli ordini di Order con numero di porzione di bevande pari a 0 in una sequenza di MacroAction
+
 (defrule rec_message_order2 (declare (salience 12))
 	?f <- (createMacro)
 	(coda-ordini (time ?t) (step ?i) (sender ?tb) (tipo order)
@@ -50,6 +54,8 @@
 		(macrostep 1)
 	)
 )
+
+;regola che converte tutti gli ordini di Order con numero di porzione di cibi e bevande diverso da 0 in una sequenza di MacroAction
 
 (defrule rec_message_order3 (declare (salience 10))
 	?f <- (createMacro)
