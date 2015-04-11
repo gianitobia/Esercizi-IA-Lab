@@ -11,10 +11,18 @@
 	(slot pos_c) 		;colonna da dove si effettua l'azione
 )
 
+;Definzione del template per le azioni ad alto livello per la gestioni dei comportamenti del robot
 (deftemplate MacroAction
 	(slot macrostep)
-	(slot oper (allowed-values Move LoadDrink LoadFood DeliveryFood DeliveryDrink 
-                        CleanTable EmptyFood Release CheckFinish))
+	(slot oper (allowed-values 	Move 
+								LoadDrink 
+								LoadFood 
+								DeliveryFood 
+								DeliveryDrink 
+                        		CleanTable 
+								EmptyFood 
+								Release 
+								CheckFinish))
 	(slot param1)
 	(slot param2)
 	(slot param3)
@@ -26,10 +34,14 @@
 	=>
 	(retract ?f)
 )
-;;ZONA DI CONVERSIONE DA MACRO A PLANNEDACTION
-;;Nel caso in cui viene trovato una macro di tipo Move si scatena il modulo Movement
+
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;////////////////////					ZONA DI CONVERSIONE DA MACRO A PLANNEDACTION					////////////////////
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+;;Nel caso in cui viene trovato una macro di tipo Move si scatena il modulo Movement   ---	(Sguinzagliamo La Star)
 (defrule convertMacroToMove (declare (salience 300))
-	?s <- (something-to-plan)
+	?s <- (something-to-plan)															
 	(step ?curr)
 	?f1 <- (macrostep ?i)
 	?f2 <- (MacroAction (macrostep ?i) (oper Move) (param1 ?goal-r) (param2 ?goal-c))
@@ -40,7 +52,9 @@
 	(focus MOVEMENT)
 )
 
-;Nel caso in cui vengono trovate tutti gli altri tipi di Macro basta convertire direttamente la macro in una planned action 
+;Nel caso in cui vengono trovate tutti gli altri tipi di Macro basta convertire direttamente la macro in una planned action
+
+; 1	-- 	CheckFinish
 (defrule convertMacroToCheckFinish (declare (salience 300))
 	?s <- (something-to-plan)
 	(step ?curr)
@@ -59,6 +73,7 @@
 	(pop-focus)
 )
 
+; 2	-- 	CleanTable
 (defrule convertMacroToCleanTable (declare (salience 300))
 	?s <- (something-to-plan)
 	(step ?curr)
@@ -77,6 +92,7 @@
 	(pop-focus)
 )
 
+; 3	-- 	EmptyFood
 (defrule convertMacroToEmptyFood (declare (salience 300))
 	?s <- (something-to-plan)
 	(step ?curr)
@@ -95,6 +111,7 @@
 	(pop-focus)
 )
 
+; 3	-- 	Release
 (defrule convertMacroToRelease (declare (salience 300))
 	?s <- (something-to-plan)
 	(step ?curr)
@@ -114,8 +131,12 @@
 )
 
 
-;;Se la macro é un delivery o un load di drink o food allora bisognerá fare tante planned action quante sono scritte nella quantitá per far ció generiamo una planned-action e decrementiamo di uno la quantitá fino a che la macroaction non avrá quantitá 0 e quindi si potra cancellare la macroaction e andare avanti con le macroaction
-;il comportamento é uguale sia per le load che per i delivery di cibo e bevande
+;;Se la macro é un delivery o un load di drink o food allora bisognerá fare tante planned action quante sono scritte nella quantitá 
+;per far ció generiamo una planned-action e decrementiamo di uno la quantitá fino a che la macroaction non avrá quantitá 0 
+;e quindi si potra cancellare la macroaction e andare avanti con le macroaction il comportamento é uguale 
+;sia per le load che per i delivery di cibo e bevande
+
+; Cancellazione della Macroaction con qnt pari a 0
 (defrule eliminateMacroToLoadOrDelivery (declare (salience 298))
 	?s <- (something-to-plan)
 	(step ?curr)
@@ -126,10 +147,10 @@
 	(retract ?f1 ?s ?f2)
 )
 
+; Decremento delle unita' per ciascuna plannedAction generata 
 (defrule convertMacroToLoadOrDelivery (declare (salience 295))
 	?s <- (something-to-plan)
 	(step ?curr)
-	?f1 <- (macrostep ?i)
 	?f2 <- (MacroAction (macrostep ?i) (oper ?oper) (param1 ?rm) (param2 ?cm) (param3 ?nm))
 	=>
 	(assert (planned-action
@@ -137,13 +158,17 @@
 					(action ?oper)
 					(pos_r ?rm)
 					(pos_c ?cm)
-					(param3 ?nm)
 			)
 	)
-	(retract ?f1 ?s)
+	(retract ?s)							;f1 dovrebbe rimanere presente x essere cancellata della regola sopra?
 	(modify ?f2 (param3 =(- ?nm 1)))
 	(pop-focus)
 )
+
+
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;////////////////////						  GESTIONE DELLE AZIONI DA COMPIERE							////////////////////
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ;Nel caso in cui non ci siano Macro da eseguire ma ci siano ordini in attesa, passiamo il focus all'order management
 (defrule createNewMacros (declare (salience 290))
@@ -166,7 +191,7 @@
 	=>
 	(assert (planned-action
 					(step ?curr)
-					(action Wait)
+					(action Wait)					;Da rivedere per capire cosa sia meglio far fare al robot.
 			)
 	)
 	(retract ?s)
@@ -174,7 +199,10 @@
 )
 
 
-;ZONA COME BACK DA MODULO MOVEMENT
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;////////////////////						  ZONA COME BACK DA MODULO MOVEMENT							////////////////////
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ;Cancelliamo l'ultimo step di a* in modo da non finire sulla casella dell'obiettivo
 (defrule delete-last-step (declare (salience 99))
 	?f2 <- (deleted no)
