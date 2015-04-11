@@ -60,6 +60,10 @@
 	(slot drink)
 	(slot food)	
 )
+
+(deftemplate pulisci-table
+	(slot table-id)
+)
 	
 ;beginagent1 inizializza l'ambiente e quindi la mappa conosciuta dall'agent
 (defrule beginagent1 (declare (salience 11))

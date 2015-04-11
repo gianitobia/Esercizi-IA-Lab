@@ -42,7 +42,7 @@
 ;;Nel caso in cui viene trovato una macro di tipo Move si scatena il modulo Movement   ---	(Sguinzagliamo La Star)
 (defrule convertMacroToMove (declare (salience 300))
 	?s <- (something-to-plan)															
-	(step ?curr)
+	(status (step ?curr))
 	?f1 <- (macrostep ?i)
 	?f2 <- (MacroAction (macrostep ?i) (oper Move) (param1 ?goal-r) (param2 ?goal-c))
 	=>
@@ -57,7 +57,7 @@
 ; 1	-- 	CheckFinish
 (defrule convertMacroToCheckFinish (declare (salience 300))
 	?s <- (something-to-plan)
-	(step ?curr)
+	(status (step ?curr))
 	?f1 <- (macrostep ?i)
 	?f2 <- (MacroAction (macrostep ?i) (oper CheckFinish) (param1 ?rf) (param2 ?cf))
 	=>
@@ -76,7 +76,7 @@
 ; 2	-- 	CleanTable
 (defrule convertMacroToCleanTable (declare (salience 300))
 	?s <- (something-to-plan)
-	(step ?curr)
+	(status (step ?curr))
 	?f1 <- (macrostep ?i)
 	?f2 <- (MacroAction (macrostep ?i) (oper CleanTable) (param1 ?rf) (param2 ?cf))
 	=>
@@ -95,7 +95,7 @@
 ; 3	-- 	EmptyFood
 (defrule convertMacroToEmptyFood (declare (salience 300))
 	?s <- (something-to-plan)
-	(step ?curr)
+	(status (step ?curr))
 	?f1 <- (macrostep ?i)
 	?f2 <- (MacroAction (macrostep ?i) (oper EmptyFood) (param1 ?rf) (param2 ?cf))
 	=>
@@ -114,7 +114,7 @@
 ; 3	-- 	Release
 (defrule convertMacroToRelease (declare (salience 300))
 	?s <- (something-to-plan)
-	(step ?curr)
+	(status (step ?curr))
 	?f1 <- (macrostep ?i)
 	?f2 <- (MacroAction (macrostep ?i) (oper Release) (param1 ?rf) (param2 ?cf))
 	=>
@@ -139,7 +139,7 @@
 ; Cancellazione della Macroaction con qnt pari a 0
 (defrule eliminateMacroToLoadOrDelivery (declare (salience 298))
 	?s <- (something-to-plan)
-	(step ?curr)
+	(status (step ?curr))
 	?f1 <- (macrostep ?i)
 	?f2 <- (MacroAction (macrostep ?i) (oper ?oper) (param1 ?rm) (param2 ?cm) (param3 0))
 	=>
@@ -150,7 +150,8 @@
 ; Decremento delle unita' per ciascuna plannedAction generata 
 (defrule convertMacroToLoadOrDelivery (declare (salience 295))
 	?s <- (something-to-plan)
-	(step ?curr)
+	(status (step ?curr))
+	(macrostep ?i)
 	?f2 <- (MacroAction (macrostep ?i) (oper ?oper) (param1 ?rm) (param2 ?cm) (param3 ?nm))
 	=>
 	(assert (planned-action
@@ -173,7 +174,7 @@
 ;Nel caso in cui non ci siano Macro da eseguire ma ci siano ordini in attesa, passiamo il focus all'order management
 (defrule createNewMacros (declare (salience 290))
 	?s <- (something-to-plan)
-	(step ?curr)
+	(status (step ?curr))
 	(not (MacroAction))
 	(coda-ordini)
 	=>
@@ -185,7 +186,7 @@
 ;da aggiungere un controllo che io sia al centro della stanza e semmai andarci
 (defrule createWaiAction (declare (salience 290))
 	?s <- (something-to-plan)
-	(step ?curr)
+	(status (step ?curr))
 	(not (MacroAction))
 	(not (coda-ordini))
 	=>
@@ -220,10 +221,10 @@
 
 (defrule invert-move-action (declare (salience 98))
 	?f <- (planned-move-inv
-		(step ?curr)
-		(action ?act)
-		(pos_r ?r)
-		(pos_c ?c)
+				(step ?curr)
+				(action ?act)
+				(pos_r ?r)
+				(pos_c ?c)
 	)
 	=>
 	(assert (planned-action

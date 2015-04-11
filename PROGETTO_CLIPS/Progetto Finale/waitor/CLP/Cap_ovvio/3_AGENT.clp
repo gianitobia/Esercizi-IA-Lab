@@ -12,10 +12,10 @@
 								   Parking 
 								   Table 
 								   Seat 
-								   TrashBasket
-                                   RecyclableBasket 
-								   DrinkDispenser 
-								   FoodDispenser))
+								   TB
+                                   RB 
+								   DD 
+								   FD))
 )
 
 (deftemplate K-agent
@@ -35,9 +35,13 @@
 ;Definizone del template per le azioni pieanificate
 (deftemplate planned-action
 	(slot step)
-	(slot action)		;azioni da far effettuare al robot
+	(slot action (allowed-values Forward Turnright Turnleft Wait 
+                        LoadDrink LoadFood DeliveryFood DeliveryDrink 
+                        CleanTable EmptyFood Release CheckFinish Inform)
+	)		;azioni da far effettuare al robot
 	(slot pos_r)		;riga da dove viene effettuata l'azione 
 	(slot pos_c) 		;colonna da dove si effettua l'azione
+	(slot param3)		;possibile terzo parametro da usare per le quantitá
 )
 
 ;definizione del template per i goal a cui bisogna arrivare
@@ -49,6 +53,22 @@
 	;(slot action)		;tipo di azione richiesta dal goal
 	(slot pos_r)		;riga della posizione finale del robot
 	(slot pos_c) 		;colonna della posione finale del robot
+)
+
+(deftemplate coda-ordini
+	(slot step)
+	(slot time)
+	(slot tipo (allowed-values accepted 
+							   delayed)) 	;tipo di ordine salvato
+	(slot sender)							;tavolo che spedisce l'ordine
+	(slot drink)
+	(slot food)	
+)
+
+(deftemplate pulisci-table
+	(slot time)
+	(slot step) 
+	(slot table-id)
 )
 
 ;beginagent1 inizializza l'ambiente e quindi la mappa conosciuta dall'agent
@@ -82,29 +102,14 @@
 (defrule ask-plan (declare (salience 4))
 	?f <- (status (step ?i) (time ?t))
 	(K-agent (pos-r ?r) (pos-c ?c))
-	(not (planned-action (step ?st))); Non ci sono azioni da mandare in esecuzione
-	(not (planned-goal (pos_r ?pr) (pos_c ?pc)))
-	(not (TRY ONE GOAL ONLY)) ;?????
+	(not (planned-action (step ?i))); Non ci sono azioni da mandare in esecuzione
+	(not (exec (step ?i)))
 	=>
-    (assert (planned-goal (pos_r 3) (pos_c 9)))		;creare regole di pianificazione nel planner
-    (assert (TRY ONE GOAL ONLY))
     (modify ?f (result no))
     (assert (something-to-plan))
     (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 3) (param4 9)))      
     (focus PLANNER)
 )
-
-; Esegue una pianificazione ed esecuzione del goal
-;(defrule start-planning (declare (salience 3))
-;    (status (step ?i) (time ?t))
-;    (K-agent (pos-r ?r) (pos-c ?c))
-;    (planned-goal (pos_r ?goal-r) (pos_c ?goal-c))
-; 	=> 
-;	(printout t crlf " == AGENT ==" crlf) (printout t "Starting to plan (" ?r ", "?c ") --> (" ?goal-r ", "?goal-c ")" crlf crlf)
-;    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 ?goal-r) (param4 ?goal-c)))      
-;    (assert (something-to-plan)) ; Avvisa che A star ha qualcosa da fare
-;    (focus PLANNER)
-;)
 
 ; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
 ; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
@@ -137,15 +142,6 @@
     (modify ?f (result done)) ; ORA CHE VOGLIAMO UN SOLO GOAL.
 )
 
-;regola per chiedere quale azioni eseguire - vecchia 
-;(defrule ask_act
-; 	?f <-   (status (step ?i))
-;    =>  
-;	(printout t crlf crlf)
-;    (printout t "action to be executed at step:" ?i)
-;    (printout t crlf crlf)
-;    (modify ?f (result no))
-;)
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ;// 											REGOLE GESTIONE MESSAGGI CON ENV			          					  //
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,26 +149,24 @@
 ;Si e' deciso di informare l'agente 
 (defrule inform-ENV-accepted (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
-	(not (pulisci-table ?tb))
-	(not (planned-action (step ?i)))
+	(not (pulisci-table (table-id ?tb)))
+	(not (exec (step ?i)))
 	=>
-	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 accepted)))
 	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform-accepted)))
-	;Accodare l'ordine
-	;Tornare al MAIN
+	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 accepted)))				;exec di inform per ENV
+	(assert (coda-ordini (step ?i) (time ?t) (tipo accepted) (sender ?tb) (drink ?nd) (food ?nf)))		;accodo l'ordine per eseguirlo app possibile
 	(retract ?f)
 	(focus MAIN)
 )
 
 (defrule inform-ENV-delayed (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
-	(pulisci-table ?tb)
-	(not (planned-action (step ?i)))
+	(pulisci-table (table-id ?tb))
+	(not (exec (step ?i)))
 	=>
-	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 delayed)))
-	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform-delayed)))
-	;Accodare l'ordine
-	;Tornare al MAIN
+	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform-accepted)))
+	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 delayed)))				;exec di inform per ENV
+	(assert (coda-ordini (step ?i) (time ?t) (tipo delayed) (sender ?tb) (drink ?nd) (food ?nf)))	  ;accodo l'ordine per eseguirlo app possibile
 	(retract ?f)
 	(focus MAIN)
 )
@@ -180,34 +174,31 @@
 ;Regola che blocca il robot mentre sta eseguendo il piano ed invia una inform di ordine accepted 
 (defrule inform-ENV-accepted-busy (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
-	(not (pulisci-table ?tb))
+	(not (pulisci-table (table-id ?tb)))
+	(exec)
 	=>
 	(assert 
 		(inform-temp ?i Inform ?tb ?t accepted)
 		(posticipate 1)
 	)
 	(retract ?f)
+	(assert (coda-ordini (step ?i) (time ?t) (tipo accepted) (sender ?tb) (drink ?nd) (food ?nf)))	  ;accodo l'ordine per eseguirlo app possibile      
 	(focus POSTICIPATE)
-	;aggiornare il cont delle exec
-	;asserire la nuova exect di inform
-	;accodare l'ordine
-	
 )
 
-;Regola che blocca il robot mentre sta eseguendo il piano ed invia una inform di ordine accepted 
-(defrule inform-ENV-deleyed-busy (declare (salience 10))
+;Regola che blocca il robot mentre sta eseguendo il piano ed invia una inform di ordine delayed
+(defrule inform-ENV-delayed-busy (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
-	(pulisci-table ?tb)
+	(pulisci-table (table-id ?tb))
+	(exec)
 	=>
 	(assert 
-		(inform-temp ?i Inform ?tb ?t deleyed)
+		(inform-temp ?i Inform ?tb ?t delyed)
 		(posticipate yes)
 	)
 	(retract ?f)
-	(focus POSTICIPATE)
-	;aggiornare il cont delle exec
-	;asserire la nuova exect di inform
-	;accodare l'ordine	
+	(assert (coda-ordini (step ?i) (time ?t) (tipo delayed) (sender ?tb) (drink ?nd) (food ?nf)))	  ;accodo l'ordine per eseguirlo app possibile      
+	(focus POSTICIPATE)	
 )
 
 (defrule inform-ENV-exec-inform-busy (declare (salience 11))
@@ -216,7 +207,7 @@
 	=>
 	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 ?type)))
 	(retract ?f1 ?f2)
-    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform)))      
+    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform)))
     (focus MAIN)
 )
 
@@ -400,32 +391,3 @@
 	(assert (posticipate-exec))
 	(pop-focus)
 )
-
-; alcune azioni per testare il sistema
-; (assert (exec (step 0) (action Forward)))
-; (assert (exec (step 1) (action Inform) (param1 T4) (param2 2) (param3 accepted)))
-; (assert (exec (step 2) (action LoadDrink) (param1 7) (param2 7)))
-; (assert (exec (step 3) (action LoadFood) (param1 7) (param2 5)))
-; (assert (exec (step 4) (action Forward)))
-; (assert (exec (step 5) (action DeliveryDrink) (param1 5) (param2 6)))
-; (assert (exec (step 6) (action DeliveryFood) (param1 5) (param2 6)))
-; (assert (exec (step 7) (action Inform) (param1 T3) (param2 20) (param3 delayed)))
-; (assert (exec (step 8) (action Inform) (param1 T3) (param2 16) (param3 delayed)))
-; (assert (exec (step 9) (action Turnleft)))
-; (assert (exec (step 10) (action Turnleft)))
-; (assert (exec (step 11) (action CleanTable) (param1 5) (param2 6)))
-; (assert (exec (step 12) (action Forward)))
-; (assert (exec (step 13) (action Forward)))
-; (assert (exec (step 14) (action Release) (param1 8) (param2 7)))
-; (assert (exec (step 15) (action EmptyFood) (param1 8) (param2 5)))
-; (assert (exec (step 16) (action Release) (param1 8) (param2 7)))
-; (assert (exec (step 7) (action Inform) (param1 T3) (param2 16) (param3 delayed)))
-; (assert (exec (step 8) (action Turnleft)))
-; (assert (exec (step 9) (action Turnleft)))
-; (assert (exec (step 10) (action CheckFinish) (param1 5) (param2 6)))
-; (assert (exec (step 11) (action CleanTable) (param1 5) (param2 6)))
-; (assert (exec (step 12) (action CheckFinish) (param1 5) (param2 6)))
-; (assert (exec (step 13) (action Forward)))
-; (assert (exec (step 14) (action Release) (param1 8) (param2 7)))
-; (assert (exec (step 15) (action EmptyFood) (param1 8) (param2 5)))
-; (assert (exec (step 16) (action Release) (param1 8) (param2 7)))

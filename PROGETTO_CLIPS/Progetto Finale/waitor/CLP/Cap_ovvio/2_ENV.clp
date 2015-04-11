@@ -4,7 +4,6 @@
 (defmodule ENV (import MAIN ?ALL))
 
 ;// DEFTEMPLATE
-
 ;Definizione della cella
 (deftemplate cell  
 	(slot pos-r) 
