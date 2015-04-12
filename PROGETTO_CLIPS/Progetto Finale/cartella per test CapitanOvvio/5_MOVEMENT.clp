@@ -135,6 +135,19 @@
 	(assert (apply ?curr north ?r ?c))
 )
 
+;regola da applicare solo per l'ultimo movimento che prevede quindi che si arrivi
+;nella casella del goal
+(defrule up-apply-goal (declare (salience 50))
+	(current ?curr)
+	(node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
+	(goal ?goal-r ?goal-c)
+	(K-cell (pos-r =(+ ?r 1)) (pos-c ?c))
+	(test (= ?goal-r (+ ?r 1)))
+	(test (= ?goal-c ?c))
+	=>
+	(assert (apply ?curr north ?r ?c))
+)
+
 ;Se applicabile effettuo un movimento verso su
 (defrule up-exec	(declare (salience 50))
     (current ?curr)
@@ -166,6 +179,19 @@
     (node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
     (K-cell (pos-r =(- ?r 1)) (pos-c ?c) (contains Empty|Parking))
  	=>
+	(assert (apply ?curr south ?r ?c))
+)
+
+;regola da applicare solo per l'ultimo movimento che prevede quindi che si arrivi
+;nella casella del goal
+(defrule up-down-goal (declare (salience 50))
+	(current ?curr)
+	(node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
+	(goal ?goal-r ?goal-c)
+	(K-cell (pos-r =(- ?r 1)) (pos-c ?c))
+	(test (= ?goal-r (- ?r 1)))
+	(test (= ?goal-c ?c))
+	=>
 	(assert (apply ?curr south ?r ?c))
 )
 
@@ -202,6 +228,19 @@
 	(assert (apply ?curr east ?r ?c))
 )
 
+;regola da applicare solo per l'ultimo movimento che prevede quindi che si arrivi
+;nella casella del goal
+(defrule up-right-goal (declare (salience 50))
+	(current ?curr)
+	(node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
+	(goal ?goal-r ?goal-c)
+	(K-cell (pos-c =(+ ?c 1)) (pos-r ?r))
+	(test (= ?goal-r ?r))
+	(test (= ?goal-c (+ ?c 1)))
+	=>
+	(assert (apply ?curr east ?r ?c))
+)
+
 (defrule right-exec		(declare (salience 50))
     (current ?curr)
     (lastnode ?n)
@@ -232,6 +271,19 @@
     (node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
     (K-cell (pos-c =(- ?c 1)) (pos-r ?r) (contains Empty|Parking))
  	=>
+	(assert (apply ?curr west ?r ?c))
+)
+
+;regola da applicare solo per l'ultimo movimento che prevede quindi che si arrivi
+;nella casella del goal
+(defrule up-left-goal (declare (salience 50))
+	(current ?curr)
+	(node (ident ?curr) (pos-r ?r) (pos-c ?c) (open yes))
+	(goal ?goal-r ?goal-c)
+	(K-cell (pos-c =(- ?c 1)) (pos-r ?r))
+	(test (= ?goal-r ?r))
+	(test (= ?goal-c (- ?c 1)))
+	=>
 	(assert (apply ?curr west ?r ?c))
 )
 
