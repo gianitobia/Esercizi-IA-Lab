@@ -1,6 +1,6 @@
 (maxduration 100)
-(initial_agentposition (pos-r 5) (pos-c 9) (direction south))
-(Table (table-id T1) (pos-r 8) (pos-c 3))
+(initial_agentposition (pos-r 2) (pos-c 9) (direction south))
+(Table (table-id T1) (pos-r 8) (pos-c 3))
 (Table (table-id T2) (pos-r 4) (pos-c 3))
 (Table (table-id T3) (pos-r 8) (pos-c 9))
 (Table (table-id T4) (pos-r 5) (pos-c 6))

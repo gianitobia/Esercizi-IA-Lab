@@ -11,23 +11,6 @@
 	(slot pos_c) 		;colonna da dove si effettua l'azione
 )
 
-;Definzione del template per le azioni ad alto livello per la gestioni dei comportamenti del robot
-(deftemplate MacroAction
-	(slot macrostep)
-	(slot oper (allowed-values 	Move 
-								LoadDrink 
-								LoadFood 
-								DeliveryFood 
-								DeliveryDrink 
-                        		CleanTable 
-								EmptyFood 
-								Release 
-								CheckFinish))
-	(slot param1)
-	(slot param2)
-	(slot param3)
-)
-
 (defrule deleteMacroStep (declare (salience 350))
 	(not (MacroAction))
 	?f <- (macrostep ?i)
@@ -190,11 +173,11 @@
 	(not (MacroAction))
 	(not (coda-ordini))
 	=>
-	(assert (planned-action
-					(step ?curr)
-					(action Wait)					;Da rivedere per capire cosa sia meglio far fare al robot.
-			)
-	)
+	;(assert (planned-action
+	;				(step ?curr)
+	;				(action Turnright)					;Da rivedere per capire cosa sia meglio far fare al robot.
+	;		)
+	;)
 	(retract ?s)
 	(pop-focus)
 )

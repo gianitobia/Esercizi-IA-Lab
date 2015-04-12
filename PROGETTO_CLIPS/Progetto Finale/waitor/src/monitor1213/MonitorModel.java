@@ -1,7 +1,7 @@
 package monitor1213;
 
-import xclipsjni.ClipsModel;
 import xclipsjni.ClipsException;
+import xclipsjni.ClipsModel;
 
 /**
  * L'implementazione della classe ClipsModel specifica per il progetto Waitor
@@ -161,7 +161,6 @@ public class MonitorModel extends ClipsModel {
         if (tables != null) {
             //Per ogni tavolo
             for (String[] table : tables) {
-                System.out.println("**********    " + table[0] + " " + table[1] + " " + table[2] + "    ***********");
 
                 if (table[0] != null) { //bisogna fare qualcosa solo se non è pulito
                     String table_status = table[2];

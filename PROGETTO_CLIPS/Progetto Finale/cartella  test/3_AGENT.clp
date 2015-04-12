@@ -30,6 +30,23 @@
     (slot l_f_waste)
 )
 
+;Definzione del template per le azioni ad alto livello per la gestioni dei comportamenti del robot
+(deftemplate MacroAction
+	(slot macrostep)
+	(slot oper (allowed-values 	Move 
+								LoadDrink 
+								LoadFood 
+								DeliveryFood 
+								DeliveryDrink 
+                        		CleanTable 
+								EmptyFood 
+								Release 
+								CheckFinish))
+	(slot param1)
+	(slot param2)
+	(slot param3)
+)
+
 (deftemplate last-perc (slot step))
 
 ;Definizone del template per le azioni pieanificate
@@ -133,7 +150,11 @@
 )
 
 (defrule end-plan-execute (declare (salience 1))
-    (not (planned-action (step ?st)))
+	(not (planned-action (step ?i))); Non ci sono azioni da mandare in esecuzione
+	(not (exec (step ?i)))
+	(not (MacroAction))
+	(not (coda-ordini))
+	(not (pulisci-table))
     (status (step ?i) (time ?t))    
     ?f <- (status (result no)) ; QUESTA SERVE PER ESEGUIRE UN SOLO GOAL.
     => 
