@@ -136,7 +136,7 @@
 	=>
     (modify ?f (result no)) ; CHIEDERE AL PROF
     (retract ?f2)
-    (assert (exec (step ?i) (action ?oper))) ; andrà in esecuzione effettivamente 
+    (assert (exec (step ?i) (action ?oper) (param1 ?r) (param2 ?c))) ; andrà in esecuzione effettivamente 
 )
 
 ; Esegue una singola exec del piano
