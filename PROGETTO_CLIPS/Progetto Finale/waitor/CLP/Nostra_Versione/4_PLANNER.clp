@@ -173,11 +173,11 @@
 	(not (MacroAction))
 	(not (coda-ordini))
 	=>
-	;(assert (planned-action
-	;				(step ?curr)
-	;				(action Turnright)					;Da rivedere per capire cosa sia meglio far fare al robot.
-	;		)
-	;)
+	(assert (planned-action
+					(step ?curr)
+					(action Wait)					;Da rivedere per capire cosa sia meglio far fare al robot.
+			)
+	)
 	(retract ?s)
 	(pop-focus)
 )
