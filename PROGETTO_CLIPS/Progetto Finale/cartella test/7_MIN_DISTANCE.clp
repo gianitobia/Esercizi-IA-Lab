@@ -70,15 +70,15 @@
 (defrule nearTaFinish_start (declare (salience 20))
 	(lookfor Ta)
 	=>
-	(assert (best_Ta 10000 10000))
+	(assert (best_Ta 10000 10000 nullo))
 )
 
 (defrule nearTaFinish_exec (declare (salience 18))
 	(lookfor Ta)
 	(K-agent (pos-r ?ra) (pos-c ?ca))
-	(Table (table-id ?tid) (pos-r ?rta) (pos-c ?cta))
 	(pulisci-table (table-id ?tid))
-	?f <- (best_Ta ?rb ?cb)
+	(Table (table-id ?tid) (pos-r ?rta) (pos-c ?cta))
+	?f <- (best_Ta ?rb ?cb ?id)
 	(test 
 		(> 
 			(+ (abs (- ?ra ?rb)) (abs (- ?ca ?cb))) 
@@ -89,16 +89,19 @@
 	(retract ?f)
 	(assert (best_Ta ?rta ?cta ?tid))
 )
+
 (defrule nearTBFinish_start (declare (salience 15))
 	(lookfor Ta)
-	(best_Ta ?rt ?ct)
+	(best_Ta ?rt ?ct ?id)
+	(not (best-choice ?g))
 	=>
 	(assert (best_TB 10000 10000))
 )
 
-(defrule nearRBFinish_start (declare (salience 15))
+(defrule nearRBFinish_start (declare (salience 14))
 	(lookfor Ta)
-	(best_Ta ?rt ?ct)
+	(best_Ta ?rt ?ct ?id)
+	(not (best-choice ?g))
 	=>
 	(assert (best_RB 10000 10000))
 )
@@ -110,10 +113,11 @@
 	?f <- (best_TB ?rbtb ?cbtb)
 	(test 
 		(> 
-			(+ (abs (- ?rta ?rtb)) (abs (- ?cta ?ctb))) 
 			(+ (abs (- ?rta ?rbtb)) (abs (- ?cta ?cbtb)))
+			(+ (abs (- ?rta ?rtb)) (abs (- ?cta ?ctb))) 
 		)
 	)
+	(not (best-choice ?g))
 	=>
 	(retract ?f)
 	(assert (best_TB ?rtb ?ctb))
@@ -126,10 +130,11 @@
 	?f <- (best_RB ?rbrb ?cbrb)
 	(test 
 		(> 
-			(+ (abs (- ?rta ?rrb)) (abs (- ?cta ?crb))) 
 			(+ (abs (- ?rta ?rbrb)) (abs (- ?cta ?cbrb)))
+			(+ (abs (- ?rta ?rrb)) (abs (- ?cta ?crb))) 
 		)
 	)
+	(not (best-choice ?g))
 	=>
 	(retract ?f)
 	(assert (best_RB ?rrb ?crb))
@@ -141,11 +146,12 @@
 	(best_RB ?rbrb ?cbrb)
 	(best_TB ?rbtb ?cbtb)
 	(test 
-		(> 
+		(>= 
 			(+ (abs (- ?rta ?rbrb)) (abs (- ?cta ?cbrb))) 
 			(+ (abs (- ?rta ?rbtb)) (abs (- ?cta ?cbtb)))
 		)
 	)
+	(not (best-choice ?g))
 	=>
 	(assert (best-choice TB))
 )
@@ -161,6 +167,7 @@
 			(+ (abs (- ?rta ?rbrb)) (abs (- ?cta ?cbrb)))
 		)
 	)
+	(not (best-choice ?g))
 	=>
 	(assert (best-choice RB))
 )
@@ -170,8 +177,11 @@
 	(best-choice RB)
 	(best_RB ?rbrb ?cbrb)
 	?f<-(best_TB ?rbtb ?cbtb)
+	(not (choice))
 	=>
-	(assert (best_TB 10000 10000))
+	(retract ?f)
+	(assert (best_TB 10000 10000) (choice))
+	
 )
 
 (defrule bestRBIfChoiceTBStart (declare (salience 14))
@@ -179,8 +189,10 @@
 	(best-choice TB)
 	(best_TB ?rbrb ?cbrb)
 	?f<-(best_RB ?rbtb ?cbtb)
+	(not (choice))
 	=>
-	(assert (best_RB 10000 10000))
+	(retract ?f)
+	(assert (best_RB 10000 10000) (choice))
 )
 
 (defrule bestTBIfChoiceRBExec (declare (salience 12))
@@ -189,7 +201,7 @@
 	(best_RB ?rbrb ?cbrb)
 	?f <- (best_TB ?rbtb ?cbtb)
 	(test 
-		(> 
+		(< 
 			(+ (abs (- ?rbrb ?rtb)) (abs (- ?cbrb ?ctb))) 
 			(+ (abs (- ?rbrb ?rbtb)) (abs (- ?cbrb ?cbtb)))
 		)
@@ -205,7 +217,7 @@
 	(best_TB ?rbtb ?cbtb)
 	?f <- (best_RB ?rbrb ?cbrb)
 	(test 
-		(> 
+		(< 
 			(+ (abs (- ?rbtb ?rrb)) (abs (- ?cbtb ?crb))) 
 			(+ (abs (- ?rbtb ?rbrb)) (abs (- ?cbtb ?cbrb)))
 		)
@@ -217,11 +229,12 @@
 
 (defrule nearTaFinish_end (declare (salience 8))
 	?f <- (lookfor Ta)
-	(best_FD ?rta ?cta ?tid)
+	(best_Ta ?rta ?cta ?tid)
 	(best_RB ?rbrb ?cbrb)
 	(best_TB ?rbtb ?cbtb)
+	?g <- (choice)
 	=>
-	(retract ?f)
+	(retract ?f ?g)
 )
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

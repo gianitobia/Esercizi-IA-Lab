@@ -260,10 +260,8 @@
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type finish))
 	=>
 	(retract ?f)
-	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Pulire tavolo: %p1") (param1 Inform-accepted))))
+	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Pulire tavolo: %p1") (param1 ?tb)))
 	(assert (pulisci-table (table-id ?tb) (time ?t) (step ?i)))
-)
-
 )
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

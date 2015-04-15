@@ -23,11 +23,22 @@
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ;Nel caso in cui non ci siano Macro da eseguire ma ci siano ordini in attesa, passiamo il focus all'order management
-(defrule createNewMacros (declare (salience 290))
+(defrule createNewMacrosOrder (declare (salience 290))
 	?s <- (something-to-plan)
 	;(status (step ?curr))
 	(not (MacroAction))
 	(coda-ordini)
+	=>
+	(assert (createMacro))
+	;(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Creazione: %p1  - %p2") (param1 ?oper) (param2 ?i)))
+	(focus ORDER_MANAGEMENT)
+)
+
+(defrule createNewMacrosPulisci (declare (salience 300))
+	?s <- (something-to-plan)
+	;(status (step ?curr))
+	(not (MacroAction))
+	(pulisci-table)
 	=>
 	(assert (createMacro))
 	;(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Creazione: %p1  - %p2") (param1 ?oper) (param2 ?i)))
