@@ -117,12 +117,12 @@
 
 (defrule decode-plan-execute (declare (salience 5))
 	?f <- (status (step ?i) (time ?t))
-	?f2 <- (planned-action (step ?st) (action ?oper) (pos_r ?r) (pos_c ?c)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
+	?f2 <- (planned-action (step ?st) (action ?oper) (pos_r ?r) (pos_c ?c) (param3 ?p3)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
 	=>
     (modify ?f (result no)) ; CHIEDERE AL PROF
     (retract ?f2)
     (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1  - %p2") (param1 ?oper) (param2 ?i)))
-	(assert (exec (step ?i) (action ?oper) (param1 ?r) (param2 ?c))) ; andrà in esecuzione effettivamente
+	(assert (exec (step ?i) (action ?oper) (param1 ?r) (param2 ?c) (param3 ?p3))) ; andrà in esecuzione effettivamente
 	(focus MAIN) 
 )
 
@@ -254,6 +254,16 @@
 	(retract ?f1 ?f2)
     (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform)))
     (focus MAIN)
+)
+
+(defrule inform-ENV-Finish-Order (declare (salience 10))
+	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type finish))
+	=>
+	(retract ?f)
+	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Pulire tavolo: %p1") (param1 Inform-accepted))))
+	(assert (pulisci-table (table-id ?tb) (time ?t) (step ?i)))
+)
+
 )
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

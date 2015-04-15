@@ -394,23 +394,23 @@
 
 ;// per ogni istante di tempo che intercorre fra l'informazione di finish di un tavolo  e 
 ;//  pulitura (clean) del tavolo,  l'agente prende 3 penalità
-(defrule CleanEvolution1       
-	(declare (salience 10))
+(defrule CleanEvolution1 	(declare (salience 10))
 	(status (time ?t) (step ?i))
-?f1<-	(cleanstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb) (source ?tb))
+	?f1	<-	(cleanstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb) (source ?tb))
 	(not (cleanstatus (step ?i)  (arrivaltime ?at) (requested-by ?tb))) 
-?f2<-	(penalty ?p)
-=> 
+	?f2 <-	(penalty ?p)
+	=> 
 	(modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) 3))))
 	(retract ?f2)	
 )
+
 (defrule CleanEvolution2       
 	(declare (salience 10))
 	(status (time ?t) (step ?i))
-?f1<-	(cleanstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb) (source agent))
+	?f1	<-	(cleanstatus (step = (- ?i 1)) (time ?tt) (arrivaltime ?at) (requested-by ?tb) (source agent))
 	(not (cleanstatus (step ?i)  (arrivaltime ?at) (requested-by agent))) 
-=> 
+	=> 
 	(modify ?f1 (time ?t) (step ?i))
 )
 
@@ -1377,14 +1377,15 @@
 ?f4<-	(orderstatus (step ?i) (requested-by ?tb) (food-order ?nfo) (food-deliv ?dfo)
                      (drink-order ?ndo) (drink-deliv ?ddo&:(< ?ddo ?ndo)))
 ?f5<-   (penalty ?p)
-=> 
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)) (l-drink (- ?ald 1)))
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 4)) (l-drink (+ ?tld 1)) (clean no))
 	(modify ?f4 (step (+ ?i 1)) (time (+ ?t 4))  (drink-deliv ( + ?ddo 1)))
 	(assert (penalty (+ ?p	(max 1 (* 8 (+ (- ?nfo ?dfo) (- ?ndo  (+ ?ddo 1))))))))
-        (retract ?f5)
+    (retract ?f5)
 )
+
 ;// assegna una penalità nel caso in cui si tenti di consegnare un cibo ad un tavolo
 ;// quando l'ordinazione è già stata completata o non è stato fatto ordine
 (defrule delivery-drink_WRONG_2
@@ -1703,9 +1704,8 @@
 ;// __________________________________________________________________________________________
 ;// REGOLE PER PERCEZIONI VISIVE (N,S,E,O)          
 ;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ 
-(defrule percept-north
-	(declare (salience 5))
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction north)) 
+(defrule percept-north	(declare (salience 5))
+	?f1	<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction north)) 
 	(cell (pos-r =(+ ?r 1))	(pos-c =(- ?c 1)) (contains ?x1))
 	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x2))
 	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x3))
@@ -1725,9 +1725,9 @@
 	)
 	(focus MAIN)
 )
-(defrule percept-south
-	(declare (salience 5))
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction south)) 
+
+(defrule percept-south	(declare (salience 5))
+	?f1	<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction south)) 
 	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x1))
 	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x2))
 	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x3))
@@ -1747,9 +1747,9 @@
 	)
 	(focus MAIN)
 )
-(defrule percept-east
-	(declare (salience 5))
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction east)) 
+
+(defrule percept-east	(declare (salience 5))
+	?f1	<- (agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction east)) 
 	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x1))
 	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x2))
 	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x3))
@@ -1769,9 +1769,9 @@
 	)
 	(focus MAIN)
 )
-(defrule percept-west
-	(declare (salience 5))
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction west)) 
+
+(defrule percept-west	(declare (salience 5))
+	?f1	<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction west)) 
 	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x1))
 	(cell (pos-r ?r)  	(pos-c =(- ?c 1)) (contains ?x2))
 	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)) (contains ?x3))
@@ -1781,7 +1781,7 @@
 	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x7))	
 	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x8))	
 	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x9))
-=> 
+	=> 
 	(assert 	
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction west) 
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
