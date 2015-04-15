@@ -12,7 +12,7 @@
 (defrule nearFD_exec (declare (salience 10))
 	(lookfor FD)
 	(K-agent (pos-r ?ra) (pos-c ?ca))
-	(K-cell (pos-r ?rfd) (pos-c ?cfd) (contains FD))
+	(FoodDispenser (pos-r ?rfd) (pos-c ?cfd))
 	?f <- (best_FD ?rb ?cb)
 	(test 
 		(> 
@@ -44,7 +44,7 @@
 (defrule nearDD_exec (declare (salience 10))
 	(lookfor DD)
 	(K-agent (pos-r ?ra) (pos-c ?ca))
-	(K-cell (pos-r ?rdd) (pos-c ?cdd) (contains DD))
+	(DrinkDispenser (pos-r ?rdd) (pos-c ?cdd))
 	?f <- (best_DD ?rb ?cb)
 	(test 
 		(> 
@@ -76,7 +76,7 @@
 (defrule nearTB_exec (declare (salience 10))
 	(lookfor TB)
 	(K-agent (pos-r ?ra) (pos-c ?ca))
-	(K-cell (pos-r ?rtb) (pos-c ?ctb) (contains TB))
+	(TrashBasket (pos-r ?rtb) (pos-c ?ctb))
 	?f <- (best_TB ?rb ?cb)
 	(test 
 		(> 
@@ -110,7 +110,7 @@
 (defrule nearRB_exec (declare (salience 10))
 	(lookfor RB)
 	(K-agent (pos-r ?ra) (pos-c ?ca))
-	(K-cell (pos-r ?rrb) (pos-c ?crb) (contains RB))
+	(RecyclableBasket (pos-r ?rrb) (pos-c ?crb))
 	?f <- (best_RB ?rb ?cb)
 	(test 
 		(> 

@@ -1,29 +1,62 @@
-(personstatus 	
+(personstatus 	
+
 	(step 0)
-        (time 0)
-	(ident C1)
-	(pos-r 7)
-	(pos-c 3)
+        (time 0)
+
+	(ident C1)
+
+	(pos-r 7)
+
+	(pos-c 3)
+
 	(activity seated))
 
-(personstatus 	
+(personstatus 	
+
 	(step 0)
-        (time 0)
-	(ident C2)
-	(pos-r 8)
-	(pos-c 10)
+        (time 0)
+
+	(ident C2)
+
+	(pos-r 8)
+
+	(pos-c 10)
+
 	(activity seated))
 
 
-(personstatus 	
+(personstatus 	
+
 	(step 0)
-        (time 0)
-	(ident C3)
-	(pos-r 3)
-	(pos-c 4)
+        (time 0)
+
+	(ident C3)
+
+	(pos-r 3)
+
+	(pos-c 4)
+
 	(activity seated))
 		
-(event (step 0) (type request) (source T5) (food 1) (drink 1)) 
+(event (step 0) (type request) (source T4) (food 1) (drink 1)) 
+(event (step 6) (type request) (source T3) (food 0) (drink 2)) 
+(event (step 10) (type finish) (source T4))
+(event (step 14) (type finish) (source T3))
+(event (step 19) (type request) (source T5) (food 2) (drink 0))  
+(event (step 20) (type request) (source T2) (food 3) (drink 2)) 
+(event (step 25) (type finish) (source T5))
+(event (step 29) (type request) (source T4) (food 0) (drink 2)) 
+(event (step 30) (type request) (source T1) (food 1) (drink 1)) 
+(event (step 33) (type request) (source T3) (food 0) (drink 2)) 
+(event (step 37) (type finish) (source T2))
+(event (step 39) (type request) (source T5) (food 2) (drink 0))  
+(event (step 43) (type finish) (source T3))
+(event (step 46) (type finish) (source T1))
+(event (step 50) (type finish) (source T4))
+(event (step 53) (type request) (source T3) (food 3) (drink 2)) 
+(event (step 59) (type finish) (source T5))
+(event (step 65) (type request) (source T4) (food 0) (drink 2)) 
+
 
 (personmove (step 2) (ident C1) (path-id P1))
 
