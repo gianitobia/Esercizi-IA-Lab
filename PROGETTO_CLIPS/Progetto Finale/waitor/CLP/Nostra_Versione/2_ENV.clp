@@ -1703,9 +1703,15 @@
 ;// __________________________________________________________________________________________
 ;// REGOLE PER PERCEZIONI VISIVE (N,S,E,O)          
 ;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ 
+<<<<<<< Local Changes
+
+(defrule percept-north	(declare (salience 5))
+	?f1	<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction north)) 
+=======
 (defrule percept-north
 	(declare (salience 5))
 ?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction north)) 
+>>>>>>> External Changes
 	(cell (pos-r =(+ ?r 1))	(pos-c =(- ?c 1)) (contains ?x1))
 	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x2))
 	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x3))
@@ -1725,9 +1731,9 @@
 	)
 	(focus MAIN)
 )
-(defrule percept-south
-	(declare (salience 5))
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction south)) 
+
+(defrule percept-south	(declare (salience 5))
+	?f1	<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction south)) 
 	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x1))
 	(cell (pos-r =(- ?r 1)) (pos-c ?c)  	(contains ?x2))
 	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x3))
@@ -1737,7 +1743,7 @@
 	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x7))
 	(cell (pos-r =(+ ?r 1)) (pos-c ?c)  	(contains ?x8))
 	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)) (contains ?x9))
-=> 
+	=> 
 	(assert 	
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction south) 
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
@@ -1747,9 +1753,15 @@
 	)
 	(focus MAIN)
 )
+<<<<<<< Local Changes
+
+(defrule percept-east (declare (salience 5))
+	?f1 <- (agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction east)) 
+=======
 (defrule percept-east
 	(declare (salience 5))
 ?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction east)) 
+>>>>>>> External Changes
 	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x1))
 	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x2))
 	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x3))
@@ -1769,9 +1781,9 @@
 	)
 	(focus MAIN)
 )
-(defrule percept-west
-	(declare (salience 5))
-?f1<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction west)) 
+
+(defrule percept-west	(declare (salience 5))
+	?f1	<-	(agentstatus (step ?i) (time ?t&:(> ?t 0)) (pos-r ?r) (pos-c ?c) (direction west)) 
 	(cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)) (contains ?x1))
 	(cell (pos-r ?r)  	(pos-c =(- ?c 1)) (contains ?x2))
 	(cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)) (contains ?x3))
@@ -1781,7 +1793,7 @@
 	(cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)) (contains ?x7))	
 	(cell (pos-r ?r)  	(pos-c =(+ ?c 1)) (contains ?x8))	
 	(cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)) (contains ?x9))
-=> 
+	=> 
 	(assert 	
 		(perc-vision (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (direction west) 
 			(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
