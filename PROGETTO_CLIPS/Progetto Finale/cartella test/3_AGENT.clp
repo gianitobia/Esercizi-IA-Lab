@@ -115,39 +115,63 @@
 
 ;inserire qui richiamo alla pianificazione
 
-;regola per inizare la pianificazione
-(defrule ask-plan (declare (salience 4))
+(defrule decode-plan-execute (declare (salience 5))
 	?f <- (status (step ?i) (time ?t))
-	(K-agent (pos-r ?r) (pos-c ?c))
-	(not (planned-action (step ?i))); Non ci sono azioni da mandare in esecuzione
-	(not (exec (step ?i)))
-	=>
-    (modify ?f (result no))
-    (assert (something-to-plan))
-    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 3) (param4 9)))      
-    (focus PLANNER)
-)
-
-; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
-; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
-(defrule decode-plan-execute (declare (salience 2))
-	?f <- (status (step ?i))
- 	?f2 <- (planned-action (step ?i) (action ?oper) (pos_r ?r) (pos_c ?c)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
+	?f2 <- (planned-action (step ?st) (action ?oper) (pos_r ?r) (pos_c ?c)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
 	=>
     (modify ?f (result no)) ; CHIEDERE AL PROF
     (retract ?f2)
-    (assert (exec (step ?i) (action ?oper) (param1 ?r) (param2 ?c))) ; andrà in esecuzione effettivamente 
+    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1  - %p2") (param1 ?oper) (param2 ?i)))
+	(assert (exec (step ?i) (action ?oper) (param1 ?r) (param2 ?c))) ; andrà in esecuzione effettivamente
+	(focus MAIN) 
 )
 
-; Esegue una singola exec del piano
-(defrule exec-act (declare (salience 2))
-    (status (step ?i) (time ?t))
-    (exec (step ?i) (action ?oper))
- 	=>      
-	(printout t crlf  "== AGENT ==" crlf) (printout t "Start the execution of the action: " ?oper)
-    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 ?oper)))      
-    (focus MAIN)
+;forse bisogna mettere una regola di fine ordine.
+
+(defrule plan-next-step (declare (salience 4))
+	?f <- (status (step ?i) (time ?t))
+	(not (something-to-plan))
+	=>
+	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Prossima pianificazione allo stato: %p1") (param1 ?i)))
+    (modify ?f (result no))
+    (assert (something-to-plan))
+	(focus PLANNER)
 )
+
+;regola per inizare la pianificazione
+;(defrule ask-plan (declare (salience 3))
+;	?f <- (status (step ?i) (time ?t))
+;	(K-agent (pos-r ?r) (pos-c ?c))
+	
+	;(not (planned-action (step ?i))); Non ci sono azioni da mandare in esecuzione
+	;(not (exec (step ?i)))
+;	=>
+;    (modify ?f (result no))
+;    (assert (something-to-plan))
+;    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 2) (text  "Starting to plan: (%p1, %p2) --> (%p3, %p4)") (param1 ?r) (param2 ?c) (param3 3) (param4 9)))    
+;    (focus PLANNER)
+;)
+
+; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
+; Decodifica una azione data dal piano (planned-action) in forma di exec per l'ENV
+;(defrule decode-plan-execute (declare (salience 2))
+;	?f <- (status (step ?i))
+; 	?f2 <- (planned-action (step ?i) (action ?oper) (pos_r ?r) (pos_c ?c)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
+;	=>
+;    (modify ?f (result no)) ; CHIEDERE AL PROF
+;    (retract ?f2)
+;    (assert (exec (step ?i) (action ?oper) (param1 ?r) (param2 ?c))) ; andrà in esecuzione effettivamente 
+;)
+
+; Esegue una singola exec del piano
+;(defrule exec-act (declare (salience 2))
+;    (status (step ?i) (time ?t))
+;    (exec (step ?i) (action ?oper))
+; 	=>      
+;	(printout t crlf  "== AGENT ==" crlf) (printout t "Start the execution of the action: " ?oper)
+;    (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 ?oper)))      
+;    (focus MAIN)
+;)
 
 (defrule end-plan-execute (declare (salience 1))
 	(not (planned-action (step ?i))); Non ci sono azioni da mandare in esecuzione

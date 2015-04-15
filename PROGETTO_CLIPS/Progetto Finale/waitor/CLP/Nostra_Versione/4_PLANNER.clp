@@ -19,6 +19,40 @@
 )
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;////////////////////						  GESTIONE DELLE AZIONI DA COMPIERE							////////////////////
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+;Nel caso in cui non ci siano Macro da eseguire ma ci siano ordini in attesa, passiamo il focus all'order management
+(defrule createNewMacros (declare (salience 290))
+	?s <- (something-to-plan)
+	;(status (step ?curr))
+	(not (MacroAction))
+	(coda-ordini)
+	=>
+	(assert (createMacro))
+	;(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Creazione: %p1  - %p2") (param1 ?oper) (param2 ?i)))
+	(focus ORDER_MANAGEMENT)
+)
+
+;Nel caso in cui non ci siano ne ordini ne macro da eseguire asserisco la planned-action di Wait
+;da aggiungere un controllo che io sia al centro della stanza e semmai andarci
+(defrule createWaiAction (declare (salience 290))
+	?s <- (something-to-plan)
+	(status (step ?curr))
+	(not (MacroAction))
+	(not (coda-ordini))
+	=>
+	(assert (planned-action
+					(step ?curr)
+					(action Wait)					;Da rivedere per capire cosa sia meglio far fare al robot.
+			)
+	)
+	(retract ?s)
+	(pop-focus)
+)
+
+
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ;////////////////////					ZONA DI CONVERSIONE DA MACRO A PLANNEDACTION					////////////////////
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -148,40 +182,6 @@
 	(modify ?f2 (param3 =(- ?nm 1)))
 	(pop-focus)
 )
-
-
-;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-;////////////////////						  GESTIONE DELLE AZIONI DA COMPIERE							////////////////////
-;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-;Nel caso in cui non ci siano Macro da eseguire ma ci siano ordini in attesa, passiamo il focus all'order management
-(defrule createNewMacros (declare (salience 290))
-	?s <- (something-to-plan)
-	(status (step ?curr))
-	(not (MacroAction))
-	(coda-ordini)
-	=>
-	(assert (createMacro))
-	(focus ORDER_MANAGEMENT)
-)
-
-;Nel caso in cui non ci siano ne ordini ne macro da eseguire asserisco la planned-action di Wait
-;da aggiungere un controllo che io sia al centro della stanza e semmai andarci
-(defrule createWaiAction (declare (salience 290))
-	?s <- (something-to-plan)
-	(status (step ?curr))
-	(not (MacroAction))
-	(not (coda-ordini))
-	=>
-	(assert (planned-action
-					(step ?curr)
-					(action Wait)					;Da rivedere per capire cosa sia meglio far fare al robot.
-			)
-	)
-	(retract ?s)
-	(pop-focus)
-)
-
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ;////////////////////						  ZONA COME BACK DA MODULO MOVEMENT							////////////////////

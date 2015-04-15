@@ -90,8 +90,8 @@
 (defrule rec_message_createMacro3 (declare (salience 10))
 	?f <- (createMacro)
 	?o <- (coda-ordini (sender ?tb) (drink ?nd) (food ?nf))
-	?b1 <- (best_FD ?rf ?cf)	;da modificare quando ci saranno piu di food dispenser
-	?b2 <- (best_DD ?rd ?cd) ;da modificare quando ci saranno piu di un drink dispenser
+	?b1 <- (best_FD ?rf ?cf)	
+	?b2 <- (best_DD ?rd ?cd) 	
 	(Table (table-id ?tb) (pos-r ?rt) (pos-c ?ct))
 	=>
 	(retract ?f ?o ?b1 ?b2)

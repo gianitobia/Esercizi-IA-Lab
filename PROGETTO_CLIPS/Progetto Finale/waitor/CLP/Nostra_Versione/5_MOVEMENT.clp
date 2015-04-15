@@ -568,6 +568,7 @@
 	?f3 <- (open-better ?ob)
 	?f4 <- (alreadyclosed ?ac)
 	?f5 <- (numberofnodes ?nn)
+	?f6 <- (goal ?pos-r ?pos-c)
 	=>
 	(retract ?f)
 	(retract ?f1)
@@ -575,6 +576,7 @@
 	(retract ?f3)
 	(retract ?f4)
 	(retract ?f5)
+	(retract ?f6)
 	(pop-focus)
 	(pop-focus)
 )
