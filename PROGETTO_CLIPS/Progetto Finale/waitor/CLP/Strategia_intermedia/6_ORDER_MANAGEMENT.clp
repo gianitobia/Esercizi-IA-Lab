@@ -1,56 +1,31 @@
 (defmodule ORDER_MANAGEMENT (import PLANNER ?ALL) (export ?ALL))
 
 ;regola che converte tutti gli ordini di checkFinish in una sequenza di MacroAction
-(defrule rec_finish_lookfor (declare (salience 14))
+(defrule rec_finish_lookfor (declare (salience 12))
 	?f <- (createMacro)
 	?o <- (pulisci-table (table-id ?tb))
 	=>
-	(assert (lookfor Ta))
+	(assert (lookfor TB) (lookfor RB))
 	(focus MIN_DISTANCE)
 )
 
-(defrule rec_message_finishTB (declare (salience 14))
+(defrule rec_message_finish (declare (salience 14))
 	?f <- (createMacro)
-	?b1 <- (best_TB ?rtb ?ctb)
-	?b2 <- (best_RB ?rrb ?crb)
-	?b3 <- (best_Ta ?rta ?cta ?idta)
-	?bc <- (best-choice TB)
-	(Table (table-id ?idta) (pos-r ?rta) (pos-c ?cta))
-	?o <- (pulisci-table (table-id ?idta))
+	?o <- (pulisci-table (table-id ?tb))
+	?b1 <- (best-TB ?rtr ?ctr)				;da modificare quando ci saranno piu di trash basket
+	?b2 <- (best-RB ?rr ?cr) 					;da modificare quando ci saranno piu di un recyclable basket
+	(Table (table-id ?tb) (pos-r ?rt) (pos-c ?ct))
 	=>
+	(retract ?f ?o ?b1 ?b2)
 	(assert 
-		(MacroAction (macrostep 1) (oper Move) (param1 ?rta) (param2 ?cta))
-		(MacroAction (macrostep 2) (oper CheckFinish) (param1 ?rta) (param2 ?cta))
-		(MacroAction (macrostep 3) (oper CleanTable) (param1 ?rta) (param2 ?cta))
-		(MacroAction (macrostep 4) (oper Move) (param1 ?rtb) (param2 ?ctb))
-		(MacroAction (macrostep 5) (oper EmptyFood) (param1 ?rtb) (param2 ?ctb))
-		(MacroAction (macrostep 6) (oper Move) (param1 ?rrb) (param2 ?crb))
-		(MacroAction (macrostep 7) (oper Release) (param1 ?rrb) (param2 ?crb))
+		(MacroAction (macrostep 1) (oper Move) (param1 ?rt) (param2 ?ct))
+		(MacroAction (macrostep 2) (oper CleanTable) (param1 ?rt) (param2 ?ct))
+		(MacroAction (macrostep 3) (oper Move) (param1 ?rtr) (param2 ?ctr))
+		(MacroAction (macrostep 4) (oper EmptyFood) (param1 ?rtr) (param2 ?ctr))
+		(MacroAction (macrostep 5) (oper Move) (param1 ?rr) (param2 ?cr))
+		(MacroAction (macrostep 6) (oper Release) (param1 ?rr) (param2 ?cr))
 		(macrostep 1)
 	)
-	(retract ?f ?o ?b1 ?b2 ?b3 ?bc)
-)
-
-(defrule rec_message_finishRB (declare (salience 14))
-	?f <- (createMacro)
-	?b1 <- (best_TB ?rtb ?ctb)
-	?b2 <- (best_RB ?rrb ?crb)
-	?b3 <- (best_Ta ?rta ?cta ?idta)
-	?bc <- (best-choice RB)
-	(Table (table-id ?idta) (pos-r ?rta) (pos-c ?cta))
-	?o <- (pulisci-table (table-id ?idta))
-	=>
-	(assert 
-		(MacroAction (macrostep 1) (oper Move) (param1 ?rta) (param2 ?cta))
-		(MacroAction (macrostep 2) (oper CheckFinish) (param1 ?rta) (param2 ?cta))
-		(MacroAction (macrostep 3) (oper CleanTable) (param1 ?rta) (param2 ?cta))
-		(MacroAction (macrostep 4) (oper Move) (param1 ?rrb) (param2 ?crb))
-		(MacroAction (macrostep 5) (oper Release) (param1 ?rrb) (param2 ?crb))
-		(MacroAction (macrostep 6) (oper Move) (param1 ?rtb) (param2 ?ctb))
-		(MacroAction (macrostep 7) (oper EmptyFood) (param1 ?rtb) (param2 ?ctb))
-		(macrostep 1)
-	)
-	(retract ?f ?o ?b1 ?b2 ?b3 ?bc)
 )
 
 ;regola che converte tutti gli ordini di Order con numero di porzione di cibi pari a 0 in una sequenza di MacroAction

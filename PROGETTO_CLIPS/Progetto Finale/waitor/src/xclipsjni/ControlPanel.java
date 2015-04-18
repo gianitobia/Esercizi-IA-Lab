@@ -344,16 +344,16 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
                                 .addComponent(visualizeDebugButton))
                             .addGroup(controlPanelLayout.createSequentialGroup()
                                 .addGap(6, 6, 6)
-                                .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(controlPanelLayout.createSequentialGroup()
                                         .addComponent(strategyLabel)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(CLPSelector, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(34, 34, 34)
+                                        .addComponent(CLPSelector, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(controlPanelLayout.createSequentialGroup()
                                         .addComponent(envLabel)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(envsSelector, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
+                                        .addComponent(envsSelector, 0, 100, Short.MAX_VALUE)))))
+                        .addGap(106, 106, 106)
                         .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(envLabel1)
                             .addComponent(strategyLabel1)
@@ -467,7 +467,6 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         this.setShortcut();
         visualizeAgendaButton.setEnabled(false);
         visualizeFactsButton.setEnabled(false);
-
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
@@ -520,6 +519,10 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         }
     }//GEN-LAST:event_runButtonActionPerformed
 
+    private void runOneButtonKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_runOneButtonKeyReleased
+
+    }//GEN-LAST:event_runOneButtonKeyReleased
+
     private void runOneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runOneButtonActionPerformed
         model.setMode("RUNONE");
         model.resume();
@@ -546,17 +549,13 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         // TODO add your handling code here:
     }//GEN-LAST:event_CLPSelectorActionPerformed
 
-    private void envsSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_envsSelectorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_envsSelectorActionPerformed
-
     private void CLPSelectorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_CLPSelectorItemStateChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_CLPSelectorItemStateChanged
 
-    private void runOneButtonKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_runOneButtonKeyReleased
-
-    }//GEN-LAST:event_runOneButtonKeyReleased
+    private void envsSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_envsSelectorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_envsSelectorActionPerformed
 
     /**
      * @param args the command line arguments
