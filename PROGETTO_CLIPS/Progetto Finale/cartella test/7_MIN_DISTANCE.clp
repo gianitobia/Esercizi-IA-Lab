@@ -68,17 +68,59 @@
 ;////////////////////			ZONA Di Cercasi Table per CheckFinish con anche TB e RB					////////////////////
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 (defrule nearTaFinish_start (declare (salience 20))
-	(lookfor Ta)
+	(lookfor Ta ?ra ?ca)
 	=>
 	(assert (best_Ta 10000 10000 nullo))
 )
 
-(defrule nearTaFinish_exec (declare (salience 18))
-	(lookfor Ta)
-	(K-agent (pos-r ?ra) (pos-c ?ca))
+(defrule nearTaFinish_exec1 (declare (salience 18))
+	(lookfor Ta ?ra ?ca)
 	(pulisci-table (table-id ?tid))
 	(Table (table-id ?tid) (pos-r ?rta) (pos-c ?cta))
 	?f <- (best_Ta ?rb ?cb ?id)
+	(ordine-servito ?tid ?nd ?nf)
+	(test 
+		(> 
+			(+ (abs (- ?ra ?rb)) (abs (- ?ca ?cb))) 
+			(+ (abs (- ?ra ?rta)) (abs (- ?ca ?cta)))
+		)
+	)
+	(test (= ?nd 0))
+	=>
+	(retract ?f)
+	(assert 
+		(best_Ta ?rta ?cta ?tid)
+		(butta-food)
+	)
+)
+
+(defrule nearTaFinish_exec2 (declare (salience 18))
+	(lookfor Ta ?ra ?ca)
+	(pulisci-table (table-id ?tid))
+	(Table (table-id ?tid) (pos-r ?rta) (pos-c ?cta))
+	?f <- (best_Ta ?rb ?cb ?id)
+	(ordine-servito ?tid ?nd ?nf)
+	(test 
+		(> 
+			(+ (abs (- ?ra ?rb)) (abs (- ?ca ?cb))) 
+			(+ (abs (- ?ra ?rta)) (abs (- ?ca ?cta)))
+		)
+	)
+	(test (= ?nf 0))
+	=>
+	(retract ?f)
+	(assert 
+		(best_Ta ?rta ?cta ?tid)
+		(butta-drink)
+	)
+)
+
+(defrule nearTaFinish_exec3 (declare (salience 16))
+	(lookfor Ta ?ra ?ca)
+	(pulisci-table (table-id ?tid))
+	(Table (table-id ?tid) (pos-r ?rta) (pos-c ?cta))
+	?f <- (best_Ta ?rb ?cb ?id)
+	(ordine-servito ?tid ?nd ?nf)
 	(test 
 		(> 
 			(+ (abs (- ?ra ?rb)) (abs (- ?ca ?cb))) 
@@ -87,155 +129,20 @@
 	)
 	=>
 	(retract ?f)
-	(assert (best_Ta ?rta ?cta ?tid))
-)
-
-(defrule nearTBFinish_start (declare (salience 15))
-	(lookfor Ta)
-	(best_Ta ?rt ?ct ?id)
-	(not (best-choice ?g))
-	=>
-	(assert (best_TB 10000 10000))
-)
-
-(defrule nearRBFinish_start (declare (salience 14))
-	(lookfor Ta)
-	(best_Ta ?rt ?ct ?id)
-	(not (best-choice ?g))
-	=>
-	(assert (best_RB 10000 10000))
-)
-
-(defrule nearTBFinish_exec (declare (salience 18))
-	(lookfor Ta)
-	(TrashBasket (pos-r ?rtb) (pos-c ?ctb))
-	(best_Ta ?rta ?cta ?idta)
-	?f <- (best_TB ?rbtb ?cbtb)
-	(test 
-		(> 
-			(+ (abs (- ?rta ?rbtb)) (abs (- ?cta ?cbtb)))
-			(+ (abs (- ?rta ?rtb)) (abs (- ?cta ?ctb))) 
-		)
+	(assert 
+		(best_Ta ?rta ?cta ?tid)
+		(butta-food)
+		(butta-drink)
 	)
-	(not (best-choice ?g))
-	=>
-	(retract ?f)
-	(assert (best_TB ?rtb ?ctb))
-)
-
-(defrule nearRBFinish_exec (declare (salience 18))
-	(lookfor Ta)
-	(RecyclableBasket (pos-r ?rrb) (pos-c ?crb))
-	(best_Ta ?rta ?cta ?idta)
-	?f <- (best_RB ?rbrb ?cbrb)
-	(test 
-		(> 
-			(+ (abs (- ?rta ?rbrb)) (abs (- ?cta ?cbrb)))
-			(+ (abs (- ?rta ?rrb)) (abs (- ?cta ?crb))) 
-		)
-	)
-	(not (best-choice ?g))
-	=>
-	(retract ?f)
-	(assert (best_RB ?rrb ?crb))
-)
-
-(defrule bestChoiceFinishTB (declare (salience 16))
-	(lookfor Ta)
-	(best_Ta ?rta ?cta ?idta)
-	(best_RB ?rbrb ?cbrb)
-	(best_TB ?rbtb ?cbtb)
-	(test 
-		(>= 
-			(+ (abs (- ?rta ?rbrb)) (abs (- ?cta ?cbrb))) 
-			(+ (abs (- ?rta ?rbtb)) (abs (- ?cta ?cbtb)))
-		)
-	)
-	(not (best-choice ?g))
-	=>
-	(assert (best-choice TB))
-)
-
-(defrule bestChoiceFinishRB (declare (salience 16))
-	(lookfor Ta)
-	(best_Ta ?rta ?cta ?idta)
-	(best_RB ?rbrb ?cbrb)
-	(best_TB ?rbtb ?cbtb)
-	(test 
-		(>  
-			(+ (abs (- ?rta ?rbtb)) (abs (- ?cta ?cbtb)))
-			(+ (abs (- ?rta ?rbrb)) (abs (- ?cta ?cbrb)))
-		)
-	)
-	(not (best-choice ?g))
-	=>
-	(assert (best-choice RB))
-)
-
-(defrule bestTBIfChoiceRBStart (declare (salience 14))
-	(lookfor Ta)
-	(best-choice RB)
-	(best_RB ?rbrb ?cbrb)
-	?f<-(best_TB ?rbtb ?cbtb)
-	(not (choice))
-	=>
-	(retract ?f)
-	(assert (best_TB 10000 10000) (choice))
-	
-)
-
-(defrule bestRBIfChoiceTBStart (declare (salience 14))
-	(lookfor Ta)
-	(best-choice TB)
-	(best_TB ?rbrb ?cbrb)
-	?f<-(best_RB ?rbtb ?cbtb)
-	(not (choice))
-	=>
-	(retract ?f)
-	(assert (best_RB 10000 10000) (choice))
-)
-
-(defrule bestTBIfChoiceRBExec (declare (salience 12))
-	(lookfor Ta)
-	(TrashBasket (pos-r ?rtb) (pos-c ?ctb))
-	(best_RB ?rbrb ?cbrb)
-	?f <- (best_TB ?rbtb ?cbtb)
-	(test 
-		(< 
-			(+ (abs (- ?rbrb ?rtb)) (abs (- ?cbrb ?ctb))) 
-			(+ (abs (- ?rbrb ?rbtb)) (abs (- ?cbrb ?cbtb)))
-		)
-	)
-	=>
-	(retract ?f)
-	(assert (best_TB ?rtb ?ctb))
-)
-
-(defrule bestRBIfChoiceTBExec (declare (salience 12))
-	(lookfor Ta)
-	(RecyclableBasket (pos-r ?rrb) (pos-c ?crb))
-	(best_TB ?rbtb ?cbtb)
-	?f <- (best_RB ?rbrb ?cbrb)
-	(test 
-		(< 
-			(+ (abs (- ?rbtb ?rrb)) (abs (- ?cbtb ?crb))) 
-			(+ (abs (- ?rbtb ?rbrb)) (abs (- ?cbtb ?cbrb)))
-		)
-	)
-	=>
-	(retract ?f)
-	(assert (best_RB ?rrb ?crb))
 )
 
 (defrule nearTaFinish_end (declare (salience 8))
-	?f <- (lookfor Ta)
-	(best_Ta ?rta ?cta ?tid)
-	(best_RB ?rbrb ?cbrb)
-	(best_TB ?rbtb ?cbtb)
-	?g <- (choice)
+	?f <- (lookfor Ta ?ra ?ca)
+	(best_Ta ?rtb ?ctb)
 	=>
-	(retract ?f ?g)
+	(retract ?f)
 )
+
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ;////////////////////					ZONA Di Cercasi TrashBasket										////////////////////
