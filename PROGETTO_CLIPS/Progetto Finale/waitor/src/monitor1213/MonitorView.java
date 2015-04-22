@@ -215,7 +215,7 @@ public class MonitorView extends ClipsView implements Observer {
         cp_frame.getLeftTimeTextField().setText(leftTime.toString());
         cp_frame.getStepTextField().setText(step.toString());
         try {
-            Thread.sleep(500);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
         }
         mapPanel.repaint();
@@ -385,10 +385,10 @@ public class MonitorView extends ClipsView implements Observer {
             int y0 = (this.getHeight() - 80 - cellHeight * mapString[0].length) / 2;
 
             for (int i = mapString.length - 1; i >= 0; i--) {
-                g2.drawString((i) + "", x0 - cellWidth, y0 + cellHeight / 2 + cellHeight * (mapString.length - i));
+                g2.drawString((i + 1) + "", x0 - cellWidth, y0 + cellHeight / 2 + cellHeight * (mapString.length - i));
                 for (int j = 0; j < mapString[0].length; j++) {
                     if (i == 0) {
-                        g2.drawString((j) + "", x0 + cellWidth / 2 + cellWidth * j, y0 + cellHeight / 2);
+                        g2.drawString((j + 1) + "", x0 + cellWidth / 2 + cellWidth * j, y0 + cellHeight / 2);
                     }
                     @SuppressWarnings("UnusedAssignment")
                     String direction = "";
