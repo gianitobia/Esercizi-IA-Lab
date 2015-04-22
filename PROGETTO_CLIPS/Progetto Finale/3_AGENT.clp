@@ -93,7 +93,7 @@
 	(not (planned-goal $?))
 	(not (TRY ONE GOAL ONLY)) ;?????
 	=>
-    (assert (planned-goal (pos_r 3) (pos_c 9)))		;creare regole di pianificazione nel planner
+    (assert (planned-goal (pos_r 7) (pos_c 7)))		;creare regole di pianificazione nel planner
     (assert (TRY ONE GOAL ONLY))
     (modify ?f (result no))
 )
