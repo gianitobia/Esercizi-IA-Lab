@@ -241,15 +241,13 @@
 ;////////////////////					ZONA Di Cercasi TrashBasket										////////////////////
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 (defrule nearTB_start (declare (salience 12))
-	(lookfor TB)
-	(best )
+	(lookfor TB ?sR ?sC)
 	=>
 	(assert (best_TB 10000 10000))
 )
 
 (defrule nearTB_exec (declare (salience 10))
-	(lookfor TB)
-	(K-agent (pos-r ?ra) (pos-c ?ca))
+	(lookfor TB ?ra ?ca)
 	(TrashBasket (pos-r ?rtb) (pos-c ?ctb))
 	?f <- (best_TB ?rb ?cb)
 	(test 
@@ -264,7 +262,7 @@
 )
 
 (defrule nearTB_end (declare (salience 8))
-	?f <- (lookfor TB)
+	?f <- (lookfor TB ?sR ?sC)
 	(best_TB ?rtb ?ctb)
 	=>
 	(retract ?f)
@@ -276,14 +274,13 @@
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 (defrule nearRB_start (declare (salience 12))
-	(lookfor RB)
+	(lookfor RB ?sR ?sC)
 	=>
 	(assert (best_RB 10000 10000))
 )
 
 (defrule nearRB_exec (declare (salience 10))
-	(lookfor RB)
-	(K-agent (pos-r ?ra) (pos-c ?ca))
+	(lookfor RB ?ra ?ca)
 	(RecyclableBasket (pos-r ?rrb) (pos-c ?crb))
 	?f <- (best_RB ?rb ?cb)
 	(test 
@@ -298,8 +295,27 @@
 )
 
 (defrule nearRB_end (declare (salience 8))
-	?f <- (lookfor RB)
+	?f <- (lookfor RB ?sR ?sC)
 	(best_RB ?rrb ?crb)
 	=>
 	(retract ?f)
 )
+
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;////////////////////					ZONA Di Cercasi RecyclableBasket e TrashBasket					/////////////////////
+;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+(defrule nearRB_start (declare (salience 12))
+	(lookfor TB-RB ?sR ?sC)
+	=>
+	(assert 
+		(best_RB 10000 10000)
+		(best_TB 10000 10000)
+	)
+)
+
+
+
+
+
+

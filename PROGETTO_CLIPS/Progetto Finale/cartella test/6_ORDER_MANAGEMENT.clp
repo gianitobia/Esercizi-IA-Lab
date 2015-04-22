@@ -104,6 +104,7 @@
 	?o <- (coda-ordini (sender ?tb) (tipo ?type) (drink ?nd) (food ?nf))
 	(test (= ?nf 0))
 	=>
+	(assert (ordine-servito ?tb ?nd ?nf))
 	(assert (lookfor DD))
 	(focus MIN_DISTANCE)
 )
@@ -131,6 +132,7 @@
 	?o <- (coda-ordini (sender ?tb) (tipo ?type) (drink ?nd) (food ?nf))
 	(test (= ?nd 0))
 	=>
+	(assert (ordine-servito ?tb ?nd ?nf))
 	(assert (lookfor FD))
 	(focus MIN_DISTANCE)
 )
@@ -157,6 +159,7 @@
 	?f <- (createMacro)
 	?o <- (coda-ordini (sender ?tb) (tipo ?type) (drink ?nd) (food ?nf))
 	=>
+	(assert (ordine-servito ?tb ?nd ?nf))
 	(assert (lookfor FD) (lookfor DD))
 	(focus MIN_DISTANCE)
 )
