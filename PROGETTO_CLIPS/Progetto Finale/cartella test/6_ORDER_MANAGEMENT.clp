@@ -21,6 +21,7 @@
 	(Table (table-id ?idta) (pos-r ?rta) (pos-c ?cta))
 	?o <- (pulisci-table (table-id ?idta))
 	?c <- (counter ?count)
+	?os <- (ordine-servito ?idta ?nd ?nf)
 	(not (table-found))
 	=>
 	(assert 
@@ -29,7 +30,7 @@
 		(counter =(+ ?count 2))
 		(table-found)
 	)
-	(retract ?o ?c)
+	(retract ?o ?c ?os)
 )
 
 ;regola che dopo asserito le macro-action di pulizia di un tavolo, rifa partire la ricerca di un miglior tavolo se ci sono altri tavoli da pulire dando come target il tavolo appena pulito (quindi best-table)
@@ -50,9 +51,10 @@
 	?b3 <- (best_Ta ?rta ?cta ?idta)
 	?bf <- (butta-food)
 	(not (butta-drink))
+	?tf <- (table-found)
 	=>
 	(assert (lookfor TB ?rta ?cta))
-	(retract ?bf)
+	(retract ?bf ?tf ?b3)
 	(focus MIN_DISTANCE)
 )
 (defrule rec_finish_lookforRecyclableBaskets (declare (salience 10))
@@ -61,9 +63,10 @@
 	?b3 <- (best_Ta ?rta ?cta ?idta)
 	(not (butta-food))
 	?bd <- (butta-drink)
+	?tf <- (table-found)
 	=>
 	(assert (lookfor RB ?rta ?cta))
-	(retract ?bd )
+	(retract ?bd  ?tf ?b3)
 	(focus MIN_DISTANCE)
 	
 )
@@ -73,13 +76,14 @@
 	?b3 <- (best_Ta ?rta ?cta ?idta)
 	?bf <- (butta-food)
 	?bd <-  (butta-drink)
+	?tf <- (table-found)
 	=>
 	(assert (lookfor TB-RB ?rta ?cta))
-	(retract ?bd ?bf)
+	(retract ?bd ?bf ?tf ?b3)
 	(focus MIN_DISTANCE)
 )
 
-(defrule rec_message_finishTB_conclusion (declare (salience 10))
+(defrule rec_message_finishTBandRB_conclusion (declare (salience 12))
 	(not (pulisci-table (table-id ?id)))
 	?f <- (createMacro)
 	?b1 <- (best_TB ?rtb ?ctb)
@@ -97,7 +101,7 @@
 	(retract ?b1 ?b2 ?bc ?f ?c)
 )
 
-(defrule rec_message_finishRB_conclusion (declare (salience 12))
+(defrule rec_message_finishRBandTB_conclusion (declare (salience 12))
 	(not (pulisci-table (table-id ?id)))
 	?f <- (createMacro)
 	?b1 <- (best_TB ?rtb ?ctb)
@@ -113,6 +117,34 @@
 		(macrostep 1)
 	)
 	(retract ?b1 ?b2 ?bc ?f ?c)
+)
+
+(defrule rec_message_finishTB_conclusion (declare (salience 10))
+	(not (pulisci-table (table-id ?id)))
+	?f <- (createMacro)
+	?b1 <- (best_TB ?rtb ?ctb)
+	?c <- (counter ?count)
+	=>
+	(assert 
+		(MacroAction (macrostep ?count) (oper Move) (param1 ?rtb) (param2 ?ctb))
+		(MacroAction (macrostep =(+ ?count 1)) (oper EmptyFood) (param1 ?rtb) (param2 ?ctb))
+		(macrostep 1)
+	)
+	(retract ?b1 ?f ?c)
+)
+
+(defrule rec_message_finishRB_conclusion (declare (salience 10))
+	(not (pulisci-table (table-id ?id)))
+	?f <- (createMacro)
+	?b2 <- (best_RB ?rrb ?crb)
+	?c <- (counter ?count)
+	=>
+	(assert 
+		(MacroAction (macrostep ?count) (oper Move) (param1 ?rrb) (param2 ?crb))
+		(MacroAction (macrostep =(+ ?count 1)) (oper Release) (param1 ?rrb) (param2 ?crb))
+		(macrostep 1)
+	)
+	(retract ?b2 ?f ?c)
 )
 
 

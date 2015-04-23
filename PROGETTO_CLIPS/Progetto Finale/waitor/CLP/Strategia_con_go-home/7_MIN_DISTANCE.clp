@@ -120,7 +120,7 @@
 	(pulisci-table (table-id ?tid))
 	(Table (table-id ?tid) (pos-r ?rta) (pos-c ?cta))
 	?f <- (best_Ta ?rb ?cb ?id)
-	(ordine-servito ?tid ?nd ?nf)
+	?os <- (ordine-servito ?tid ?nd ?nf)
 	(test 
 		(> 
 			(+ (abs (- ?ra ?rb)) (abs (- ?ca ?cb))) 
@@ -138,7 +138,7 @@
 
 (defrule nearTaFinish_end (declare (salience 8))
 	?f <- (lookfor Ta ?ra ?ca)
-	(best_Ta ?rtb ?ctb)
+	(best_Ta ?rta ?cta ?tid)
 	=>
 	(retract ?f)
 )
