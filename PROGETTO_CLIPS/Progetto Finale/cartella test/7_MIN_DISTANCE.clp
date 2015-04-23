@@ -212,14 +212,89 @@
 ;////////////////////					ZONA Di Cercasi RecyclableBasket e TrashBasket					/////////////////////
 ;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-(defrule nearRB_start (declare (salience 12))
+(defrule nearTBRB_start (declare (salience 12))
 	(lookfor TB-RB ?sR ?sC)
+	(not (best-choice ?g))
 	=>
 	(assert 
 		(best_RB 10000 10000)
 		(best_TB 10000 10000)
 	)
 )
+
+(defrule nearFirstTB_exec (declare (salience 18))
+	(lookfor TB-RB ?rta ?cta)
+	(TrashBasket (pos-r ?rtb) (pos-c ?ctb))
+	?f <- (best_TB ?rbtb ?cbtb)
+	(test 
+		(> 
+			(+ (abs (- ?rta ?rbtb)) (abs (- ?cta ?cbtb)))
+			(+ (abs (- ?rta ?rtb)) (abs (- ?cta ?ctb))) 
+		)
+	)
+	(not (best-choice ?g))
+	=>
+	(retract ?f)
+	(assert (best_TB ?rtb ?ctb))
+)
+
+(defrule nearFirstRB_exec (declare (salience 18))
+	(lookfor TB-RB ?rta ?cta)
+	(RecyclableBasket (pos-r ?rrb) (pos-c ?crb))
+	?f <- (best_RB ?rbrb ?cbrb)
+	(test 
+		(> 
+			(+ (abs (- ?rta ?rbrb)) (abs (- ?cta ?cbrb)))
+			(+ (abs (- ?rta ?rrb)) (abs (- ?cta ?crb))) 
+		)
+	)
+	(not (best-choice ?g))
+	=>
+	(retract ?f)
+	(assert (best_RB ?rrb ?crb))
+)
+
+(defrule bestChoiceFinishTB (declare (salience 16))
+	(lookfor TB-RB ?rta ?cta)
+	?f <- (best_RB ?rbrb ?cbrb)
+	(best_TB ?rbtb ?cbtb)
+	(test 
+		(>= 
+			(+ (abs (- ?rta ?rbrb)) (abs (- ?cta ?cbrb))) 
+			(+ (abs (- ?rta ?rbtb)) (abs (- ?cta ?cbtb)))
+		)
+	)
+	(not (best-choice ?g))
+	=>
+	(assert (best-choice TB) (lookfor RB ?rbtb ?cbtb))
+	(retract ?f)
+)
+
+(defrule bestChoiceFinishRB (declare (salience 16))
+	(lookfor TB-RB ?rta ?cta)
+	(best_RB ?rbrb ?cbrb)
+	?f <- (best_TB ?rbtb ?cbtb)
+	(test 
+		(>  
+			(+ (abs (- ?rta ?rbtb)) (abs (- ?cta ?cbtb)))
+			(+ (abs (- ?rta ?rbrb)) (abs (- ?cta ?cbrb)))
+		)
+	)
+	(not (best-choice ?g))
+	=>
+	(assert (best-choice RB) (lookfor TB ?rbrb ?cbrb))
+	(retract ?f)
+)
+
+(defrule nearTBRBFinish_end (declare (salience 8))
+	?f <- (lookfor TB-RB ?sr ?sc)
+	(best_RB ?rbrb ?cbrb)
+	(best_TB ?rbtb ?cbtb)
+	(best-choice ?bc)
+	=>
+	(retract ?f)
+)
+
 
 
 
