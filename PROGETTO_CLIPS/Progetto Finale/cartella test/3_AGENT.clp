@@ -147,13 +147,32 @@
 
 (defrule decode-plan-execute (declare (salience 5))
 	?f <- (status (step ?i) (time ?t))
-	?f2 <- (planned-action (step ?st) (action ?oper) (pos_r ?r) (pos_c ?c) (param3 ?p3)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
+	?f2 <- (planned-action (step ?i) (action ?oper) (pos_r ?r) (pos_c ?c) (param3 ?p3)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
 	=>
     (modify ?f (result no)) ; CHIEDERE AL PROF
     (retract ?f2)
+    (assert (check-action ?i ?oper ?r ?c ?p3))
+	;;Bisogna controllare che non ci siano delle persone contro cui vado a sbatter
+	(focus CHECK-EXECUTE)
+)
+
+(defrule execute-valid-action (declare (salience 5))
+	?f1 <- (check-action ?i ?oper ?r ?c ?p3)
+	?f2 <- (valid-action)
+	=>
     (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1  - %p2") (param1 ?oper) (param2 ?i)))
 	(assert (exec (step ?i) (action ?oper) (param1 ?r) (param2 ?c) (param3 ?p3))) ; andrà in esecuzione effettivamente
-	(focus MAIN) 
+	(retract ?f1 ?f2)
+	(focus MAIN)
+)
+
+(defrule stop-exection-for-bump (declare (salience 5))
+	(check-action ?i ?oper ?r ?c ?p3)
+	?f2 <- (action-invalid)
+	=>
+	;bisogna capire come gestire la cosa per evitare i bump
+	(retract ?f2)
+	(focus EVITA-PERSONA)
 )
 
 ;forse bisogna mettere una regola di fine ordine.
@@ -472,5 +491,69 @@
 	=>
 	(retract ?f1 ?f2 ?f3)
 	(assert (posticipate-exec))
+	(pop-focus)
+)
+
+(defmodule CHECK-EXECUTE (import AGENT ?ALL) (export ?ALL))
+
+;le azioni diverse dal forward sono sempre valide xke rimango fermo all'interno della stessa cella
+(defrule actions_always_valid (declare (salience 100))
+	(check-action ?i ?oper ?r ?c ?p3)
+	(test (neq ?oper Forward))
+	=>
+	(assert (valid-action))	;Asserisco che l'azione e` valida
+	(pop-focus)
+)
+
+;devo controllare tutte e quattro i versi della forward per vedere se sono sono ancora valide
+;anche in fase di esecuzione del piano oppure contengono persone che intanto hanno
+;modifcato la loro posizione
+
+;tentativo di forward verso su
+(defrule validate-Forward-Nord (declare (salience 90))
+	(check-action ?i Forward ?r ?c ?p3)
+	(K-agent (pos-r ?r) (pos-c ?c) (direction north))
+	(K-cell (pos-r =(+ ?r 1)) (pos-c ?c) (contains Empty|Parking))
+	=>
+	(assert (valid-action))
+	(pop-focus)
+)
+
+;tentativo di forward verso giu'
+(defrule validate-Forward-South (declare (salience 90))
+	(check-action ?i Forward ?r ?c ?p3)
+	(K-agent (pos-r ?r) (pos-c ?c) (direction south))
+	(K-cell (pos-r =(- ?r 1)) (pos-c ?c) (contains Empty|Parking))
+	=>
+	(assert (valid-action))
+	(pop-focus)
+)
+
+;tentativo di forward verso destra
+(defrule validate-Forward-East (declare (salience 90))
+	(check-action ?i Forward ?r ?c ?p3)
+	(K-agent (pos-r ?r) (pos-c ?c) (direction east))
+	(K-cell (pos-r ?r) (pos-c =(+ ?c 1)) (contains Empty|Parking))
+	=>
+	(assert (valid-action))
+	(pop-focus)
+)
+
+;tentativo di forward verso sinistra
+(defrule validate-Forward-West (declare (salience 90))
+	(check-action ?i Forward ?r ?c ?p3)
+	(K-agent (pos-r ?r) (pos-c ?c) (direction east))
+	(K-cell (pos-r ?r) (pos-c =(- ?c 1)) (contains Empty|Parking))
+	=>
+	(assert (valid-action))
+	(pop-focus)
+)
+
+;Se non ho matchato nessuna regola delle precedenti allora vuol dire che se eseguo l'azione pianificata avrei un bump
+;perche` il mondo e` cambiato da quando si e' fatta la pianificazione allora avviso l'agent che deve provvedere
+(defrule action-not-valid (declare (salience 80))
+	(check-action ?i Forward ?r ?c ?p3)
+	=>
+	(assert (action-invalid))
 	(pop-focus)
 )
