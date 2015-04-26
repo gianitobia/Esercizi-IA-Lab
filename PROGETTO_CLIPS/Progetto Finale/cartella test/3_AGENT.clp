@@ -147,10 +147,9 @@
 
 (defrule decode-plan-execute (declare (salience 5))
 	?f <- (status (step ?i) (time ?t))
-	?f2 <- (planned-action (step ?i) (action ?oper) (pos_r ?r) (pos_c ?c) (param3 ?p3)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
+	(planned-action (step ?i) (action ?oper) (pos_r ?r) (pos_c ?c) (param3 ?p3)) ; r e c non vengono utilizzati, ma possono essere utili da tenere nel fatto
 	=>
     (modify ?f (result no)) ; CHIEDERE AL PROF
-    (retract ?f2)
     (assert (check-action ?i ?oper ?r ?c ?p3))
 	;;Bisogna controllare che non ci siano delle persone contro cui vado a sbatter
 	(focus CHECK-EXECUTE)
@@ -159,19 +158,21 @@
 (defrule execute-valid-action (declare (salience 5))
 	?f1 <- (check-action ?i ?oper ?r ?c ?p3)
 	?f2 <- (valid-action)
+	?f3 <- (planned-action (step ?i) (action ?oper) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 	=>
     (assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1  - %p2") (param1 ?oper) (param2 ?i)))
 	(assert (exec (step ?i) (action ?oper) (param1 ?r) (param2 ?c) (param3 ?p3))) ; andrà in esecuzione effettivamente
-	(retract ?f1 ?f2)
+	(retract ?f1 ?f2 ?f3)
 	(focus MAIN)
 )
 
 (defrule stop-exection-for-bump (declare (salience 5))
-	(check-action ?i ?oper ?r ?c ?p3)
+	?f1 <- (check-action ?i ?oper ?r ?c ?p3)
 	?f2 <- (action-invalid)
 	=>
 	;bisogna capire come gestire la cosa per evitare i bump
-	(retract ?f2)
+	(retract ?f1 ?f2)
+	(assert (side-planning))
 	(focus EVITA-PERSONA)
 )
 
