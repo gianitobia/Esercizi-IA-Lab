@@ -705,7 +705,7 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
 
         String path = System.getProperty("user.dir") + File.separator + "CLP";
         File folder = new File(path);
-        DefaultComboBoxModel result = new DefaultComboBoxModel();
+        DefaultComboBoxModel<String> result = new DefaultComboBoxModel<>();
         File[] listOfFiles = folder.listFiles();
         for (File file : listOfFiles) {
             if (file.isDirectory() && !file.isHidden() && !file.getName().startsWith(".")) {
@@ -727,7 +727,7 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
 
         String path = System.getProperty("user.dir") + File.separator + "envs";
         File folder = new File(path);
-        DefaultComboBoxModel result = new DefaultComboBoxModel();
+        DefaultComboBoxModel<String> result = new DefaultComboBoxModel<>();
         File[] listOfFiles = folder.listFiles();
         for (File file : listOfFiles) {
             if (file.isDirectory() && !file.isHidden() && !file.getName().startsWith(".")) {
