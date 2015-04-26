@@ -59,6 +59,7 @@
 	(not (pulisci-table))
 	=>
 	(assert (goal ?rp ?cp) (go-home))
+	;(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Pianifico la macro-action: ComeBackHome  - %p1 - %p2") (param1 ?rp) (param2 ?cp)))
 	(retract ?s)
 	(focus MOVEMENT)
 )
@@ -78,6 +79,7 @@
 					(action Wait)				
 			)
 	)
+	;(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Pianifico la planned-action: Wait  - %p1 - %p2") (param1 ?r) (param2 ?c)))
 	(retract ?s ?g)
 	(pop-focus)
 )
@@ -114,7 +116,10 @@
 	=>
 	(assert (goal ?goal-r ?goal-c))
 	(retract ?f1 ?f2 ?s)
-	(assert (macrostep =(+ ?i 1)))
+	(assert 
+		;(printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Pianifico il percorso: Move  - %p1 - %p2") (param1 ?goal-r) (param2 ?goal-c))
+		(macrostep =(+ ?i 1))
+	)
 	(focus MOVEMENT)
 )
 

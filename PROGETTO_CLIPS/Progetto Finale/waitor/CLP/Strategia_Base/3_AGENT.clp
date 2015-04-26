@@ -195,7 +195,7 @@
 (defrule inform-ENV-accepted (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
 	(not (pulisci-table (table-id ?tb)))
-	(not (exec (step ?i)))
+	(not (planned-action (step ?i)))
 	=>
 	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform-accepted)))
 	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 accepted)))				;exec di inform per ENV
@@ -207,7 +207,7 @@
 (defrule inform-ENV-delayed (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
 	(pulisci-table (table-id ?tb))
-	(not (exec (step ?i)))
+	(not (planned-action (step ?i)))
 	=>
 	(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Start the execution of the action: %p1") (param1 Inform-accepted)))
 	(assert (exec (step ?i) (action Inform) (param1 ?tb) (param2 ?t) (param3 delayed)))				;exec di inform per ENV
@@ -220,7 +220,7 @@
 (defrule inform-ENV-accepted-busy (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
 	(not (pulisci-table (table-id ?tb)))
-	(exec)
+	(planned-action)
 	=>
 	(assert 
 		(inform-temp ?i Inform ?tb ?t accepted)
@@ -235,7 +235,7 @@
 (defrule inform-ENV-delayed-busy (declare (salience 10))
 	?f <- (msg-to-agent (request-time ?t) (step ?i) (sender ?tb) (type order) (drink-order ?nd) (food-order ?nf))
 	(pulisci-table (table-id ?tb))
-	(exec)
+	(planned-action)
 	=>
 	(assert 
 		(inform-temp ?i Inform ?tb ?t delyed)
