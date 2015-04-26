@@ -6,4 +6,5 @@
 (load "5_MOVEMENT.clp")
 (load "6_ORDER_MANAGEMENT.clp")
 (load "7_MIN_DISTANCE.clp")
+(load "8_EVITA_PERSONE.clp")
 (reset)

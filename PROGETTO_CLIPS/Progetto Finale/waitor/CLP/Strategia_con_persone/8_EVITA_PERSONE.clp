@@ -22,14 +22,16 @@
 )
 
 ;dopo aver posticipato tutte le planned action dico al robot di aspettare
-(defrule primo-tentativo-wat-end (declare (salience 100))
+(defrule primo-tentativo-wait-end (declare (salience 100))
 	?f1 <- (try-step (count 1))
+	?f2 <- (posticipate-exec)
 	(status (step ?st))
 	=>
 	(assert 
-		(planned-action (step ?curr) (action Wait))	
+		(planned-action (step ?st) (action Wait))	
 	)
 	(modify ?f1 (count 2))
+	(retract ?f2)
 	(pop-focus)
 )
 
@@ -298,7 +300,7 @@
 )
 
 ;Direction = west;  v2 = up - left - down
-(defrule check-giro-tondo-west-V1 (declare (salience 100))
+(defrule check-giro-tondo-west-V2 (declare (salience 100))
 	(not (route-found))
 	(status (step ?st))
 	?f1 <- (try-step (count 2))
@@ -347,9 +349,10 @@
 (defrule del-giro-tondo (declare (salience 110))
 	?f1 <- (route-found)
 	?f2 <- (try-step (count 3))
+	?f3 <- (posticipate-exec)
 	(not (try-action ?st ?oper ?r ?c ?p3))
 	=>
-	(retract ?f1 ?f2)
+	(retract ?f1 ?f2 ?f3)
 	(pop-focus)
 )
 

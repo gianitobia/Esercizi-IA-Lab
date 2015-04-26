@@ -288,7 +288,7 @@ public abstract class ClipsModel extends Observable implements Runnable {
      *
      */
     private void suspend() {
-        t.interrupt();//suspend();
+        t.suspend();
     }
 
     public void evalComandLine(String comand) {
