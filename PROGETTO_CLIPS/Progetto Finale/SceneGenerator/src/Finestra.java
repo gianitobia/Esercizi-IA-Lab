@@ -36,7 +36,6 @@ public class Finestra extends javax.swing.JFrame {
         setTitle("SceneGenerator");
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setPreferredSize(new java.awt.Dimension(1280, 720));
-        setResizable(false);
 
         scenePanel.setBackground(new java.awt.Color(255, 255, 255));
         scenePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));

@@ -2,6 +2,7 @@
 
 (deftemplate try-step
 	(slot count)
+	(slot step)
 )
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -11,13 +12,26 @@
 ;Se e' la prima volta che entro allora vuol dire che faccio un primo tentativo di wait, xke magari 
 ;la persona occupa la cella che a me serve ma solo per uno step, al prossimo si sospetera' 
 ;e la cella diventera' libera
-(defrule primo-tentativo-wait-begin (declare (salience 100))
+(defrule primo-tentativo-wait-begin-V1 (declare (salience 100))
 	(not (try-step))
+	(status (step ?st))
 	=>
 	(assert 
 		(posticipate 1)
-		(try-step (count 1))
+		(try-step (count 1) (step ?st))
 	)
+	(focus POSTICIPATE)
+)
+
+(defrule primo-tentativo-wait-begin-V2 (declare (salience 100))
+	(status (step ?st))
+	?f1 <- (try-step (step ?i))
+	(test (> ?st (+ ?i 1)))				;mi serve per controlla che rifaccio il wait 
+	=>
+	(assert 
+		(posticipate 1)
+	)
+	(modify ?f1 (count 1) (step ?st))
 	(focus POSTICIPATE)
 )
 
@@ -334,6 +348,9 @@
 	(focus POSTICIPATE)
 )
 
+;///////////////////////////////////////////////////////////////////////////////////////////////////
+;////////////////							CHECK STEP								////////////////		
+;///////////////////////////////////////////////////////////////////////////////////////////////////
 
 ;Direction = west;  v1 = down - up
 (defrule check-step-left-west (declare (salience 110))
@@ -349,7 +366,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnleft) (pos_r ?r) (pos_c =(- ?c 1)) (param3 ?p3))
+		(planned-action (step ?st) (action Turnleft) (pos_r ?r) (pos_c ?c)) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnleft ?r ?c p3)
@@ -382,7 +399,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnright) (pos_r ?r) (pos_c =(- ?c 1)) (param3 ?p3))
+		(planned-action (step ?st) (action Turnright) (pos_r ?r) (pos_c ?c)) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
@@ -448,7 +465,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnleft) (pos_r =(- ?r 1)) (pos_c ?c) (param3 ?p3))
+		(planned-action (step ?st) (action Turnleft) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnleft ?r ?c p3)
@@ -481,7 +498,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnright) (pos_r =(- ?r 1)) (pos_c ?c) (param3 ?p3))
+		(planned-action (step ?st) (action Turnright) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
@@ -549,7 +566,7 @@
 	(assert 
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnleft) (pos_r =(+ ?r 1)) (pos_c ?c) (param3 ?p3))
+		(planned-action (step ?st) (action Turnleft) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnleft ?r ?c p3)
@@ -582,7 +599,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnright) (pos_r =(+ ?r 1)) (pos_c ?c) (param3 ?p3))
+		(planned-action (step ?st) (action Turnright) (pos_r ?r 1) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
@@ -634,8 +651,6 @@
 	(focus POSTICIPATE)
 )
 
-
-
 ;Direction = est;  v1 = up - down
 (defrule check-step-left-east (declare (salience 110))
 	(not (route-found))
@@ -650,7 +665,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnleft) (pos_r ?r) (pos_c =(+ ?c 1)) (param3 ?p3))
+		(planned-action (step ?st) (action Turnleft) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnleft ?r ?c p3)
@@ -683,7 +698,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnright) (pos_r ?r) (pos_c =(+ ?c 1)) (param3 ?p3))
+		(planned-action (step ?st) (action Turnright) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
