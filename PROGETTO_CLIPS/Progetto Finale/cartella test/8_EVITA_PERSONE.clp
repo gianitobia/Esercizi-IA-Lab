@@ -2,6 +2,7 @@
 
 (deftemplate try-step
 	(slot count)
+	(slot step)
 )
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -11,13 +12,26 @@
 ;Se e' la prima volta che entro allora vuol dire che faccio un primo tentativo di wait, xke magari 
 ;la persona occupa la cella che a me serve ma solo per uno step, al prossimo si sospetera' 
 ;e la cella diventera' libera
-(defrule primo-tentativo-wait-begin (declare (salience 100))
+(defrule primo-tentativo-wait-begin-V1 (declare (salience 100))
 	(not (try-step))
+	(status (step ?st))
 	=>
 	(assert 
 		(posticipate 1)
-		(try-step (count 1))
+		(try-step (count 1) (step ?st))
 	)
+	(focus POSTICIPATE)
+)
+
+(defrule primo-tentativo-wait-begin-V2 (declare (salience 100))
+	(status (step ?st))
+	?f1 <- (try-step (step ?i))
+	(test (> ?st (+ ?i 1)))				;mi serve per controlla che rifaccio il wait 
+	=>
+	(assert 
+		(posticipate 1)
+	)
+	(modify ?f1 (count 1) (step ?st))
 	(focus POSTICIPATE)
 )
 
