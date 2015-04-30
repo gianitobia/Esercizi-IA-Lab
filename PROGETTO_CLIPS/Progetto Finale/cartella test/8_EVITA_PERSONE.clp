@@ -1,3 +1,4 @@
+
 (defmodule EVITA-PERSONA (import AGENT ?ALL) (export ?ALL))
 
 (deftemplate try-step
@@ -366,7 +367,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnleft) (pos_r ?r) (pos_c ?c)) (param3 ?p3))
+		(planned-action (step ?st) (action Turnleft) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnleft ?r ?c p3)
@@ -399,7 +400,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnright) (pos_r ?r) (pos_c ?c)) (param3 ?p3))
+		(planned-action (step ?st) (action Turnright) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
@@ -432,7 +433,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Forward) (pos-r ?r) (pos-c =(+ ?c 1)) (param3 ?p3))
+		(planned-action (step ?st) (action Forward) (pos_r ?r) (pos_c =(+ ?c 1)) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
@@ -531,7 +532,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Forward) (pos-r =(+ ?r 1)) (pos-c ?c) (param3 ?p3))
+		(planned-action (step ?st) (action Forward) (pos_r =(+ ?r 1)) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
@@ -599,7 +600,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnright) (pos_r ?r 1) (pos_c ?c) (param3 ?p3))
+		(planned-action (step ?st) (action Turnright) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
@@ -632,7 +633,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Forward) (pos-r =(- ?r 1)) (pos-c ?c) (param3 ?p3))
+		(planned-action (step ?st) (action Forward) (pos_r =(- ?r 1)) (pos_c ?c) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
@@ -731,7 +732,7 @@
 	(assert
 		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
 		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Forward) (pos-r ?r) (pos-c =(- ?c 1)) (param3 ?p3))
+		(planned-action (step ?st) (action Forward) (pos_r ?r) (pos_c =(- ?c 1)) (param3 ?p3))
 		
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
