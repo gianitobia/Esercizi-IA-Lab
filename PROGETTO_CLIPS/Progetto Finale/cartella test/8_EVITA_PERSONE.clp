@@ -1,18 +1,59 @@
 
 (defmodule EVITA-PERSONA (import AGENT ?ALL) (export ?ALL))
 
-(deftemplate pos
-	(slot c)
-	(slot r)
-)
-
 (deftemplate incremento
 	(slot direction)
-	(slot pos)
+	(slot P1-r)
+	(slot P1-c)
+	(slot P2-r)
+	(slot P2-c)
+	(slot P3-r)
+	(slot P3-c)
+	(slot P4-r)
+	(slot P4-c)
+	(slot P5-r)
+	(slot P5-c)
+	(slot P6-r)
+	(slot P6-c)
 )
 
 (deffacts increments
-	(incremento (direction north) (pos (c 0) (r 1)))
+	
+	(incremento (direction north) 
+		(P1-r 1) (P1-c -1)
+		(P2-r 1) (P2-c 0) 
+		(P3-r 1) (P3-c -1) 
+		(P4-r 0) (P4-c -1) 
+		(P5-r 0) (P5-c 1) 
+		(P6-r -1) (P6-c 0)
+	)
+	
+	(incremento (direction east) 
+		(P1-r 1) (P1-c 1) 
+		(P2-r 0) (P2-c 1) 
+		(P3-r -1) (P3-c 1) 
+		(P4-r 1) (P4-c 0) 
+		(P5-r -1) (P5-c 0) 
+		(P6-r 0) (P6-c -1)
+	)
+	
+	(incremento (direction south) 
+		(P1-r -1) (P1-c 1) 
+		(P2-r -1) (P2-c 0) 
+		(P3-r -1) (P3-c -1) 
+		(P4-r 0) (P4-c 1)
+		(P5-r 0) (P5-c -1) 
+		(P6-r 1) (P6-c 0)
+	)
+	
+	(incremento (direction west) 
+		(P1-r 1) (P1-c -1) 
+		(P2-r 0) (P2-c -1) 
+		(P3-r -1) (P3-c -1) 
+		(P4-r 1) (P4-c 0) 
+		(P5-r -1) (P5-c 0) 
+		(P6-r 0) (P6-c 1)
+	)
 )	
 
 
