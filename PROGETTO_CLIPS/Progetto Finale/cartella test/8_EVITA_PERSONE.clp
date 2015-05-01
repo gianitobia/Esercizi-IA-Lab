@@ -705,26 +705,24 @@
 	(not (route-found))
 	(status (step ?st))
 	?f1 <- (try-step (count 2))
-	?f2 <- (planned-action (step ?st) (action Forward) (pos_r ?r) (pos_c ?c) (param3 ?p3))
+	(planned-action (step ?st) (action Forward) (pos_r ?r) (pos_c ?c) (param3 ?p3))
 	(K-agent (pos-r ?r) (pos-c ?c) (direction east))
 	(K-cell (pos-r =(- ?r 1)) (pos-c ?c) (contains Empty|Parking))
 	
 	=>
 	(retract ?f2)
 	(assert
-		;asserisco l'ultima azione come planned-action dello stato in cui sono xke mi serve per
-		;il posticipate, xke diventera' lultima azione da fare dopo aver posticipate tutte le altre
-		(planned-action (step ?st) (action Turnright) (pos_r ?r) (pos_c ?c) (param3 ?p3))
-		
+				
 		;azioni per compiere il percorso alternativo
 		(try-action ?st Turnright ?r ?c p3)
 		(try-action =(+ ?st 1) Forward ?r ?c p3)
 		(try-action =(+ ?st 2) Turnleft =(- ?r 1) ?c p3)
 		(try-action =(+ ?st 3) Turnleft =(- ?r 1) ?c p3)
 		(try-action =(+ ?st 4) Forward =(- ?r 1) ?c p3)
+		(try-action =(+ ?st 5) Turnright ?r ?c p3)
 		
 		;asserisco di posticipare
-		(posticipate 5)
+		(posticipate 6)
 		
 		;asserisco di aver trovato un percorso
 		(route-found)
@@ -788,12 +786,38 @@
 )
 
 ;///////////////////////////////////////////////////////////////////////////////////////////////////
-;////////////////					TERZO STEP	->		DEFINIRE					////////////////		
+;////////////////					TERZO STEP	->		REPLANNING					////////////////		
 ;///////////////////////////////////////////////////////////////////////////////////////////////////
+(defrule start-replan-move-action (declare (salience 100))
+	(not (route-found))
+	(status (step ?st))
+	?f1 <- (try-step (count 3))
+	(not (delete-planned-action))
+	=>
+	(assert (delete-planned-action))
+)
 
+(defrule delete-plan (declare (salience 95))
+	(not (route-found))
+	(status (step ?st))
+	(try-step (count 3))
+	(delete-planned-action)
+	?pa <- (planned-action)
+	=>
+	(retract ?pa)
+)
 
-
-;///////////////////////////////////////////////////////////////////////////////////////////////////
-;////////////////					QUART STEP	->		RIPLANNING					////////////////		
-;///////////////////////////////////////////////////////////////////////////////////////////////////
-
+(defrule replan (declare (salience 90))
+	(not (route-found))
+	(not (planned-action))
+	?f <- (macrostep ?i)
+	?mc <- (MacroAction (macrostep ?i) (param1 ?r) (param2 ?c))
+	?f1 <- (try-step (count 3))
+	=>
+	(assert 
+		(MacroAction (macrostep =(- ?i 1)) (param1 ?r) (param2 ?c) (oper Move))
+		(macrostep =(- ?i 1))
+	)
+	(retract ?f1 ?f)
+	(pop-focus)
+)
