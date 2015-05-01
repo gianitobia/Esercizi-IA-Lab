@@ -184,8 +184,8 @@
 		(try-action =(+ ?st 1) Forward ?r ?c p3)
 		(try-action =(+ ?st 2) Turnleft =(+ ?r ?p5_r) =(+ ?c ?p5_c) ?p3)
 		(try-action =(+ ?st 3) Forward =(+ ?r ?p5_r) =(+ ?c ?p5_c) ?p3)
-		(try-action =(+ ?st 4) Turnleft =(+ ?r ?p3_r) =(+ ?c ?p3_r) ?p3)
-		(try-action =(+ ?st 5) Forward =(+ ?r ?p3_r) =(+ ?c ?p3_r) ?p3)
+		(try-action =(+ ?st 4) Turnleft =(+ ?r ?p3_r) =(+ ?c ?p3_c) ?p3)
+		(try-action =(+ ?st 5) Forward =(+ ?r ?p3_r) =(+ ?c ?p3_c) ?p3)
 		
 		;asserisco di posticipare
 		(posticipate 6)
