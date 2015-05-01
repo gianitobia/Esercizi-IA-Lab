@@ -377,10 +377,10 @@ public class MenuPannello extends JPanel {
     }
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        int returnVal = save_fc.showOpenDialog(this);
+        int returnVal = fc.showOpenDialog(this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = save_fc.getSelectedFile();
+            File file = fc.getSelectedFile();
             Scene s = loader.read_mappa(file);
             scenePanel.updateScene(s);
         }

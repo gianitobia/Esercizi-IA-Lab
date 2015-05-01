@@ -340,14 +340,14 @@
 (defrule replan (declare (salience 90))
 	(not (route-found))
 	(not (planned-action))
-	?f <- (macrostep ?i)
+	?f <- (Macrostep (step ?i))
 	?mc <- (MacroAction (macrostep ?i) (param1 ?r) (param2 ?c))
 	?f1 <- (try-step (count 3))
 	=>
 	(assert 
 		(MacroAction (macrostep =(- ?i 1)) (param1 ?r) (param2 ?c) (oper Move))
-		(macrostep =(- ?i 1))
 	)
-	(retract ?f1 ?f)
+	(modify ?f (step =(- ?i 1)))
+	(retract ?f1)
 	(pop-focus)
 )

@@ -96,7 +96,7 @@
 		(MacroAction (macrostep =(+ ?count 1)) (oper EmptyFood) (param1 ?rtb) (param2 ?ctb))
 		(MacroAction (macrostep =(+ ?count 2)) (oper Move) (param1 ?rrb) (param2 ?crb))
 		(MacroAction (macrostep =(+ ?count 3)) (oper Release) (param1 ?rrb) (param2 ?crb))
-		(macrostep 1)
+		(Macrostep (step 1))
 	)
 	(retract ?b1 ?b2 ?bc ?f ?c)
 )
@@ -114,7 +114,7 @@
 		(MacroAction (macrostep =(+ ?count 1)) (oper Release) (param1 ?rrb) (param2 ?crb))
 		(MacroAction (macrostep =(+ ?count 2)) (oper Move) (param1 ?rtb) (param2 ?ctb))
 		(MacroAction (macrostep =(+ ?count 3)) (oper EmptyFood) (param1 ?rtb) (param2 ?ctb))
-		(macrostep 1)
+		(Macrostep (step 1))
 	)
 	(retract ?b1 ?b2 ?bc ?f ?c)
 )
@@ -128,7 +128,7 @@
 	(assert 
 		(MacroAction (macrostep ?count) (oper Move) (param1 ?rtb) (param2 ?ctb))
 		(MacroAction (macrostep =(+ ?count 1)) (oper EmptyFood) (param1 ?rtb) (param2 ?ctb))
-		(macrostep 1)
+		(Macrostep (step 1))
 	)
 	(retract ?b1 ?f ?c)
 )
@@ -142,7 +142,7 @@
 	(assert 
 		(MacroAction (macrostep ?count) (oper Move) (param1 ?rrb) (param2 ?crb))
 		(MacroAction (macrostep =(+ ?count 1)) (oper Release) (param1 ?rrb) (param2 ?crb))
-		(macrostep 1)
+		(Macrostep (step 1))
 	)
 	(retract ?b2 ?f ?c)
 )
@@ -172,7 +172,7 @@
 		(MacroAction (macrostep 2) (oper LoadDrink) (param1 ?rd) (param2 ?cd) (param3 ?nd))
 		(MacroAction (macrostep 3) (oper Move) (param1 ?rt) (param2 ?ct))
 		(MacroAction (macrostep 4) (oper DeliveryDrink) (param1 ?rt) (param2 ?ct) (param3 ?nd))
-		(macrostep 1)
+		(Macrostep (step 1))
 	)
 )
 
@@ -200,7 +200,7 @@
 		(MacroAction (macrostep 2) (oper LoadFood) (param1 ?rf) (param2 ?cf) (param3 ?nf))				
 		(MacroAction (macrostep 3) (oper Move) (param1 ?rt) (param2 ?ct))
 		(MacroAction (macrostep 4) (oper DeliveryFood) (param1 ?rt) (param2 ?ct) (param3 ?nf))
-		(macrostep 1)
+		(Macrostep (step 1))
 	)
 )
 
@@ -230,7 +230,7 @@
 		(MacroAction (macrostep 5) (oper Move) (param1 ?rt) (param2 ?ct))
 		(MacroAction (macrostep 6) (oper DeliveryDrink) (param1 ?rt) (param2 ?ct) (param3 ?nd))
 		(MacroAction (macrostep 7) (oper DeliveryFood) (param1 ?rt) (param2 ?ct) (param3 ?nf))
-		(macrostep 1)
+		(Macrostep (step 1))
 	)
 )
 

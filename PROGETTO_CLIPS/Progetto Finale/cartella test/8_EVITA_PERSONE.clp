@@ -83,7 +83,7 @@
 (defrule primo-tentativo-wait-begin-V2 (declare (salience 140))
 	(status (step ?st))
 	?f1 <- (try-step (step ?i))
-	(test (> ?st (+ ?i 5)))				;mi serve per controlla che rifaccio il wait 
+	(test (> ?st (+ ?i 6)))				;mi serve per controlla che rifaccio il wait 
 	=>
 	(assert 
 		(posticipate 1)
@@ -307,11 +307,11 @@
 
 (defrule del-giro-tondo (declare (salience 145))
 	?f1 <- (route-found)
-	?f2 <- (try-step)
+	(try-step)
 	?f3 <- (posticipate-exec)
 	(not (try-action ?st ?oper ?r ?c ?p3))
 	=>
-	(retract ?f1 ?f2 ?f3)
+	(retract ?f1 ?f3)
 	(pop-focus)
 )
 
@@ -340,14 +340,14 @@
 (defrule replan (declare (salience 90))
 	(not (route-found))
 	(not (planned-action))
-	?f <- (macrostep ?i)
+	?f <- (Macrostep (step ?i))
 	?mc <- (MacroAction (macrostep ?i) (param1 ?r) (param2 ?c))
 	?f1 <- (try-step (count 3))
 	=>
 	(assert 
 		(MacroAction (macrostep =(- ?i 1)) (param1 ?r) (param2 ?c) (oper Move))
-		(macrostep =(- ?i 1))
 	)
-	(retract ?f1 ?f)
+	(modify ?f (step =(- ?i 1)))
+	(retract ?f1)
 	(pop-focus)
 )

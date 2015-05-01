@@ -372,8 +372,8 @@ public class MonitorView extends ClipsView implements Observer {
 
             String[][] mapString = model.getMap();
 
-            int cellWidth = Math.round((this.getWidth() - 100) / mapString.length);
-            int cellHeight = Math.round((this.getHeight() - 100) / mapString[0].length);
+            int cellWidth = Math.round((this.getWidth() - 20) / mapString.length);
+            int cellHeight = Math.round((this.getHeight() - 20) / mapString[0].length);
 
             if (cellWidth > cellHeight) {
                 cellWidth = cellHeight;
@@ -382,7 +382,7 @@ public class MonitorView extends ClipsView implements Observer {
             }
 
             int x0 = (this.getWidth() - cellWidth * mapString.length) / 2;
-            int y0 = (this.getHeight() - 80 - cellHeight * mapString[0].length) / 2;
+            int y0 = (this.getHeight() - 20 - cellHeight * mapString[0].length) / 2;
 
             for (int i = mapString.length - 1; i >= 0; i--) {
                 g2.drawString((i + 1) + "", x0 - cellWidth, y0 + cellHeight / 2 + cellHeight * (mapString.length - i));
