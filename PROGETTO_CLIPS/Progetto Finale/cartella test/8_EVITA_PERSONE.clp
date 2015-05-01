@@ -1,6 +1,21 @@
 
 (defmodule EVITA-PERSONA (import AGENT ?ALL) (export ?ALL))
 
+(deftemplate pos
+	(slot c)
+	(slot r)
+)
+
+(deftemplate incremento
+	(slot direction)
+	(slot pos)
+)
+
+(deffacts increments
+	(incremento (direction north) (pos (c 0) (r 1)))
+)	
+
+
 (deftemplate try-step
 	(slot count)
 	(slot step)
