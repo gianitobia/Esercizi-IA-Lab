@@ -83,7 +83,7 @@
 (defrule primo-tentativo-wait-begin-V2 (declare (salience 140))
 	(status (step ?st))
 	?f1 <- (try-step (step ?i))
-	(test (> ?st (+ ?i 1)))				;mi serve per controlla che rifaccio il wait 
+	(test (> ?st (+ ?i 6)))				;mi serve per controlla che rifaccio il wait 
 	=>
 	(assert 
 		(posticipate 1)
@@ -127,7 +127,7 @@
 	(incremento (direction ?dir) 
 		(P1-r ?p1_r) (P1-c ?p1_c)
 		(P2-r ?p2_r) (P2-c ?p2_c)  
-		(P4-r ?p4_r) (P4-c ?p2_c) 
+		(P4-r ?p4_r) (P4-c ?p4_c) 
 	)
 	(K-cell (pos-r =(+ ?r ?p1_r)) (pos-c =(+ ?c ?p1_c)) (contains Empty|Parking))
 	(K-cell (pos-r =(+ ?r ?p4_r)) (pos-c =(+ ?c ?p4_c)) (contains Empty|Parking))
@@ -271,7 +271,7 @@
 	(K-agent (pos-r ?r) (pos-c ?c) (direction ?dir))
 	(incremento 
 		(direction ?dir)
-		(P6-r ?P6-r (P6-c ?P6-c)
+		(P6-r ?P6-r) (P6-c ?P6-c)
 	)
 	(K-cell (pos-r =(+ ?r ?P6-r)) (pos-c =(+ ?c ?P6-c)) (contains Empty|Parking))
 	=>
@@ -307,11 +307,11 @@
 
 (defrule del-giro-tondo (declare (salience 145))
 	?f1 <- (route-found)
-	?f2 <- (try-step)
+	(try-step)
 	?f3 <- (posticipate-exec)
 	(not (try-action ?st ?oper ?r ?c ?p3))
 	=>
-	(retract ?f1 ?f2 ?f3)
+	(retract ?f1 ?f3)
 	(pop-focus)
 )
 
@@ -340,14 +340,14 @@
 (defrule replan (declare (salience 90))
 	(not (route-found))
 	(not (planned-action))
-	?f <- (macrostep ?i)
+	?f <- (Macrostep (step ?i))
 	?mc <- (MacroAction (macrostep ?i) (param1 ?r) (param2 ?c))
 	?f1 <- (try-step (count 3))
 	=>
 	(assert 
 		(MacroAction (macrostep =(- ?i 1)) (param1 ?r) (param2 ?c) (oper Move))
-		(macrostep =(- ?i 1))
 	)
-	(retract ?f1 ?f)
+	(modify ?f (step =(- ?i 1)))
+	(retract ?f1)
 	(pop-focus)
 )

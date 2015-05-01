@@ -13,7 +13,7 @@
 
 (defrule deleteMacroStep (declare (salience 350))
 	(not (MacroAction))
-	?f <- (macrostep ?i)
+	?f <- (Macrostep (step ?i))
 	=>
 	(retract ?f)
 )
@@ -59,6 +59,7 @@
 	(not (pulisci-table))
 	=>
 	(assert (goal ?rp ?cp) (go-home))
+	;(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Pianifico la macro-action: ComeBackHome  - %p1 - %p2") (param1 ?rp) (param2 ?cp)))
 	(retract ?s)
 	(focus MOVEMENT)
 )
@@ -78,6 +79,7 @@
 					(action Wait)				
 			)
 	)
+	;(assert (printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Pianifico la planned-action: Wait  - %p1 - %p2") (param1 ?r) (param2 ?c)))
 	(retract ?s ?g)
 	(pop-focus)
 )
@@ -109,12 +111,15 @@
 (defrule convertMacroToMove (declare (salience 300))
 	?s <- (something-to-plan)															
 	(status (step ?curr))
-	?f1 <- (macrostep ?i)
+	?f1 <- (Macrostep (step ?i))
 	?f2 <- (MacroAction (macrostep ?i) (oper Move) (param1 ?goal-r) (param2 ?goal-c))
 	=>
 	(assert (goal ?goal-r ?goal-c))
-	(retract ?f1 ?f2 ?s)
-	(assert (macrostep =(+ ?i 1)))
+	(retract ?f2 ?s)
+;	(assert 
+		;(printGUI (time ?t) (step ?i) (source "AGENT") (verbosity 1) (text  "Pianifico il percorso: Move  - %p1 - %p2") (param1 ?goal-r) (param2 ?goal-c))
+;	)
+	(modify ?f1 (step =(+ ?i 1)))
 	(focus MOVEMENT)
 )
 
@@ -124,7 +129,7 @@
 (defrule convertMacroToCheckFinish (declare (salience 300))
 	?s <- (something-to-plan)
 	(status (step ?curr))
-	?f1 <- (macrostep ?i)
+	?f1 <- (Macrostep (step ?i))
 	?f2 <- (MacroAction (macrostep ?i) (oper CheckFinish) (param1 ?rf) (param2 ?cf))
 	=>
 	(assert (planned-action
@@ -134,8 +139,8 @@
 					(pos_c ?cf)
 			)
 	)
-	(retract ?f1 ?s ?f2)
-	(assert (macrostep =(+ ?i 1)))
+	(retract ?s ?f2)
+	(modify ?f1 (step =(+ ?i 1)))
 	(pop-focus)
 )
 
@@ -143,7 +148,7 @@
 (defrule convertMacroToCleanTable (declare (salience 300))
 	?s <- (something-to-plan)
 	(status (step ?curr))
-	?f1 <- (macrostep ?i)
+	?f1 <- (Macrostep (step ?i))
 	?f2 <- (MacroAction (macrostep ?i) (oper CleanTable) (param1 ?rf) (param2 ?cf))
 	=>
 	(assert (planned-action
@@ -153,8 +158,8 @@
 					(pos_c ?cf)
 			)
 	)
-	(retract ?f1 ?s ?f2)
-	(assert (macrostep =(+ ?i 1)))
+	(retract ?s ?f2)
+	(modify ?f1 (step =(+ ?i 1)))
 	(pop-focus)
 )
 
@@ -162,7 +167,7 @@
 (defrule convertMacroToEmptyFood (declare (salience 300))
 	?s <- (something-to-plan)
 	(status (step ?curr))
-	?f1 <- (macrostep ?i)
+	?f1 <- (Macrostep (step ?i))
 	?f2 <- (MacroAction (macrostep ?i) (oper EmptyFood) (param1 ?rf) (param2 ?cf))
 	=>
 	(assert (planned-action
@@ -172,8 +177,8 @@
 					(pos_c ?cf)
 			)
 	)
-	(retract ?f1 ?s ?f2)
-	(assert (macrostep =(+ ?i 1)))
+	(retract ?s ?f2)
+	(modify ?f1 (step =(+ ?i 1)))
 	(pop-focus)
 )
 
@@ -181,7 +186,7 @@
 (defrule convertMacroToRelease (declare (salience 300))
 	?s <- (something-to-plan)
 	(status (step ?curr))
-	?f1 <- (macrostep ?i)
+	?f1 <- (Macrostep (step ?i))
 	?f2 <- (MacroAction (macrostep ?i) (oper Release) (param1 ?rf) (param2 ?cf))
 	=>
 	(assert (planned-action
@@ -191,8 +196,8 @@
 					(pos_c ?cf)
 			)
 	)
-	(retract ?f1 ?s ?f2)
-	(assert (macrostep =(+ ?i 1)))
+	(retract ?s ?f2)
+	(modify ?f1 (step =(+ ?i 1)))
 	(pop-focus)
 )
 
@@ -206,18 +211,18 @@
 (defrule eliminateMacroToLoadOrDelivery (declare (salience 298))
 	?s <- (something-to-plan)
 	(status (step ?curr))
-	?f1 <- (macrostep ?i)
+	?f1 <- (Macrostep (step ?i))
 	?f2 <- (MacroAction (macrostep ?i) (oper ?oper) (param1 ?rm) (param2 ?cm) (param3 0))
 	=>
-	(assert (macrostep =(+ ?i 1)))
-	(retract ?f1 ?s ?f2)
+	(modify ?f1 (step =(+ ?i 1)))
+	(retract ?s ?f2)
 )
 
 ; Decremento delle unita' per ciascuna plannedAction generata 
 (defrule convertMacroToLoadOrDelivery (declare (salience 295))
 	?s <- (something-to-plan)
 	(status (step ?curr))
-	(macrostep ?i)
+	(Macrostep (step ?i))
 	?f2 <- (MacroAction (macrostep ?i) (oper ?oper) (param1 ?rm) (param2 ?cm) (param3 ?nm))
 	=>
 	(assert (planned-action

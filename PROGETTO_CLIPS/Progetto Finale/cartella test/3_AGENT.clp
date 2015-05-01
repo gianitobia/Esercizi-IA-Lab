@@ -47,6 +47,10 @@
 	(slot param3)
 )
 
+(deftemplate Macrostep 
+	(slot step)
+)
+
 (deftemplate last-perc (slot step))
 
 ;Definizone del template per le azioni pieanificate
