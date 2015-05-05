@@ -192,7 +192,6 @@ public class Scene {
 
     public String exportScene() {
         String map = "(maxduration 100)\n";
-
         //variabili per impostare la posizione delle componenti
         int[] pos_agent = new int[2];
 
