@@ -67,8 +67,11 @@ public class Scene {
     }
 
     public void loadImages() {
+        //definisco un array di bufferedimage
         images = new BufferedImage[10];
         try {
+            //carico tutte le immagini memorizzandole nella corretta posizione
+            //dell'array precedentemente creato seguendo lo schema definito in precedenza
             images[0] = ImageIO.read(new File("./img/wall.jpeg"));
             images[1] = ImageIO.read(new File("./img/seat.jpg"));
             images[2] = ImageIO.read(new File("./img/table.jpeg"));
@@ -145,7 +148,9 @@ public class Scene {
             c_height = c_width;
         }
 
+        //inizializzo la nuova scena per farsi che abbia i muri sul perimetro
         initScene(new_scene);
+        //ricopio ogni cella della vecchia mappa nella nuova mappa senza uscire fuori dalle celle a disposizione
         for (int i = 1; i < new_scene.length - 1; i++) {
             for (int j = 1; j < new_scene[i].length - 1; j++) {
                 if (i <= scene.length - 1 && j <= scene[0].length - 1) {
@@ -158,7 +163,7 @@ public class Scene {
 
     public void initScene(int[][] scene) {
 
-        //imposto i muri
+        //imposto i muri sul perimetro
         for (int i = 0; i < scene.length; i++) {
             for (int j = 0; j < scene[i].length; j++) {
                 if (i == 0 || i == scene.length - 1 || j == 0 || j == scene[0].length - 1) {

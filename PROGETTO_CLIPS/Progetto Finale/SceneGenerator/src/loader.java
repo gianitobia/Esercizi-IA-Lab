@@ -52,14 +52,20 @@ public class loader {
     }
 
     public static Scene read_mappa(File jsonFile) {
+        //creo una nuova istanza di scena
         Scene s = new Scene();
         try {
+            //converto il file in un oggetto JSON
             JSONObject json = convertStreamToJson(new FileInputStream(jsonFile));
+            //leggo il numero di celle dalla radice del JSON
             int num_x = ((Long) json.get("cell_x")).intValue();
             int num_y = ((Long) json.get("cell_y")).intValue();
+            //setto il numero di celle nella scena
             s.setNumCelle(num_x, num_y);
+            //estraggo il JSONArray dalla radice
             JSONArray arrayCelle = (JSONArray) json.get("celle");
             for (Object cella : arrayCelle) {
+                //ciclo su ogni cella e setto il valore della cella letta nella scena
                 JSONObject cell = (JSONObject) cella;
                 Long lx = (Long) cell.get("x");
                 int x = (lx).intValue();
@@ -74,6 +80,7 @@ public class loader {
         return s;
     }
 
+    //metodo che converte lo stream di file in un oggetto JSON
     private static JSONObject convertStreamToJson(InputStream is) {
         try {
             return (JSONObject) (new JSONParser()).parse(new BufferedReader(new InputStreamReader(is)));

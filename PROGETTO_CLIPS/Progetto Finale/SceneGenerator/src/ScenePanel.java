@@ -75,10 +75,13 @@ public class ScenePanel extends javax.swing.JPanel {
     }
 
     void exportScene(String text) {
+        //richiamo l'export della scena il quale mi dará una stringa con tutto il codice clips corrispondente
         String sceneFile = s.exportScene();
+        //richiamo l'export della history il quale mi dará una stringa con tutto il codice clips corrispondente
         String historyFile = s.exportHistory();
         try {
             if (text.length() > 0 && text != null) {
+                //scrivo il file della mappa
                 Files.write(Paths.get(text + "/InitMap.txt"), sceneFile.getBytes());
                 this.menuPanel.printMsg("File creato \n" + Paths.get(text + "/InitMap.txt"));
 
@@ -87,6 +90,7 @@ public class ScenePanel extends javax.swing.JPanel {
                     Files.write(Paths.get(text + "/history.txt"), historyFile.getBytes());
                     this.menuPanel.printMsg("File creato \n" + Paths.get(text + "/history.txt"));
                 }
+                //scrivo il file json con la mappa scritta
                 loader.salva_info_mappa(s, text);
                 this.menuPanel.printMsg("File creato \n" + Paths.get(text + "/InfoMappa.json"));
 
@@ -101,7 +105,9 @@ public class ScenePanel extends javax.swing.JPanel {
 
     void click(int x, int y, int state) {
 
+        //leggo il click e passo i valori alla scena
         String result = s.click(x, y, state);
+        // se il click é andato a buon fine faccio un repaint senno mostro un messaggio d'errore
         if (result.equals("success")) {
             repaint();
         } else {
