@@ -46,7 +46,7 @@
 
 (personmove (step 1) (ident C4) (path-id P5))
 
-(personmove (step 25) (ident C4) (path-id P6))
+(personmove (step 21) (ident C4) (path-id P6))
 
 
 
@@ -87,6 +87,8 @@
 (move-path P6 1 C4  7 8)
 (move-path P6 2 C4  6 8)
 (move-path P6 3 C4  6 7)
-(move-path P6 4 C4  5 7)
-(move-path P6 5 C4  4 7)
-(move-path P6 6 C4  4 8)
+(move-path P6 4 C4  6 6)
+(move-path P6 5 C4  6 5)
+(move-path P6 6 C4  6 4)
+(move-path P6 7 C4  6 3)
+(move-path P6 8 C4  7 3)
