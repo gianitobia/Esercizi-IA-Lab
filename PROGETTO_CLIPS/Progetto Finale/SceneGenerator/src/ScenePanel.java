@@ -56,7 +56,7 @@ public class ScenePanel extends javax.swing.JPanel {
         Graphics2D g2 = (Graphics2D) g; // cast g to Graphics2D
 
         if (s != null) {
-            s.drawScene(g2);
+            s.drawScene(g2, this.getWidth(), this.getHeight());
         }
     }
 
