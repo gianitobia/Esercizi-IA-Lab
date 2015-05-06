@@ -8,24 +8,28 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+
 /*
-
- Schema di corrispondenza tra numero e elemento della scena
-
- 0 = empty
- 1 = wall
- 2 = seat
- 3 = table
- 4 = RecyclableBasket
- 5 = trashbasket
- 6 = food dispenser
- 7 = drink dispenser
- 8 = person
- 9 = parking
- 10 = seat + person
-
+ * Classe che definisce il concetto di scena con tutti i metodi per accedervi e
+ * modificarla
+ *
+ * Schema di corrispondenza tra numero e elemento della scena
+ *
+ * 0 = empty
+ * 1 = wall
+ * 2 = seat
+ * 3 = table
+ * 4 = RecyclableBasket
+ * 5 = trashbasket
+ * 6 = food dispenser
+ * 7 = drink dispenser
+ * 8 = person
+ * 9 = parking
+ * 10 = seat + person
+ *
+ *
+ * @author Tobia Giani, Alessandro Basile
  */
-
 public class Scene {
 
     //numero di celle sulle x e sulle y

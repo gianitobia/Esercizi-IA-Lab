@@ -16,8 +16,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
+ * Classe per il salvataggio e la lettura delle mappe in JSON
  *
- * @author Alex Classe per il salvataggio e la lettura delle mappe in JSON
+ * @author Alessandro Basile, Tobia Giani
  */
 public class loader {
 

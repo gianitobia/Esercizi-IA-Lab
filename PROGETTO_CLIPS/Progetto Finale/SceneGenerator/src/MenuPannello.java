@@ -8,13 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
+ * Classe che definisce la grafica e le interazioni del pannello laterale destro con i suoi menu
  *
- * @author toby
+ * @author Tobia Giani, Alessandro Basile
  */
 public class MenuPannello extends JPanel {
 

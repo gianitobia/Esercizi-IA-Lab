@@ -47,6 +47,10 @@
 	(slot param3)
 )
 
+(deftemplate Macrostep 
+	(slot step)
+)
+
 (deftemplate last-perc (slot step))
 
 ;Definizone del template per le azioni pieanificate
@@ -167,7 +171,7 @@
 	(focus MAIN)
 )
 
-(defrule stop-exection-for-bump (declare (salience 5))
+(defrule stop-execution-for-bump (declare (salience 5))
 	?f1 <- (check-action ?i ?oper ?r ?c ?p3)
 	?f2 <- (action-invalid)
 	=>
@@ -326,10 +330,12 @@
 	?ka <- (K-agent) ; recupera il K-agent
 	?fs <- (last-perc (step ?old-s))
 	(test (> ?s ?old-s))
-	(perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction west) 
-	(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-	(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-	(perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
+	?f <- (perc-vision 
+		(step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction west) 
+		(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+		(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+		(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
+	)
 	?f1 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)))
 	?f2 <- (K-cell (pos-r ?r)  	(pos-c =(- ?c 1)))
 	?f3 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(- ?c 1)))
@@ -351,6 +357,7 @@
 	(modify ?f8 (contains ?x8))
 	(modify ?f9 (contains ?x9))
 	(modify ?fs (step ?s))
+	(retract ?f)
 )
 
 ; Le percezioni modificano le K-cell (agente orientato east)
@@ -359,10 +366,12 @@
 	?ka <- (K-agent)
 	?fs <- (last-perc (step ?old-s))
 	(test (> ?s ?old-s))
-	(perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction east) 
-	(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-	(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-	(perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
+	?f <- (perc-vision 
+		(step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction east) 
+		(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+		(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+		(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
+	)
 	?f1	<-	(K-cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)))
 	?f2 <-	(K-cell (pos-r ?r)  	(pos-c =(+ ?c 1)))
 	?f3 <-	(K-cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)))
@@ -384,6 +393,7 @@
 	(modify ?f8 (contains ?x8))
 	(modify ?f9 (contains ?x9))
 	(modify ?fs (step ?s))
+	(retract ?f)
 )
  
 ; Le percezioni modificano le K-cell (agente orientato south)
@@ -392,10 +402,12 @@
 	?ka <- (K-agent)
 	?fs <- (last-perc (step ?old-s))
 	(test (> ?s ?old-s))
-	(perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction south) 
-	(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-	(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-	(perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
+	?f <- (perc-vision 
+		(step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction south) 
+		(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+		(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+		(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
+	)
 	?f1 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(+ ?c 1)))
 	?f2 <- (K-cell (pos-r =(- ?r 1)) (pos-c ?c))
 	?f3 <- (K-cell (pos-r =(- ?r 1)) (pos-c =(- ?c 1)))
@@ -417,6 +429,7 @@
 	(modify ?f8 (contains ?x8))
 	(modify ?f9 (contains ?x9))
 	(modify ?fs (step ?s))
+	(retract ?f)
 )
 
 ; Le percezioni modificano le K-cell (agente orientato north)
@@ -425,10 +438,12 @@
 	?ka <- (K-agent)
 	?fs <- (last-perc (step ?old-s))
 	(test (> ?s ?old-s))
-	(perc-vision (step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction north) 
-	(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
-	(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
-	(perc7 ?x7) (perc8 ?x8) (perc9 ?x9))
+	?f <- (perc-vision 
+		(step ?s) (time ?t) (pos-r ?r) (pos-c ?c) (direction north) 
+		(perc1 ?x1) (perc2 ?x2) (perc3 ?x3)
+		(perc4 ?x4) (perc5 ?x5) (perc6 ?x6)
+		(perc7 ?x7) (perc8 ?x8) (perc9 ?x9)
+	)
 	?f1 <- (K-cell (pos-r =(+ ?r 1))	(pos-c =(- ?c 1)))
 	?f2 <- (K-cell (pos-r =(+ ?r 1)) (pos-c ?c))
 	?f3 <- (K-cell (pos-r =(+ ?r 1)) (pos-c =(+ ?c 1)))
@@ -450,6 +465,7 @@
 	(modify ?f8 (contains ?x8))
 	(modify ?f9 (contains ?x9))
 	(modify ?fs (step ?s))
+	(retract ?f)
 )
  
 (defmodule POSTICIPATE (import AGENT ?ALL) (export ?ALL))

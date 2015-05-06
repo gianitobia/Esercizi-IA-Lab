@@ -8,13 +8,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
+ * Classe che definisce la grafica e le interazioni del pannello centrale
  *
- * @author toby
+ * @author Tobia Giani, Alessandro Basile
  */
 public class ScenePanel extends javax.swing.JPanel {
 
