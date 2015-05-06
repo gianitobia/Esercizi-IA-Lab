@@ -321,7 +321,7 @@
 	(retract ?f1)		
 	(printout t crlf " ENVIRONMENT:" crlf)
 	(printout t " - " ?tb " orders " ?nf " food e " ?nd " drinks" crlf)
-    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 orders param2 food e param3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))  
+    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "%p1 orders %p2 food e %p3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))  
 )
 
 ;Regola per la generazione di un nuovo ordine da parte di un tavolo sporco
@@ -354,7 +354,7 @@
 	(retract ?f1)		
 	(printout t crlf " ENVIRONMENT:" crlf)
 	(printout t " - " ?tb " orders " ?nf " food e " ?nd " drinks" crlf)
-    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 orders param2 food e param3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))      
+    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "%p1 orders %p2 food e %p3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))      
 )
 
 ;Regola per la gestione della terminazione di un ordine per un tavolo
@@ -385,7 +385,7 @@
 	(retract ?f1)
 	(printout t crlf " ENVIRONMENT:" crlf)
 	(printout t " - " ?tb " declares finish " crlf)
-    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 declares finish.") (param1 ?tb)))      
+    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "%p1 declares finish.") (param1 ?tb)))      
 )
 
 ;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
