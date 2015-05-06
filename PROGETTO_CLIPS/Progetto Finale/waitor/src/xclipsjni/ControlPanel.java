@@ -47,7 +47,7 @@ public class ControlPanel extends javax.swing.JFrame implements Observer {
         agendaMonitor.setSize(propertyMonitorDim);
         agendaMonitor.setLocation(screenDim.width - agendaMonitor.getWidth(), 0);
 
-        factsMonitor = new PropertyMonitor("Facs");
+        factsMonitor = new PropertyMonitor("Facts");
         factsMonitor.setSize(propertyMonitorDim);
         factsMonitor.setLocation(screenDim.width - factsMonitor.getWidth(), agendaMonitor.getHeight());
         factsMonitor.setAutoScroll();
