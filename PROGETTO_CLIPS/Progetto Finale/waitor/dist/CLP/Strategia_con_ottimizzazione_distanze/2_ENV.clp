@@ -321,7 +321,7 @@
 	(retract ?f1)		
 	(printout t crlf " ENVIRONMENT:" crlf)
 	(printout t " - " ?tb " orders " ?nf " food e " ?nd " drinks" crlf)
-    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 orders param2 food e param3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))  
+    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "%p1 orders %p2 food e %p3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))  
 )
 
 ;Regola per la generazione di un nuovo ordine da parte di un tavolo sporco
@@ -354,7 +354,7 @@
 	(retract ?f1)		
 	(printout t crlf " ENVIRONMENT:" crlf)
 	(printout t " - " ?tb " orders " ?nf " food e " ?nd " drinks" crlf)
-    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 orders param2 food e param3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))      
+    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "%p1 orders %p2 food e %p3 drinks.") (param1 ?tb) (param2 ?nf) (param3 ?nd)))      
 )
 
 ;Regola per la gestione della terminazione di un ordine per un tavolo
@@ -385,7 +385,7 @@
 	(retract ?f1)
 	(printout t crlf " ENVIRONMENT:" crlf)
 	(printout t " - " ?tb " declares finish " crlf)
-    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "param1 declares finish.") (param1 ?tb)))      
+    (assert (printGUI (time ?t) (step ?i) (source "ENV") (verbosity 0) (text  "%p1 declares finish.") (param1 ?tb)))      
 )
 
 ;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -466,19 +466,21 @@
 	(modify ?f1 (time ?t) (step ?i))
 )
 
-;// __________________________________________________________________________________________
-;// GENERA MOVIMENTI PERSONE                    
-;// ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;/////////////////////////////// 					GENERA MOVIMENTI PERSONE					/////////////////////////////////////
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ;// Persona ferma non arriva comando di muoversi
-(defrule MovePerson1		
-	(declare (salience 9))    
+(defrule MovePerson1	(declare (salience 9))    
 	(status (step ?i) (time ?t)) 
-?f1<-	(personstatus (step =(- ?i 1)) (ident ?id) (activity seated|stand))
+	?f1	<-	(personstatus (step =(- ?i 1)) (ident ?id) (activity seated|stand))
 	(not (personmove (step ?i) (ident ?id)))
-=> 
+	=> 
 	(modify ?f1 (time ?t) (step ?i))
-)         
-;//;//Persona ferma ma arriva comando di muoversi         
+)
+         
+;//Persona ferma ma arriva comando di muoversi         
 (defrule MovePerson2
    (declare (salience 10))    
         (status (step ?i) (time ?t))  
@@ -486,7 +488,8 @@
  ?f2 <- (personmove (step  ?i) (ident ?id) (path-id ?m))
         => (modify  ?f1 (time ?t) (step ?i) (activity ?m) (move 0))
            (retract ?f2)
-)           
+)    
+       
 ;// La cella in cui deve  andare la persona è libera. Persona si muove. 
 ;// La cella di partenza è un seat in cui si trovava l'operatore
 (defrule MovePerson3
@@ -502,6 +505,7 @@
            (modify ?f2 (contains Person))
            (retract ?f3)		
 )
+
 ;// La cella in cui deve  andare la persona è libera. Persona si muove. 
 ;// La cella di partenza è occupata da cliente (Person) , per cui dopo lo spostamento 
 ;// del cliente la cella di partenza diventa libera e quella di arrivo contiene person
@@ -517,10 +521,12 @@
         => (modify  ?f1  (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (move (+ ?s 1)))
            (modify ?f2 (contains Person))
            (modify ?f4 (contains Empty))
-           (retract ?f3))
+           (retract ?f3)
+)
+		   
 ;// La cella in cui deve andare il cliente è un seat e il seat non è occupata da altra persona.
 ;// La cella di partenza diventa libera, e l'attivita del cliente diventa seated
- (defrule MovePerson5
+(defrule MovePerson5
    (declare (salience 10))    
         (status (step ?i) (time ?t)) 
  ?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (pos-r ?x) (pos-c ?y) 
@@ -533,7 +539,9 @@
  ?f4 <- (cell (pos-r ?x) (pos-c ?y) (contains Person))
         => (modify  ?f1  (step ?i) (time ?t) (pos-r ?r) (pos-c ?c) (activity seated) (move NA))
            (modify ?f4 (contains Empty))
-           (retract ?f3))
+           (retract ?f3)
+)
+
 ;// La cella in cui deve  andare la persona è occupata dal robot. Persona non si muove           
 (defrule MovePerson_wait1
 	(declare (salience 10))    
@@ -559,9 +567,10 @@
 =>
 	(modify  ?f1 (time ?t) (step ?i))
 )
+
 ;// La cella in cui deve andare il cliente è un seat ma il seat è occupata da altra persona.
 ;// il cliente resta fermo
- (defrule MovePerson_wait3
+(defrule MovePerson_wait3
    (declare (salience 10))    
         (status (step ?i) (time ?t)) 
  ?f1 <- (personstatus (step =(- ?i 1)) (ident ?id) (pos-r ?x) (pos-c ?y) 
@@ -572,15 +581,15 @@
         (personstatus (step =(- ?i 1)) (pos-r ?r) (pos-c ?c) 
                        (activity seated))
         => (modify  ?f1  (step ?i) (time ?t))
-           )
+)
 ;//La serie di mosse è stata esaurita, la persona rimane ferma dove si trova
- (defrule MovePerson_end
+(defrule MovePerson_end
    (declare (salience 9))    
         (status (step ?i) (time ?t)) 
 ?f1<-	(personstatus (step =(- ?i 1)) (time ?tt) (ident ?id) (activity ?m&~seated&~stand) (move ?s))
 	(not (move-path ?m =(+ ?s 1) ?id ?r ?c))
         => (modify  ?f1  (time ?t) (step ?i) (activity stand) (move NA)) 
-        )
+)
 
 
 ;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -618,96 +627,90 @@
 )
 
 ;// l'agente ha inviato inform che l'ordine è delayed (e va bene)
-(defrule msg-order-delayed-OK    
-	(declare (salience 20))
-?f1<-	(status (step ?i) (time ?t))
+(defrule msg-order-delayed-OK	(declare (salience 20))
+	?f1	<-	(status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 delayed))
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-?f3<-	(agentstatus (step ?i) (time ?t))
+	?f2	<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3	<-	(agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean no))
-        (cleanstatus (step ?i) (time ?t) (arrivaltime ?tt&:(< ?tt ?request)) (requested-by ?tb))	
-=> 
+	(cleanstatus (step ?i) (time ?t) (arrivaltime ?tt&:(< ?tt ?request)) (requested-by ?tb))	
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer delayed))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
 )
 
 ;// l'agente ha inviato inform che l'ordine è delayed (e non va bene dovrebbe essere accepted)
-(defrule msg-order-delayed-KO1    
-	(declare (salience 20))
-?f1<-	(status (step ?i) (time ?t))
+(defrule msg-order-delayed-KO1	(declare (salience 20))
+	?f1	<-	(status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 delayed))
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-?f3<-	(agentstatus (step ?i) (time ?t))
+	?f2	<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3	<-	(agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean yes))
-?f4<-   (penalty ?p)	
-=> 
+	?f4	<-	(penalty ?p)	
+	=>	 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer delayed))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
-        (assert (penalty (+ ?p 500000)))
+    (assert (penalty (+ ?p 500000)))
 	(retract ?f4)
 )
 
 ;// l'agente ha inviato inform che l'ordine è rejected (e non va bene dovrebbe essere accepted)
-(defrule msg-order-rejected-KO1    
-	(declare (salience 20))
-?f1<-	(status (step ?i) (time ?t))
+(defrule msg-order-rejected-KO1	(declare (salience 20))
+	?f1	<-	(status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 rejected))
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-?f3<-	(agentstatus (step ?i) (time ?t))
+	?f2	<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3	<-	(agentstatus (step ?i) (time ?t))
 	(tablestatus (step ?i) (time ?t) (table-id ?tb) (clean yes))
-?f4<-   (penalty ?p)	
-=> 
+	?f4	<-  (penalty ?p)	
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer rejected))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
-        (assert (penalty (+ ?p 5000000)))
+	(assert (penalty (+ ?p 5000000)))
 	(retract ?f4)
 )
 
 ;// l'agente ha inviato inform che l'ordine è rejected (e non va bene dovrebbe essere delayed)
-(defrule msg-order-rejected-KO2    
-	(declare (salience 20))
-?f1<-	(status (step ?i) (time ?t))
+(defrule msg-order-rejected-KO2	(declare (salience 20))
+	?f1	<-	(status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request) (param3 rejected))
-?f2<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
-?f3<-	(agentstatus (step ?i) (time ?t))
-        (tablestatus (step ?i) (time ?t) (table-id ?tb) (clean no))
-        (cleanstatus (step ?i) (time ?t) (arrivaltime ?tt&:(< ?tt ?request)) (requested-by ?tb))
-?f4<-   (penalty ?p)	
-=> 
+	?f2	<-	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer pending))		
+	?f3	<-	(agentstatus (step ?i) (time ?t))
+    (tablestatus (step ?i) (time ?t) (table-id ?tb) (clean no))
+    (cleanstatus (step ?i) (time ?t) (arrivaltime ?tt&:(< ?tt ?request)) (requested-by ?tb))
+	?f4	<-	(penalty ?p)	
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer accepted))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
-        (assert (penalty (+ ?p 5000000)))
+    (assert (penalty (+ ?p 5000000)))
 	(retract ?f4)
 )
 
 ;// l'agente invia un'inform  per un servizio che non è più pending
-(defrule msg-mng-KO1    
-	(declare (salience 20))
-?f1<-	(status (step ?i) (time ?t))
+(defrule msg-mng-KO1	(declare (salience 20))
+	?f1	<-	(status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request))
 	(orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request) (answer ~pending))		
-?f3<-	(agentstatus (step ?i) (time ?t))
-?f4<-	(penalty ?p)
-=> 
+	?f3	<-	(agentstatus (step ?i) (time ?t))
+	?f4	<-	(penalty ?p)
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
-        (assert (penalty (+ ?p 10000)))
-        (retract ?f4)
+	(assert (penalty (+ ?p 10000)))
+	(retract ?f4)
 )
 
 ;// arriva un'inform per una richiesta not fatta dal tavolo
-(defrule msg-mng-KO2    
-	(declare (salience 20))
-?f1<-	(status (step ?i) (time ?t))
+(defrule msg-mng-KO2	(declare (salience 20))
+	?f1	<-	(status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request))
-        (not (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request))) 
-?f3<-	(agentstatus (step ?i) (time ?t))
-?f4<-	(penalty ?p)
-=> 
+    (not (orderstatus (step ?i) (time ?t) (requested-by ?tb) (arrivaltime ?request))) 
+	?f3	<-	(agentstatus (step ?i) (time ?t))
+	?f4	<-	(penalty ?p)
+	=> 
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
 	(assert (penalty (+ ?p 500000)))
@@ -716,188 +719,180 @@
 
 ;// Regole per il CheckFinish
 ;// Operazione OK- risposta yes
-(defrule CheckFinish_OK_YES
-	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+(defrule CheckFinish_OK_YES	(declare (salience 20))    
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CheckFinish) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
-        (serviceTable ?tb ?rr ?cc)
+	?f1	<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
+    (serviceTable ?tb ?rr ?cc)
 	(tablestatus (step ?i) (table-id ?tb) (clean no))
-        (msg-to-agent  (request-time ?rt)  (step ?ii) (sender ?tb) (type order))
-        (not (orderstatus (step ?i) (time ?t) (requested-by ?tb)))
-        (not (cleanstatus (step ?i) (arrivaltime ?at&:(> ?at ?rt)) (requested-by ?tb) (source ?tb)))
-        (test (> (- ?t ?rt)  100))
-=> 
+    (msg-to-agent  (request-time ?rt)  (step ?ii) (sender ?tb) (type order))
+    (not (orderstatus (step ?i) (time ?t) (requested-by ?tb)))
+    (not (cleanstatus (step ?i) (arrivaltime ?at&:(> ?at ?rt)) (requested-by ?tb) (source ?tb)))
+    (test (> (- ?t ?rt)  100))
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 40)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish yes))
-                (cleanstatus (step (+ ?i 1)) (time (+ ?t 40)) (arrivaltime (+ ?t 40)) (requested-by ?tb) (source agent)))
+    (cleanstatus (step (+ ?i 1)) (time (+ ?t 40)) (arrivaltime (+ ?t 40)) (requested-by ?tb) (source agent)))
 )
+
 ;// Operazione OK- Risposta no
-(defrule CheckFinish_OK_NO
-	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+(defrule CheckFinish_OK_NO	(declare (salience 20))    
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CheckFinish) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
-        (serviceTable ?tb ?rr ?cc)
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (clean no))
-        (msg-to-agent  (request-time ?rt)  (step ?ii) (sender ?tb) (type order))
-        (not (orderstatus (step ?i) (time ?t) (requested-by ?tb)))
-        (not (cleanstatus (step ?i) (arrivaltime ?iii&:(> ?iii ?ii)) (requested-by ?tb) (source ?tb)))
-        (test (or (= (- ?t ?rt)  100) (< (- ?t ?rt)  100)))
-=> 
+	?f1	<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
+    (serviceTable ?tb ?rr ?cc)
+	?f3	<-	(tablestatus (step ?i) (table-id ?tb) (clean no))
+    (msg-to-agent  (request-time ?rt)  (step ?ii) (sender ?tb) (type order))
+    (not (orderstatus (step ?i) (time ?t) (requested-by ?tb)))
+    (not (cleanstatus (step ?i) (arrivaltime ?iii&:(> ?iii ?ii)) (requested-by ?tb) (source ?tb)))
+    (test (or (= (- ?t ?rt)  100) (< (- ?t ?rt)  100)))
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 40)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish no)))
 )
+
 ; operazione non serve, il tavolo ha già richiesto cleantable 
-(defrule CheckFinish_useless-1
-	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+(defrule CheckFinish_useless-1	(declare (salience 20))    
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CheckFinish) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
-        (serviceTable ?tb ?rr ?cc)
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (clean no))
-        (msg-to-agent  (request-time ?rt)  (step ?ii&:(< ?ii ?i)) (sender ?tb) (type order))
-        (cleanstatus (step ?i) (arrivaltime ?iii&:(> ?iii ?ii)) (requested-by ?tb))
-?f4<-   (penalty ?p)
-=> 
+	?f1	<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
+    (serviceTable ?tb ?rr ?cc)
+	?f3	<-	(tablestatus (step ?i) (table-id ?tb) (clean no))
+    (msg-to-agent  (request-time ?rt)  (step ?ii&:(< ?ii ?i)) (sender ?tb) (type order))
+    (cleanstatus (step ?i) (arrivaltime ?iii&:(> ?iii ?ii)) (requested-by ?tb))
+	?f4	<-	(penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 40)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish yes))
-                (penalty (+ ?p 10000)))
-        (retract ?f4)
+    (penalty (+ ?p 10000)))
+    (retract ?f4)
 )
+
 ;// operazione non serve, il tavolo è gia pulito
-(defrule CheckFinish_useless-2
-	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+(defrule CheckFinish_useless-2	(declare (salience 20))    
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CheckFinish) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
-        (serviceTable ?tb ?rr ?cc)
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (clean yes))
-?f4<-   (penalty ?p)
-=> 
+	?f1	<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
+    (serviceTable ?tb ?rr ?cc)
+	?f3	<-	(tablestatus (step ?i) (table-id ?tb) (clean yes))
+	?f4	<-  (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 40)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish yes))
-                (penalty (+ ?p 10000)))
-        (retract ?f4)
+	(penalty (+ ?p 10000)))
+	(retract ?f4)
 )
+
 ;// Operazione sbagliata perchè chiede finish prima che l'ordine sia stato completato
-(defrule CheckFinish_Useless-3
-	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+(defrule CheckFinish_Useless-3	(declare (salience 20))    
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CheckFinish) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
-        (serviceTable ?tb ?rr ?cc)
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (clean no))
-        (msg-to-agent  (request-time ?rt)  (step ?ii) (sender ?tb) (type order))
-        (orderstatus (step ?i) (time ?t) (requested-by ?tb))
-?f4<-   (penalty ?p)
+	?f1	<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
+    (serviceTable ?tb ?rr ?cc)
+	?f3	<-	(tablestatus (step ?i) (table-id ?tb) (clean no))
+	(msg-to-agent  (request-time ?rt)  (step ?ii) (sender ?tb) (type order))
+	(orderstatus (step ?i) (time ?t) (requested-by ?tb))
+	?f4	<-  (penalty ?p)
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 40)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish no))
-                (penalty (+ ?p 100000)))
-        (retract ?f4)
+	(penalty (+ ?p 100000)))
+	(retract ?f4)
 )
+
 ;// operazione di checkFinish fatta su tavolo che non ha fatto richiesta
-(defrule CheckFinish_useless-4
-	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+(defrule CheckFinish_useless-4	(declare (salience 20))    
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CheckFinish) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
-        (serviceTable ?tb ?rr ?cc)
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (clean no))
-        (not (msg-to-agent  (request-time ?rt)  (step ?ii&:(< ?ii ?i)) (sender ?tb) (type order)))
-?f4<-   (penalty ?p)
-=> 
+	?f1	<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
+    (serviceTable ?tb ?rr ?cc)
+	?f3	<-	(tablestatus (step ?i) (table-id ?tb) (clean no))
+    (not (msg-to-agent  (request-time ?rt)  (step ?ii&:(< ?ii ?i)) (sender ?tb) (type order)))
+	?f4	<-  (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 40)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish no))
-                (penalty (+ ?p 100000)))
-        (retract ?f4)
+	(penalty (+ ?p 100000)))
+	(retract ?f4)
 )
+
 ;// L'azione di CheckFinish  fallisce perchè l'agente non è accanto ad un tavolo 
-(defrule CheckFinish_KO_1
-	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
+(defrule CheckFinish_KO_1	(declare (salience 20))
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CheckFinish) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
-        (not (serviceTable ?tb ?rr ?cc))
-?f5<-   (penalty ?p)
-=> 
+	?f1	<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
+	(not (serviceTable ?tb ?rr ?cc))
+	?f5	<-  (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 30)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 30))) 
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
-) 
+	(retract ?f5)
+)
+
 ;// L'azione di CheckFinish fallisce perchè la posizione indicata non 
 ;//contiene un tavolo 
-(defrule CheckFinish_KO_2
-	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
+(defrule CheckFinish_KO_2	(declare (salience 20))
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CheckFinish) (param1 ?x) (param2 ?y))
 	(not (Table (table-id ?tb) (pos-r ?x) (pos-c ?y)))
-?f1<-	(agentstatus (step ?i) (time ?t))
-?f5<-   (penalty ?p)
-=> 
+	?f1	<-	(agentstatus (step ?i) (time ?t))
+	?f5	<-  (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 30)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 30))) 
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
-) 
-;// __________________________________________________________________________________________
-;// REGOLE PER il Clean Table
+	(retract ?f5)
+)
+
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;///////////////////////// 						REGOLE PER il Clean Table						/////////////////////////////////
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ;// Operazione OK
-(defrule CleanTable_OK_1
-	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+(defrule CleanTable_OK_1	(declare (salience 20))    
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CleanTable) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-food  0) (l-drink 0) (l_d_waste ?dw) (l_f_waste ?fw))
-        (serviceTable ?tb ?rr ?cc)
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld&:(> ?tld 0)) (l-food ?tlf&:(> ?tlf 0)))
-?f4<-	(cleanstatus (step ?i) (requested-by ?tb))
-=> 
-	(modify ?f2 (step (+ ?i 1)) 
-                    (time (+ ?t (+ 10 
-                                   (* 2 ?tld) 
-                                   (* 3 ?tlf))))
-        )
-	(modify ?f1 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld) (* 3 ?tlf)))) 
-                    (l_d_waste yes) (l_f_waste yes))
-	(modify ?f3 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld) (* 3 ?tlf)))) 
-                    (l-drink 0) (l-food 0) (clean yes))
+	?f1	<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) (l-food  0) (l-drink 0) (l_d_waste ?dw) (l_f_waste ?fw))
+    (serviceTable ?tb ?rr ?cc)
+	?f3	<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld&:(> ?tld 0)) (l-food ?tlf&:(> ?tlf 0)))
+	?f4	<-	(cleanstatus (step ?i) (requested-by ?tb))
+	=> 
+	(modify ?f2 (step (+ ?i 1)) (time (+ ?t (+ 10 (* 2 ?tld) (* 3 ?tlf)))))
+	(modify ?f1 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld) (* 3 ?tlf)))) (l_d_waste yes) (l_f_waste yes))
+	(modify ?f3 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld) (* 3 ?tlf)))) (l-drink 0) (l-food 0) (clean yes))
 	(retract ?f4)
 )
-(defrule CleanTable_OK_2
-	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+
+(defrule CleanTable_OK_2	(declare (salience 20))    
+	?f2	<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action CleanTable) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-food  0) (l-drink 0) (l_d_waste ?dw) (l_f_waste ?fw))
-        (serviceTable ?tb ?rr ?cc)
-?f3<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld&:(> ?tld 0)) (l-food 0))
-?f4<-	(cleanstatus (step ?i) (requested-by ?tb))
-=> 
+	?f1	<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) (l-food  0) (l-drink 0) (l_d_waste ?dw) (l_f_waste ?fw))
+    (serviceTable ?tb ?rr ?cc)
+	?f3	<-	(tablestatus (step ?i) (table-id ?tb) (l-drink ?tld&:(> ?tld 0)) (l-food 0))
+	?f4	<-	(cleanstatus (step ?i) (requested-by ?tb))
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld)))))
-	(modify ?f1 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld)))) 
-                    (l_d_waste yes) (l_f_waste ?fw))
-	(modify ?f3 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld)))) 
-                    (l-drink 0) (l-food 0) (clean yes))
+	(modify ?f1 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld)))) (l_d_waste yes) (l_f_waste ?fw))
+	(modify ?f3 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld)))) (l-drink 0) (l-food 0) (clean yes))
 	(retract ?f4)
 )
+
 ;// Operazione OK
 (defrule CleanTable_OK_3
 	(declare (salience 20))    
@@ -963,6 +958,7 @@
 	(assert (penalty (+ ?p 10000)))
         (retract ?f5)
 )
+
 ;// il robot tenta di fare CleanTable  ma fallisce perchè sta già trasportando cibo 
 ;// e o bevande
 (defrule CleanTable_KO_3
@@ -1010,7 +1006,8 @@
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 30))) 
 	(assert (penalty (+ ?p	500000)))
         (retract ?f5)
-) 
+)
+
 ;// __________________________________________________________________________________________
 ;// REGOLE PER il EmptyFood
 ;// Operazione OK
@@ -1452,31 +1449,39 @@
 	(assert (penalty (+ ?p	500000)))
         (retract ?f5)
 ) 
-(defrule order-completed
-        (declare (salience 18))
+
+(defrule order-completed	(declare (salience 18))
 	(status (time ?t) (step ?i)) 
 	(exec (step ?ii&:(= ?ii (- ?i 1))) (action DeliveryFood|DeliveryDrink) (param1 ?x) (param2 ?y))
 	(Table (table-id ?tb) (pos-r ?x) (pos-c ?y))
-?f1 <-  (orderstatus (step ?i) (requested-by ?tb) (food-order ?nfo) (food-deliv ?dfo&:(= ?dfo ?nfo))
-                     (drink-order ?ndo) (drink-deliv ?ddo&:(= ?ddo  ?ndo)))
-=>    (retract ?f1)
+	?f1 <- (orderstatus (step ?i) (requested-by ?tb) (food-order ?nfo) (food-deliv ?dfo&:(= ?dfo ?nfo)) 
+		   (drink-order ?ndo) (drink-deliv ?ddo&:(= ?ddo  ?ndo)))
+	=>
+	(retract ?f1)
 )
-(defrule perc-load-generation1
-        (declare (salience 19))
+
+(defrule perc-load-generation1	(declare (salience 19))
 	(status (time ?t) (step ?i)) 
 	(exec (step ?ii&:(= ?ii (- ?i 1))) (action DeliveryFood|DeliveryDrink|LoadDrink|LoadFood))
-        (agentstatus (step ?i)  (l-drink  0) (l-food 0))	
-=>      (assert (perc-load (time ?t) (step ?i) (load no)))
+    (agentstatus (step ?i)  (l-drink  0) (l-food 0))	
+	=>      
+	(assert (perc-load (time ?t) (step ?i) (load no)))
 )
-(defrule perc-load-generation2
-        (declare (salience 19))
+
+(defrule perc-load-generation2	(declare (salience 19))
 	(status (time ?t) (step ?i)) 
 	(exec (step ?ii&:(= ?ii (- ?i 1))) (action DeliveryFood|DeliveryDrink|LoadDrink|LoadFood))
-        (agentstatus (step ?i)  (l-drink  ?ld) (l-food ?lf))
-        (test (> (+ ?ld ?lf) 0))	
-=>      (assert (perc-load (time ?t) (step ?i) (load yes)))
+    (agentstatus (step ?i)  (l-drink  ?ld) (l-food ?lf))
+    (test (> (+ ?ld ?lf) 0))	
+	=>
+	(assert (perc-load (time ?t) (step ?i) (load yes)))
 )
-;//  REGOLE PER MOVIMENTO
+
+
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;///////////////////////// 							REGOLE PER MOVIMENTO						/////////////////////////////////
+;////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 (defrule forward-north-ok 
 	(declare (salience 20))    
 ?f2<-	(status (step ?i) (time ?t)) 
