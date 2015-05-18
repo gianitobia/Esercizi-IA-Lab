@@ -31,7 +31,7 @@
 	(pos-c 6)
 	(activity seated))
 		
-(event (step 0) (type request) (source T4) (food 1) (drink 1)) 
+(event (step 0) (type request) (source T4) (food 3) (drink 3)) 
 (event (step 6) (type request) (source T3) (food 2) (drink 0)) 
 (event (step 40) (type finish) (source T4)) 
 (event (step 70) (type finish) (source T3)) 
@@ -46,7 +46,7 @@
 
 (personmove (step 1) (ident C4) (path-id P5))
 
-(personmove (step 21) (ident C4) (path-id P6))
+(personmove (step 25) (ident C4) (path-id P6))
 
 
 

@@ -402,6 +402,11 @@
 	=> 
 	(modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) 3))))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 2) 
+		(text  "Penalty increased to %p1.") 
+		(param1 (+ ?p (* (- ?t ?tt) 3)))
+	))      
 	(retract ?f2)	
 )
 
@@ -423,6 +428,11 @@
 	=> 
 	(modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) 50))))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1.") 
+		(param1 (+ ?p (* (- ?t ?tt) 50)))
+	))
 	(retract ?f2)
 )
 
@@ -439,6 +449,11 @@
 	=> 
     (modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) (max 1 (* (+ (- ?nd ?dd) (- ?nf ?df)) 2))))))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 2) 
+		(text  "Penalty increased to %p1.") 
+		(param1 (+ ?p (* (- ?t ?tt) (max 1 (* (+ (- ?nd ?dd) (- ?nf ?df)) 2)))))
+	))
 	(retract ?f2)
 )
 
@@ -454,6 +469,11 @@
 	=> 
     (modify ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) (max 1 (+ (- ?nd ?dd) (- ?nf ?df)))))))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 2) 
+		(text  "Penalty increased to %p1.") 
+		(param1 (+ ?p (* (- ?t ?tt) (max 1 (+ (- ?nd ?dd) (- ?nf ?df))))))
+	))
 	(retract ?f2)
 )
 
@@ -553,6 +573,11 @@
 => 
 	(modify  ?f1 (time ?t) (step ?i))
 	(assert (penalty (+ ?p (* (- ?t ?tt) 20))))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 2) 
+		(text  "Penalty increased to %p1.") 
+		(param1 (+ ?p (* (- ?t ?tt) 20)))
+	))
 	(retract ?f2)
 ;	(printout t " - penalità aumentate" ?id " attende che il robot si sposti)" crlf)
 )
@@ -623,6 +648,11 @@
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer accepted))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
     (assert (penalty (+ ?p 500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by accepted a dirty table.") 
+		(param1 (+ ?p 500000))
+	))
 	(retract ?f4)
 )
 
@@ -653,6 +683,11 @@
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer delayed))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
     (assert (penalty (+ ?p 500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by delayed but clean table.") 
+		(param1 (+ ?p 500000))
+	))
 	(retract ?f4)
 )
 
@@ -669,6 +704,11 @@
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer rejected))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
 	(assert (penalty (+ ?p 5000000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a rejected.") 
+		(param1 (+ ?p 5000000))
+	))
 	(retract ?f4)
 )
 
@@ -686,6 +726,11 @@
 	(modify ?f2 (time (+ ?t 1)) (step (+ ?i 1)) (answer accepted))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
     (assert (penalty (+ ?p 5000000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by rejected.") 
+		(param1 (+ ?p 5000000))
+	))
 	(retract ?f4)
 )
 
@@ -700,10 +745,15 @@
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
 	(assert (penalty (+ ?p 10000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a service not more in pending.") 
+		(param1 (+ ?p 10000))
+	))
 	(retract ?f4)
 )
 
-;// arriva un'inform per una richiesta not fatta dal tavolo
+;// arriva un'inform per una richiesta non fatta dal tavolo
 (defrule msg-mng-KO2	(declare (salience 20))
 	?f1	<-	(status (step ?i) (time ?t))
 	(exec (step ?i) (action Inform) (param1 ?tb) (param2 ?request))
@@ -714,6 +764,11 @@
 	(modify ?f1 (time (+ ?t 1)) (step (+ ?i 1)))
 	(modify ?f3 (time (+ ?t 1)) (step (+ ?i 1)))
 	(assert (penalty (+ ?p 500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by inform not made by that table.") 
+		(param1 (+ ?p 500000))
+	))
 	(retract ?f4)
 )
 
@@ -771,6 +826,11 @@
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish yes))
     (penalty (+ ?p 10000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by checkfinish on a table with cleantable request.") 
+		(param1 (+ ?p 10000))
+	))
     (retract ?f4)
 )
 
@@ -788,6 +848,11 @@
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish yes))
 	(penalty (+ ?p 10000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by cleantable on a clean table.") 
+		(param1 (+ ?p 10000))
+	))
 	(retract ?f4)
 )
 
@@ -807,6 +872,11 @@
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish no))
 	(penalty (+ ?p 100000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by cleantable too early.") 
+		(param1 (+ ?p 100000))
+	))
 	(retract ?f4)
 )
 
@@ -825,6 +895,11 @@
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 40)))
 	(assert (perc-finish (step (+ ?i 1)) (time (+ ?t 40)) (finish no))
 	(penalty (+ ?p 100000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by useless cleantable.") 
+		(param1 (+ ?p 100000))
+	))
 	(retract ?f4)
 )
 
@@ -840,6 +915,11 @@
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 30)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 30))) 
 	(assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, checkFinish wrong because robot not near a table.") 
+		(param1 (+ ?p 500000))
+	))
 	(retract ?f5)
 )
 
@@ -855,6 +935,11 @@
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 30)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 30))) 
 	(assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a cleantable on a cell where isn't a table.") 
+		(param1 (+ ?p 500000))
+	))
 	(retract ?f5)
 )
 
@@ -937,7 +1022,12 @@
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t (+ 10 ( * 2 ?tld) (* 3 ?tlf))))
                     (l-drink 0) (l-food 0) (clean yes))
 	(assert (penalty (+ ?p 500000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a cleantable it's not requested.") 
+		(param1 (+ ?p 500000))
+	))
+	(retract ?f5)
 )
 ;// azione inutile di cleantable perchè il tavolo è già pulito
 (defrule CleanTable_K0_2
@@ -956,7 +1046,12 @@
                     (l_d_waste ?dw) (l_f_waste ?fw))
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 30)))
 	(assert (penalty (+ ?p 10000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a cleantable on a clean table.") 
+		(param1 (+ ?p 10000))
+	))
+	(retract ?f5)
 )
 
 ;// il robot tenta di fare CleanTable  ma fallisce perchè sta già trasportando cibo 
@@ -975,7 +1070,12 @@
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 30)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 30)))
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by cleantable when the robot has food or drink.") 
+		(param1 (+ ?p 500000))
+	))
+   	(retract ?f5)
 )    
 ;// L'azione di CleanTable fallisce perchè l'agente non è accanto ad un tavolo 
 (defrule CleanTable_KO_4
@@ -990,7 +1090,12 @@
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 30)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 30))) 
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by robot not near a table.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 ) 
 ;// L'azione di CleanTable fallisce perchè la posizione indicata non 
 ;//contiene un tavolo 
@@ -1005,7 +1110,12 @@
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 30)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 30))) 
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by cell not contains a table.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 )
 
 ;// __________________________________________________________________________________________
@@ -1036,8 +1146,13 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)) (l_f_waste no))
-        (assert (penalty (+ ?p	10000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	10000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by emptyfood when robot doesnt have food waste.") 
+		(param1 (+ ?p 10000))
+	))
+	(retract ?f5)
 )    
 ;// Operazione fallisce perchè l'agente non è adiacente a un TrashBasket
 (defrule EmptyFood_KO2
@@ -1051,22 +1166,32 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by robot not near a TB.") 
+		(param1 (+ ?p 500000))
+	))
+	(retract ?f5)
 )
 ;// Operazione fallisce perchè la cella indicata non è un TrashBasket
 (defrule EmptyFood_KO3
 	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
+	?f2<-	(status (time ?t) (step ?i)) 
 	(exec (step ?i) (action EmptyFood) (param1 ?x) (param2 ?y))
 	(not (TrashBasket (TB-id ?trb) (pos-r ?x) (pos-c ?y)))
-?f1<-	(agentstatus (step ?i) (time ?t))
-?f5<-   (penalty ?p)    
-=> 
+	?f1<-	(agentstatus (step ?i) (time ?t))
+	?f5<-   (penalty ?p)    
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by cell not contains a TB.") 
+		(param1 (+ ?p 500000))
+	))
+	(retract ?f5)
 )
 ;// __________________________________________________________________________________________
 ;// REGOLE PER il Release (svuota contenitori bevande in RecyclableBasket)
@@ -1086,33 +1211,43 @@
 ;// Operazione inutile perchè agente non ha contenitori di bevande a bordo
 (defrule Release_KO1
 	(declare (salience 20))       
-?f2<-	(status (time ?t) (step ?i)) 
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action Release) (param1 ?x) (param2 ?y))
 	(RecyclableBasket (RB-id ?rb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
                      (l_d_waste no))
         (serviceRB ?rb ?rr ?cc)
-?f5<-   (penalty ?p)
-=> 
+	?f5<- (penalty ?p)
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 8)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 8)) (l_d_waste no))
-        (assert (penalty (+ ?p	10000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	10000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by release when robot doesnt have drink waste.") 
+		(param1 (+ ?p 10000))
+	))
+	(retract ?f5)
 )    
 ;// Operazione fallisce perchè l'agente non è adiacente a un RecyclableBasket
 (defrule Release_KO2
 	(declare (salience 20))
-?f2<-	(status (time ?t) (step ?i)) 
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action Release) (param1 ?x) (param2 ?y))
 	(RecyclableBasket (RB-id ?rb) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
-        (not (serviceRB ?rb ?rr ?cc))
-?f5<-   (penalty ?p)    
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc))
+    (not (serviceRB ?rb ?rr ?cc))
+	?f5 <- (penalty ?p)    
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 8)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 8)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by when robot isn't near a RB'.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 )
 ;// Operazione fallisce perchè la cella indicata non è un RecyclableBasket
 (defrule Release_KO3
@@ -1125,8 +1260,13 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 8)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 8)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by cell not contains a RB.") 
+		(param1 (+ ?p 500000))
+	))
+	(retract ?f5)
 )
 ;/// REGOLE PER WAIT
 (defrule WAIT
@@ -1168,8 +1308,13 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 5)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 5)))
-        (assert (penalty (+ ?p	100000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	100000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by robot is full.") 
+		(param1 (+ ?p 100000))
+	))
+	(retract ?f5)
 )    
 ;// Operazione fallisce perchè l'agente è già carico di immondizia
 (defrule load-food_KO2
@@ -1185,8 +1330,13 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 5)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 5)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by robot is full of waste.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 )
 ;// Operazione fallisce perchè l'agente non è adiacente a un FoodDispenser
 (defrule load-food_KO3
@@ -1200,8 +1350,13 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 5)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 5)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by robot isn't near a FD.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 )
 ;// Operazione fallisce perchè la cella indicata non è un FoodDispenser
 (defrule load-food_KO4
@@ -1214,41 +1369,51 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 5)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 5)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by cell not contains a FD.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 )
 ;// __________________________________________________________________________________________
 ;// REGOLE PER il prelievo di drink da drink Dispenser
 ;// Operazione OK
 (defrule load-drink_OK
 	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action LoadDrink) (param1 ?x) (param2 ?y))
 	(DrinkDispenser (DD-id ?dd) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
-                     (l-food ?lf) (l-drink ?ld) (l_d_waste no) (l_f_waste no))
-        (serviceDD ?dd ?rr ?cc)
-        (test (< (+ ?lf ?ld) 4))
-=> 
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
+    					(l-food ?lf) (l-drink ?ld) (l_d_waste no) (l_f_waste no))
+    (serviceDD ?dd ?rr ?cc)
+    (test (< (+ ?lf ?ld) 4))
+	=> 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)) (l-drink (+ ?ld 1)))
 )
 ;// Operazione fallisce perchè l'agente è già a pieno carico
 (defrule load-drink_KO1
 	(declare (salience 20))    
-?f2<-	(status (time ?t) (step ?i)) 
+	?f2 <- (status (time ?t) (step ?i)) 
 	(exec (step ?i) (action LoadDrink) (param1 ?x) (param2 ?y))
 	(DrinkDispenser (DD-id ?dd) (pos-r ?x) (pos-c ?y))
-?f1<-	(agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
+	?f1 <- (agentstatus (step ?i) (time ?t) (pos-r ?rr) (pos-c ?cc) 
                      (l-food ?lf) (l-drink ?ld) (l_d_waste no) (l_f_waste no))
-        (serviceDD ?dd ?rr ?cc)
-        (test (= (+ ?lf ?ld) 4))
-?f5<-   (penalty ?p)
+    (serviceDD ?dd ?rr ?cc)
+    (test (= (+ ?lf ?ld) 4))
+	?f5<-   (penalty ?p)
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-        (assert (penalty (+ ?p	100000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	100000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by robot is full.") 
+		(param1 (+ ?p 100000))
+	))
+	(retract ?f5)
 )    
 ;// Operazione fallisce perchè l'agente è già carico di immondizia
 (defrule load-drink_KO2
@@ -1264,8 +1429,13 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by robot is full of waste.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 )
 ;// Operazione fallisce perchè l'agente non è adiacente a un drinkDispenser
 (defrule load-drink_KO3
@@ -1279,8 +1449,13 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by robot isn't near a DD.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 )
 ;// Operazione fallisce perchè la cella indicata non è un drinkDispenser
 (defrule load-drink_KO4
@@ -1293,8 +1468,13 @@
 => 
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 6)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 6)))
-        (assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+    (assert (penalty (+ ?p	500000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by cell not contains a DD.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 )
 ;// __________________________________________________________________________________________
 ;// REGOLE PER LA CONSEGNA Di Food ad un tavolo
@@ -1319,7 +1499,12 @@
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 4)) (l-food (+ ?tlf 1)) (clean no))
 	(modify ?f4 (step (+ ?i 1)) (time (+ ?t 4)) (food-deliv ( + ?dfo 1)))
 	(assert (penalty (+ ?p	(max  1 (* 8 (+ (- ?ndo ?ddo) (- ?nfo  (+ ?dfo 1))))))))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1.") 
+		(param1 (+ ?p (+ ?p	(max  1 (* 8 (+ (- ?ndo ?ddo) (- ?nfo  (+ ?dfo 1))))))))
+	))
+    (retract ?f5)
 )
 ;// assegna una penalità nel caso in cui si tenti di consegnare un cibo ad un tavolo
 ;// quando l'ordinazione è già stata completata (ordestatus eleinato) o non è mai stato fatto
@@ -1339,7 +1524,12 @@
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)) (l-food (- ?alf 1)))
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 4)) (l-food (+ ?tlf 1)))
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a delivery food on a table with order completed or no order.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 ) 
 ;// il robot tenta di fare una delivery-food  ma non sta trasportando cibo
 (defrule delivery-food_WRONG_3
@@ -1355,7 +1545,12 @@
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)))
 	(assert (penalty (+ ?p	100000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a delivery food but no food on the robot.") 
+		(param1 (+ ?p 100000))
+	))
+    (retract ?f5)
 )    
 ;// __________________________________________________________________________________________
 ;// REGOLE PER LA CONSEGNA Di DRINK ad un tavolo
@@ -1380,6 +1575,11 @@
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 4)) (l-drink (+ ?tld 1)) (clean no))
 	(modify ?f4 (step (+ ?i 1)) (time (+ ?t 4))  (drink-deliv ( + ?ddo 1)))
 	(assert (penalty (+ ?p	(max 1 (* 8 (+ (- ?nfo ?dfo) (- ?ndo  (+ ?ddo 1))))))))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1.") 
+		(param1 (+ ?p	(max 1 (* 8 (+ (- ?nfo ?dfo) (- ?ndo  (+ ?ddo 1)))))))
+	))
     (retract ?f5)
 )
 
@@ -1401,7 +1601,12 @@
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)) (l-drink (- ?ald 1)))
 	(modify ?f3 (step (+ ?i 1)) (time (+ ?t 4)) (l-drink (+ ?tld 1)))
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a delivery food on a table with order completed or no order.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 ) 
 ;// il robot tenta di fare una delivery-food  ma non sta trasportando cibo
 (defrule delivery-drink_WRONG_3
@@ -1417,7 +1622,12 @@
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4)))
 	(assert (penalty (+ ?p	100000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a delivery food but no food on the robot.") 
+		(param1 (+ ?p 100000))
+	))
+    (retract ?f5)
 )    
 ;// L'azione di delivery-food o delivery-drink fallisce perchè l'agente non è accanto ad un tavolo 
 (defrule delivery_WRONG_4
@@ -1432,7 +1642,12 @@
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4))) 
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a delivery food or drink but robot isn't near a table.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 ) 
 ;// L'azione di delivery-food o o delivery-drink fallisce perchè la posizione indicata non 
 ;//contiene un tavolo 
@@ -1447,7 +1662,12 @@
 	(modify ?f2 (step (+ ?i 1)) (time (+ ?t 4)))
 	(modify ?f1 (step (+ ?i 1)) (time (+ ?t 4))) 
 	(assert (penalty (+ ?p	500000)))
-        (retract ?f5)
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1, caused by a delivery food or drink but cell isn't table.") 
+		(param1 (+ ?p 500000))
+	))
+    (retract ?f5)
 ) 
 
 (defrule order-completed	(declare (salience 18))
@@ -1509,6 +1729,11 @@
 	(assert (perc-bump (step (+ ?i 1)) (time (+ ?t 2)) (pos-r ?r) (pos-c ?c) (direction north) (bump yes)))
 	(retract ?f3)
 	(assert (penalty (+ ?p 10000000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1 caused by a bump.") 
+		(param1 (+ ?p 10000000))
+	))
 ;	(printout t " ENVIRONMENT:" crlf)
 ;	(printout t " - penalità +10000000 (Forward-north-bump): " (+ ?p 10000000) crlf)
 )
@@ -1539,6 +1764,11 @@
 	(assert (perc-bump (step (+ ?i 1)) (time (+ ?t 2)) (pos-r ?r) (pos-c ?c) (direction south) (bump yes)))
 	(retract ?f3)
 	(assert (penalty (+ ?p 10000000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1 caused by a bump.") 
+		(param1 (+ ?p 10000000))
+	))
 ;	(printout t " ENVIRONMENT:" crlf)
 ;	(printout t " - penalità +10000000 (forward-south-bump): " (+ ?p 10000000) crlf)
 ) 
@@ -1569,6 +1799,11 @@
 	(assert (perc-bump (step (+ ?i 1)) (time (+ ?t 2)) (pos-r ?r) (pos-c ?c) (direction west) (bump yes)))
 	(retract ?f3)
 	(assert (penalty (+ ?p 10000000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1 caused by a bump.") 
+		(param1 (+ ?p 10000000))
+	))
 ;	(printout t " ENVIRONMENT:" crlf)
 ;	(printout t " - penalità +10000000 (forward-west-bump): " (+ ?p 10000000) crlf)
 )
@@ -1599,6 +1834,11 @@
 	(assert (perc-bump (step (+ ?i 1)) (time (+ ?t 2)) (pos-r ?r) (pos-c ?c) (direction east) (bump yes)))
 	(retract ?f3)
 	(assert (penalty (+ ?p 10000000)))
+	(assert (printGUI 
+		(time ?t) (step ?i) (source "ENV") (verbosity 1) 
+		(text  "Penalty increased to %p1 caused by a bump.") 
+		(param1 (+ ?p 10000000))
+	))
 ;	(printout t " ENVIRONMENT:" crlf)
 ;	(printout t " - penalità +10000000 (forward-east-bump): " (+ ?p 10000000) crlf)
 )

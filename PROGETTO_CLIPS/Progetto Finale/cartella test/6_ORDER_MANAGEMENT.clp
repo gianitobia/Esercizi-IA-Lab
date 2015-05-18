@@ -2,7 +2,7 @@
 
 
 ;regola che inizia la ricerca dei tavoli da pulire dichiarando come target la posizione dell'agent
-(defrule rec_finish_startlookfor (declare (salience 14))
+(defrule rec_finish_startlookfor (declare (salience 44))
 	?f <- (createMacro)
 	?o <- (pulisci-table (table-id ?tb))
 	(K-agent (pos-r ?ra) (pos-c ?ca))
@@ -15,7 +15,7 @@
 )
 
 ;regola che converte il fatto best-table in macro-action per pulirlo
-(defrule rec_finish_macro (declare (salience 14))
+(defrule rec_finish_macro (declare (salience 44))
 	?f <- (createMacro)
 	(best_Ta ?rta ?cta ?idta)
 	(Table (table-id ?idta) (pos-r ?rta) (pos-c ?cta))
@@ -34,7 +34,7 @@
 )
 
 ;regola che dopo asserito le macro-action di pulizia di un tavolo, rifa partire la ricerca di un miglior tavolo se ci sono altri tavoli da pulire dando come target il tavolo appena pulito (quindi best-table)
-(defrule rec_finish_repeatlookfor (declare (salience 12))
+(defrule rec_finish_repeatlookfor (declare (salience 42))
 	?f <- (createMacro)
 	?o <- (pulisci-table (table-id ?tb))
 	?b3 <- (best_Ta ?rta ?cta ?idta)
@@ -45,7 +45,7 @@
 	(focus MIN_DISTANCE)
 )
 
-(defrule rec_finish_lookforTrashBaskets (declare (salience 10))
+(defrule rec_finish_lookforTrashBaskets (declare (salience 40))
 	?f <- (createMacro)
 	(not (pulisci-table))
 	?b3 <- (best_Ta ?rta ?cta ?idta)
@@ -57,7 +57,7 @@
 	(retract ?bf ?tf ?b3)
 	(focus MIN_DISTANCE)
 )
-(defrule rec_finish_lookforRecyclableBaskets (declare (salience 10))
+(defrule rec_finish_lookforRecyclableBaskets (declare (salience 40))
 	?f <- (createMacro)
 	(not (pulisci-table))
 	?b3 <- (best_Ta ?rta ?cta ?idta)
@@ -70,7 +70,7 @@
 	(focus MIN_DISTANCE)
 	
 )
-(defrule rec_finish_lookforTrashAndRecyclableBaskets (declare (salience 10))
+(defrule rec_finish_lookforTrashAndRecyclableBaskets (declare (salience 40))
 	?f <- (createMacro)
 	(not (pulisci-table))
 	?b3 <- (best_Ta ?rta ?cta ?idta)
@@ -83,7 +83,7 @@
 	(focus MIN_DISTANCE)
 )
 
-(defrule rec_message_finishTBandRB_conclusion (declare (salience 12))
+(defrule rec_message_finishTBandRB_conclusion (declare (salience 42))
 	(not (pulisci-table (table-id ?id)))
 	?f <- (createMacro)
 	?b1 <- (best_TB ?rtb ?ctb)
@@ -101,7 +101,7 @@
 	(retract ?b1 ?b2 ?bc ?f ?c)
 )
 
-(defrule rec_message_finishRBandTB_conclusion (declare (salience 12))
+(defrule rec_message_finishRBandTB_conclusion (declare (salience 42))
 	(not (pulisci-table (table-id ?id)))
 	?f <- (createMacro)
 	?b1 <- (best_TB ?rtb ?ctb)
@@ -119,7 +119,7 @@
 	(retract ?b1 ?b2 ?bc ?f ?c)
 )
 
-(defrule rec_message_finishTB_conclusion (declare (salience 10))
+(defrule rec_message_finishTB_conclusion (declare (salience 40))
 	(not (pulisci-table (table-id ?id)))
 	?f <- (createMacro)
 	?b1 <- (best_TB ?rtb ?ctb)
@@ -133,7 +133,7 @@
 	(retract ?b1 ?f ?c)
 )
 
-(defrule rec_message_finishRB_conclusion (declare (salience 10))
+(defrule rec_message_finishRB_conclusion (declare (salience 40))
 	(not (pulisci-table (table-id ?id)))
 	?f <- (createMacro)
 	?b2 <- (best_RB ?rrb ?crb)
@@ -219,7 +219,7 @@
 	?o <- (coda-ordini (sender ?tb) (drink ?nd) (food ?nf))
 	?b1 <- (best_FD ?rf ?cf)	
 	?b2 <- (best_DD ?rd ?cd) 	
-	(test (> (+ ?nd ?f) 4))
+	(test (> (+ ?nd ?nf) 4))
 	(Table (table-id ?tb) (pos-r ?rt) (pos-c ?ct))
 	=>
 	(retract ?f ?o ?b1 ?b2)

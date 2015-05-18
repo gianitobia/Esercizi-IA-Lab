@@ -1,7 +1,7 @@
 (defmodule ORDER_MANAGEMENT (import PLANNER ?ALL) (export ?ALL))
 
 ;regola che converte tutti gli ordini di checkFinish in una sequenza di MacroAction
-(defrule rec_finish_lookfor (declare (salience 14))
+(defrule rec_finish_lookfor (declare (salience 44))
 	?f <- (createMacro)
 	?o <- (pulisci-table (table-id ?tb))
 	=>
@@ -9,7 +9,7 @@
 	(focus MIN_DISTANCE)
 )
 
-(defrule rec_message_finishTB (declare (salience 14))
+(defrule rec_message_finishTB (declare (salience 44))
 	?f <- (createMacro)
 	?b1 <- (best_TB ?rtb ?ctb)
 	?b2 <- (best_RB ?rrb ?crb)
@@ -30,7 +30,7 @@
 	(retract ?f ?o ?b1 ?b2 ?b3 ?bc)
 )
 
-(defrule rec_message_finishRB (declare (salience 14))
+(defrule rec_message_finishRB (declare (salience 44))
 	?f <- (createMacro)
 	?b1 <- (best_TB ?rtb ?ctb)
 	?b2 <- (best_RB ?rrb ?crb)
@@ -119,7 +119,7 @@
 	?o <- (coda-ordini (sender ?tb) (drink ?nd) (food ?nf))
 	?b1 <- (best_FD ?rf ?cf)	
 	?b2 <- (best_DD ?rd ?cd) 	
-	(test (> (+ ?nd ?f) 4))
+	(test (> (+ ?nd ?nf) 4))
 	(Table (table-id ?tb) (pos-r ?rt) (pos-c ?ct))
 	=>
 	(retract ?f ?o ?b1 ?b2)

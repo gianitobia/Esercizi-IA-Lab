@@ -1,7 +1,7 @@
 (defmodule ORDER_MANAGEMENT (import PLANNER ?ALL) (export ?ALL))
 
 ;regola che converte tutti gli ordini di checkFinish in una sequenza di MacroAction
-(defrule rec_message_finish (declare (salience 14))
+(defrule rec_message_finish (declare (salience 44))
 	?f <- (createMacro)
 	?o <- (pulisci-table (table-id ?tb))
 	(K-cell (pos-r ?rtr) (pos-c ?ctr) (contains TB))				;da modificare quando ci saranno piu di trash basket
@@ -63,7 +63,7 @@
 	(K-cell (pos-r ?rf) (pos-c ?cf) (contains FD))	;da modificare quando ci saranno piu di food dispenser
 	(K-cell (pos-r ?rd) (pos-c ?cd) (contains DD)) ;da modificare quando ci saranno piu di un drink dispenser
 	(Table (table-id ?tb) (pos-r ?rt) (pos-c ?ct))
-	(test (> (+ ?nd ?f) 4))
+	(test (> (+ ?nd ?nf) 4))
 	=>
 	(retract ?f ?o)
 	(assert 
