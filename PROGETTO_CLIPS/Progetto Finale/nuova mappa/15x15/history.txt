@@ -1,0 +1,99 @@
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C1)
+	(pos-r 10)
+	(pos-c 3)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C2)
+	(pos-r 3)
+	(pos-c 3)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C3)
+	(pos-r 2)
+	(pos-c 4)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C4)
+	(pos-r 12)
+	(pos-c 5)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C5)
+	(pos-r 5)
+	(pos-c 7)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C6)
+	(pos-r 5)
+	(pos-c 9)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C7)
+	(pos-r 11)
+	(pos-c 10)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C8)
+	(pos-r 2)
+	(pos-c 12)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C9)
+	(pos-r 3)
+	(pos-c 13)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C10)
+	(pos-r 13)
+	(pos-c 14)
+	(activity seated)
+)
+
+(personstatus
+	(step 0)
+	(time 0)
+	(ident C11)
+	(pos-r 8)
+	(pos-c 14)
+	(activity seated)
+)
