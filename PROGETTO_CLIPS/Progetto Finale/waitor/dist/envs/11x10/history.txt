@@ -1,0 +1,147 @@
+(personstatus 	
+
+	(step 0)
+    
+	(time 0)
+
+	(ident C1)
+
+	(pos-r 7)
+
+	(pos-c 3)
+
+	(activity seated))
+
+(personstatus 	
+
+	(step 0)
+    
+	(time 0)
+
+	(ident C2)
+
+	(pos-r 8)
+
+	(pos-c 10)
+
+	(activity seated))
+
+
+(personstatus 	
+
+	(step 0)
+    
+	(time 0)
+
+	(ident C3)
+
+	(pos-r 3)
+
+	(pos-c 4)
+
+	(activity seated))
+	
+(personstatus 	
+
+	(step 0)
+    
+	(time 0)
+
+	(ident C4)
+
+	(pos-r 9)
+
+	(pos-c 3)
+
+	(activity seated))
+
+(personstatus 	
+
+	(step 0)
+    
+	(time 0)
+
+	(ident C5)
+
+	(pos-r 4)
+
+	(pos-c 2)
+
+	(activity seated))
+
+
+(personstatus 	
+
+	(step 0)
+    
+	(time 0)
+
+	(ident C6)
+
+	(pos-r 3)
+
+	(pos-c 2)
+
+	(activity seated))
+	
+(personstatus 	
+
+	(step 0)
+    
+	(time 0)
+
+	(ident C7)
+
+	(pos-r 4)
+
+	(pos-c 8)
+
+	(activity seated))
+
+(personstatus 	
+
+	(step 0)
+    
+	(time 0)
+
+	(ident C8)
+
+	(pos-r 3)
+
+	(pos-c 10)
+
+	(activity seated))
+
+
+(personstatus 	
+
+	(step 0)
+    
+	(time 0)
+
+	(ident C9)
+
+	(pos-r 9)
+
+	(pos-c 9)
+
+	(activity seated))
+		
+(event (step 0) (type request) (source T4) (food 1) (drink 1)) 
+(event (step 9) (type request) (source T3) (food 0) (drink 2)) 
+(event (step 15) (type finish) (source T4))
+(event (step 21) (type finish) (source T3))
+(event (step 26) (type request) (source T5) (food 2) (drink 0))  
+(event (step 31) (type request) (source T2) (food 3) (drink 2)) 
+(event (step 37) (type finish) (source T5))
+(event (step 45) (type request) (source T4) (food 0) (drink 2)) 
+(event (step 50) (type request) (source T1) (food 1) (drink 1)) 
+(event (step 60) (type request) (source T3) (food 0) (drink 2)) 
+(event (step 75) (type finish) (source T2))
+(event (step 84) (type request) (source T5) (food 2) (drink 0))  
+(event (step 89) (type finish) (source T3))
+(event (step 95) (type finish) (source T1))
+(event (step 102) (type finish) (source T4))
+(event (step 112) (type request) (source T3) (food 3) (drink 2)) 
+(event (step 125) (type finish) (source T5))
+(event (step 138) (type request) (source T4) (food 0) (drink 2)) 
