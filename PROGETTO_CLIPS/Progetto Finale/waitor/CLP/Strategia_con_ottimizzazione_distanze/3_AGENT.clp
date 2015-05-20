@@ -246,7 +246,7 @@
 	=>
 	(assert 
 		(inform-temp ?i Inform ?tb ?t delyed)
-		(posticipate yes)
+		(posticipate 1)
 	)
 	(retract ?f)
 	(assert (coda-ordini (step ?i) (time ?t) (tipo delayed) (sender ?tb) (drink ?nd) (food ?nf)))	  ;accodo l'ordine per eseguirlo app possibile      
