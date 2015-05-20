@@ -117,9 +117,9 @@
 (defrule rec_message_createMacro3_plus4 (declare (salience 10))
 	?f <- (createMacro)
 	?o <- (coda-ordini (sender ?tb) (drink ?nd) (food ?nf))
+	(test (> (+ ?nd ?nf) 4))
 	?b1 <- (best_FD ?rf ?cf)	
 	?b2 <- (best_DD ?rd ?cd) 	
-	(test (> (+ ?nd ?nf) 4))
 	(Table (table-id ?tb) (pos-r ?rt) (pos-c ?ct))
 	=>
 	(retract ?f ?o ?b1 ?b2)
@@ -132,7 +132,7 @@
 		(MacroAction (macrostep 6) (oper LoadFood) (param1 ?rf) (param2 ?cf) (param3 ?nf))
 		(MacroAction (macrostep 7) (oper Move) (param1 ?rt) (param2 ?ct))
 		(MacroAction (macrostep 8) (oper DeliveryFood) (param1 ?rt) (param2 ?ct) (param3 ?nf))
-		(Macrostep (step 1))
+		(macrostep 1)
 	)
 )
 
