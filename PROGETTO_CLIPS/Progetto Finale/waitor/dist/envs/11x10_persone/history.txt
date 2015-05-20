@@ -142,7 +142,7 @@
 (event (step 89) (type finish) (source T3))
 (event (step 95) (type finish) (source T1))
 (event (step 102) (type finish) (source T4))
-(event (step 130) (type request) (source T3) (food 3) (drink 2)) 
+(event (step 140) (type request) (source T3) (food 3) (drink 2)) 
 (event (step 125) (type finish) (source T5))
 (event (step 145) (type request) (source T4) (food 0) (drink 2)) 
 
