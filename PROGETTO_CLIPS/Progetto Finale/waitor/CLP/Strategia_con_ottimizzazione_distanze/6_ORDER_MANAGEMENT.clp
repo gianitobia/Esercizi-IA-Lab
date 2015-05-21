@@ -132,7 +132,7 @@
 		(MacroAction (macrostep 6) (oper LoadFood) (param1 ?rf) (param2 ?cf) (param3 ?nf))
 		(MacroAction (macrostep 7) (oper Move) (param1 ?rt) (param2 ?ct))
 		(MacroAction (macrostep 8) (oper DeliveryFood) (param1 ?rt) (param2 ?ct) (param3 ?nf))
-		(Macrostep (step 1))
+		(macrostep 1)
 	)
 )
 
