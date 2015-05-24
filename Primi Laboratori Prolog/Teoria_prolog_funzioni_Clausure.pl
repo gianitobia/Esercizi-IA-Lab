@@ -27,8 +27,9 @@
 		s(X) = successore di un numero X
 */
 
-sum(s(X),Y,s(Z)) :- sum(X,Y,Z).
 sum(0,X,X).
+sum(s(X),Y,s(Z)):- sum(X,Y,Z).
+
 /*
 	A  || NOT B1 || NOT B2 ... || NOT Bn
 	A  || NOT(B1 || B2 ... || Bn)
