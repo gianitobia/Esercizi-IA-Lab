@@ -77,22 +77,24 @@ goal(G):- list_to_ord_set([on(a,b),on(b,c),on(c,d),on(d,e),
 
 final(S):- goal(G), ord_subset(G,S).
 
-% Strategia in profondita` su alberi
-
 % PASSO BASE della ricorsione
-deep_search(S, []) :- final(S), !.
+deep_search_lim(S,_,[]) :- final(S), !.		% utilizzo una variabile anonima perche` il limite
+											% lo controllo nel passo ricorsivo
 
 %PASSO Ricorsivo
-deep_search(S, [Action|Tail]) :-
+deep_search_lim(S, Limit, [Action|Tail]) :-
+	New_Limit is Limit - 1,
+	New_Limit > 0, 
 	apply(Action, S),
 	transform(Action, S, S_Updated),
-	deep_search(S_Updated, Tail).
+	deep_search_lim(S_Updated, New_Limit, Tail).
 
 find_solution :-
 	initial(S),
+	Limit is 13,			%imposto il limite della profondita'	
 	statistics(walltime,[Start,_]),
-	deep_search(S, X),
+	deep_search_lim(S, Limit, List),
 	statistics(walltime,[End,_]),
 	Time is End - Start,
+	write(List),
 	write(Time).
-
