@@ -74,6 +74,7 @@ goal(G):- list_to_ord_set([on(a,b),on(b,c),on(c,d),on(d,e),
 final(S):- goal(G), ord_subset(G,S).
 
 
+
 % Strategia in profondita` su grafo con limite, ossia con controllo per evitare cicli su stati gia' esplorati
 
 
