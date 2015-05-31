@@ -65,27 +65,31 @@ initial(pos(10,10)).
 
 final(pos(20,20)).
 
-% Strategia in profondita` su grafo, ossia con controllo per evitare cicli su stati gia' esplorati
+
+% Strategia in profondita` su grafo con limite, ossia con controllo per evitare cicli su stati gia' esplorati
 
 
 %definizione passo base della ricorsione
-deep_graph_search(S,_,[]) :- final(S), !.
+deep_graph_lim_search(S,_,_,[]) :- final(S), !.
 
 %definizione passo ricorsivo
-deep_graph_search(S, Explored, [Action|Tail]) :-
-apply(Action, S),
-transform(Action, S, S_Updated),
-\+  member(S_Updated, Explored),
-deep_graph_search(S_Updated, [S|Explored], Tail).
-% Aggiorno la lista degli esplorati con gli stati che avevo in S
-% lo stato appena generato, se non e' finale sara' aggiunto alla
-% ricorsione successiva, xke salvato in S_Updated.
+deep_graph_lim_search(S, Limit,Explored, [Action|Tail]) :-
+	New_Limit is Limit - 1,
+	New_Limit > 0, 
+	apply(Action, S),
+	transform(Action, S, S_Updated),
+	\+  member(S_Updated, Explored),
+	deep_graph_lim_search(S_Updated, New_Limit,[S|Explored], Tail).
+	% Aggiorno la lista degli esplorati con gli stati che avevo in S
+	% lo stato appena generato, se non e' finale sara' aggiunto alla 
+	% ricorsione successiva, xke salvato in S_Updated.
 
 find_solution :-
-initial(S),
-statistics(walltime,[Start,_]),
-deep_graph_search(S, [], List),		% [] = lista degli stati esplorati, inizialmente vuota.
-statistics(walltime,[End,_]),
-Time is End - Start,
-write(List),
-write(Time).
+	initial(S),
+	Limit is 13,			%imposto il limite della profondita'
+	statistics(walltime,[Start,_]),
+	deep_graph_lim_search(S, Limit,[], List),		% [] = lista degli stati esplorati, inizialmente vuota.
+	statistics(walltime,[End,_]),
+	Time is End - Start,
+	write(List),
+	write(Time).
