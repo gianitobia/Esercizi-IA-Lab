@@ -77,10 +77,15 @@ goal(G):- list_to_ord_set([on(a,b),on(b,c),on(c,d),on(d,e),
 
 final(S):- goal(G), ord_subset(G,S).
 
+% Definizione della strategia di Iterative Deepening
+% Richiamo la strategia di ricerca con profondita' limitata
+% incrementando la profondita' finche` non trovo la soluzione
+
+% Ricerca prof limitata
+
 % PASSO BASE della ricorsione
 deep_search_lim(S,_,[]) :- final(S), !.		% utilizzo una variabile anonima perche` il limite
 											% lo controllo nel passo ricorsivo
-
 %PASSO Ricorsivo
 deep_search_lim(S, Limit, [Action|Tail]) :-
 	New_Limit is Limit - 1,
@@ -88,13 +93,20 @@ deep_search_lim(S, Limit, [Action|Tail]) :-
 	apply(Action, S),
 	transform(Action, S, S_Updated),
 	deep_search_lim(S_Updated, New_Limit, Tail).
+	
+	
+% Gestione dei richieami iterativi delle strategie di prof limitata
+iter_deep(S, Limit, List) :- deep_search_lim(S, Limit, List), !.
+iter_deep(S, Limit, List) :-
+	New_Limit is Limit + 1,
+	iter_deep(S, New_Limit, List).
+
 
 find_solution :-
-	initial(S),
-	Limit is 13,			%imposto il limite della profondita'	
+	initial(S),	
 	statistics(walltime,[Start,_]),
-	deep_search_lim(S, Limit, List),
+	iter_deep(S, 1, List),
 	statistics(walltime,[End,_]),
 	Time is End - Start,
-	write(List),
+	write(List), nl,
 	write(Time).
