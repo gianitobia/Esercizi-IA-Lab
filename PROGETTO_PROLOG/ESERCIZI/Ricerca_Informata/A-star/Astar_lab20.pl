@@ -63,10 +63,12 @@ wall(pos(15,9)).
 
 initial(pos(10,10)).
 
-final(pos(20,20)).
+goal(pos(20,20)).
+
+final(S):-goal(S).
 
 % Definizione euristica
-calcola_euristica(pos(Ri,Ci),pos(Rf,Cf),H) :-
+calculates_heuristic(pos(Ri,Ci),pos(Rf,Cf),H) :-
 	Rt is Ri - Rf,
 	Ct is Ci - Cf,
 	H is abs(Rt) + abs(Ct).
