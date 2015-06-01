@@ -73,39 +73,69 @@ goal(G):- list_to_ord_set([on(a,b),on(b,c),on(c,d),on(d,e),
 
 final(S):- goal(G), ord_subset(G,S).
 
+% Definizione euristica
+calculates_heuristic(S,G,H):-
+        member(X,G),
+	    ord_del_element(G,X,R),
+	    \+ member(X,S),!,
+	    calculates_heuristic(S,R,H1),
+	    H is H1+1.
 
-% PASSO BASE della ricorsione
-breadth_graph_search([node(S,Act_List)|_],Act_List,_):- final(S).
+calculates_heuristic(S,G,H):-
+	   member(X,G),
+	   ord_del_element(G,X,R),
+	   calculates_heuristic(S,R,H).
 
-% passo ricorsivo
-breadth_graph_search([node(S,Act_List)|Tail],SOL,Explored):-
-	\+ member(S,Explored), % true solo se S non è stato visitato
-	explore(node(S,Act_List),List_Succ),
-	append(Explored,[S],New_Explored),	
-	append(Tail,List_Succ,New_Tail),
-	breadth_graph_search(New_Tail,SOL,New_Explored).
+calculates_heuristic(_,[],0).
 
-% regola per scegliere da quale nodo ripartire con l'esplorazione, se il nodo appena considerato ha lista di successori vuota.
-breadth_graph_search([node(_,_)|Tail],SOL,Explored):-
-	breadth_graph_search(Tail,SOL,Explored).
+% Lista Explored = Lista Closed
+% RICERCA A*
+% il secondo parametro è la lista degli stati visitati
 
-% Espando tutti i successori di un particolare nodo, in base al numero di azioni che posso esseguire in quello step.
-explore(node(S,Act_List),List_Succ):-
-	findall(Act,apply(Act,S),Act_to_exec),
-	successors(node(S,Act_List),Act_to_exec,List_Succ).
+ric_astar(List_Open,_,Act_List):- 
+	member(node(_,_,S,Act_List),List_Open),
+	final(S).
 	
-%genero ricorsivamente tutti i successori, applicando le trasformazioni per le azioni possibili
+ric_astar(List_Open,Explored,SOL) :-
+	member(node(F,G,S,Act_List),List_Open), % true se la lista non è vuota
+	ord_del_element(List_Open,node(F,G,S,Act_List),Tail), % rimuovo l'elemento dalla lista ordinata
+	\+ member(S,Explored), % true se lo stato S non è stato già visitato
+	explore(node(F,G,S,Act_List),List_Succ),
+	append(Explored,[S],New_Explored),
+	list_to_ord_set(List_Succ,Successors), % ordino la lista trasformandola in un ordset
+	ord_union(Tail,Successors,New_Tail), % unisce gli elementi dei due ordset e li ordina
+	ric_astar(New_Tail,New_Explored,SOL).
+
+ric_astar(List_Open,Explored,SOL):-
+	member(node(F,G,S,Act),List_Open),
+	ord_del_element(List_Open,node(F,G,S,Act),Tail),
+	member(S,Explored),
+	ric_astar(Tail,Explored,SOL).
+
+
+explore(node(F,G,S,Act_List),List_Succ) :-
+	findall(Act,apply(Act,S),Actions),
+	successors(node(F,G,S,Act_List),Actions,List_Succ).
+	
 successors(_,[],[]).
-successors(node(S,Act_List), [Act|Tail], [node(New_S,New_Act_List)|Other_Succ]):-
+successors(node(F,G,S,Act_List),[Act|Tail],
+			[node(New_F,New_G,New_S,New_Act_List)|Other_Succ]) :-
 	transform(Act,S,New_S),
 	append(Act_List,[Act],New_Act_List),
-	successors(node(S,Act_List),Tail,Other_Succ).
-
+	New_G is G+1,
+	goal(Final),
+	calculates_heuristic(New_S,Final,H),
+	New_F is New_G+H,
+	successors(node(F,G,S,Act_List),Tail,Other_Succ).
+	
 find_solution :-
-	statistics(walltime,[Start,_]),
 	initial(S),
-	breadth_graph_search([node(S, [])], SOL, []),
+	goal(G),
+	calculates_heuristic(S,G,H),
+	list_to_ord_set([node(H,0,S,[])],Initial),
+	statistics(walltime,[Start,_]),
+	ric_astar(Initial,[],SOL),
 	statistics(walltime,[End,_]),
 	Time is End - Start,
-	write(Time),nl,
-	write(SOL).
+	write(SOL),nl,
+	write(Time).
