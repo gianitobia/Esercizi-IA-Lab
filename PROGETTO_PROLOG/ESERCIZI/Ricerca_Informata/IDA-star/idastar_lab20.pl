@@ -1,91 +1,77 @@
-% Definizione azioni applicabili ed eseguibili
-% Specifica delle azioni mediante precondizioni ed effetti alla STRIPS
-% Gli stati sono rappresentati con insiemi ordinati
+% Descrizione delle azioni
 
-apply(pickup(X),S):-
-	block(X),
-	ord_memberchk(ontable(X),S),				
-	ord_memberchk(clear(X),S),
-	ord_memberchk(handempty,S).
+% prerequisiti per l'applicazione
+apply(est,pos(R,C)) :- 
+	num_col(NC), C<NC,
+	C1 is C+1,
+	\+ wall(pos(R,C1)).
 
-%ord_memberchk = Controllo che in S sia presente lo stato X;
+apply(sud,pos(R,C)) :- 
+	num_righe(NR), R<NR,
+	R1 is R+1,
+	\+ wall(pos(R1,C)).
 
-apply(putdown(X),S):-
-	block(X),
-	ord_memberchk(holding(X),S).
-	
-apply(stack(X,Y),S):-
-	block(X), block(Y), X\=Y,
-	ord_memberchk(holding(X),S),
-	ord_memberchk(clear(Y),S).
+apply(ovest,pos(R,C)) :- 
+	C>1,
+	C1 is C-1,
+	\+ wall(pos(R,C1)).
 
-apply(unstack(X,Y),S):-
-	block(X), block(Y), X\=Y,
-	ord_memberchk(on(X,Y),S),
-	ord_memberchk(clear(X),S),
-	ord_memberchk(handempty,S).
-	
-	
-transform(pickup(X),S1,S2):-
-	block(X),
-	list_to_ord_set([ontable(X),clear(X),handempty], States_to_Remove), 	
-	ord_subtract(S1, States_to_Remove, S),
-	list_to_ord_set([holding(X)], States_to_Add),						
-	ord_union(S,States_to_Add,S2).
-	
-transform(putdown(X),S1,S2):-
-	block(X),
-	list_to_ord_set([holding(X)], States_to_Remove),
-	ord_subtract(S1, States_to_Remove,S),
-	list_to_ord_set([ontable(X),clear(X),handempty], States_to_Add),
-	ord_union(S, States_to_Add, S2).
+apply(nord,pos(R,C)) :- 
+	R>1,
+	R1 is R-1,
+	\+ wall(pos(R1,C)).
 
-transform(stack(X,Y),S1,S2):-
-	block(X), block(Y), X\=Y,
-	list_to_ord_set([holding(X),clear(Y)], States_to_Remove),
-	ord_subtract(S1, States_to_Remove,S),
-	list_to_ord_set([on(X,Y),clear(X),handempty], States_to_Add),
-	ord_union(S, States_to_Add,S2).
-
-transform(unstack(X,Y),S1,S2):-
-	block(X), block(Y), X\=Y,
-	list_to_ord_set([on(X,Y),clear(X),handempty], States_to_Remove),
-	ord_subtract(S1, States_to_Remove, S),
-	list_to_ord_set([holding(X), clear(Y)], States_to_Add),
-	ord_union(S, States_to_Add, S2).
+% effetto ottenuto dall'applicazione
+transform(est,pos(R,C),pos(R,C1)) :- C1 is C+1.
+transform(ovest,pos(R,C),pos(R,C1)) :- C1 is C-1.
+transform(sud,pos(R,C),pos(R1,C)) :- R1 is R+1.
+transform(nord,pos(R,C),pos(R1,C)) :- R1 is R-1.
 
 
-% Definizione dominio - Stato iniziale - Stato finale
+%%%%%%% Descrizione dello scenario
+% Esempio 20 x 20
 
-block(a).
-block(b).
-block(c).
-block(d).
-block(e).
+num_col(20).
+num_righe(20).
 
-initial(S):-
-	list_to_ord_set([on(a,b),on(b,c),ontable(c),clear(a),on(d,e),
-						  ontable(e),clear(d),handempty],S).
+wall(pos(7,15)).
+wall(pos(8,15)).
+wall(pos(9,15)).
+wall(pos(10,15)).
+wall(pos(11,15)).
+wall(pos(12,15)).
+wall(pos(13,15)).
+wall(pos(13,6)).
+wall(pos(13,7)).
+wall(pos(13,8)).
+wall(pos(13,9)).
+wall(pos(13,10)).
+wall(pos(13,11)).
+wall(pos(13,12)).
+wall(pos(13,13)).
+wall(pos(13,14)).
+wall(pos(15,1)).
+wall(pos(15,2)).
+wall(pos(15,3)).
+wall(pos(15,4)).
+wall(pos(15,5)).
+wall(pos(15,6)).
+wall(pos(15,7)).
+wall(pos(15,8)).
+wall(pos(15,9)).
 
-goal(G):- list_to_ord_set([on(a,b),on(b,c),on(c,d),ontable(d),ontable(e)],G).
 
-final(S):- goal(G), ord_subset(G,S).
+initial(pos(10,10)).
+
+goal(pos(20,20)).
+
+final(S):-goal(S).
 
 % Definizione euristica
-calculates_heuristic(S,G,H):-
-        member(X,G),
-	    ord_del_element(G,X,R),
-	    \+ member(X,S),!,
-	    calculates_heuristic(S,R,H1),
-	    H is H1+1.
-
-calculates_heuristic(S,G,H):-
-	   member(X,G),
-	   ord_del_element(G,X,R),
-	   calculates_heuristic(S,R,H).
-
-calculates_heuristic(_,[],0).
-
+calculates_heuristic(pos(Ri,Ci),pos(Rf,Cf),H) :-
+	Rt is Ri - Rf,
+	Ct is Ci - Cf,
+	H is abs(Rt) + abs(Ct).
 
 % Ricerca IDA*
 
