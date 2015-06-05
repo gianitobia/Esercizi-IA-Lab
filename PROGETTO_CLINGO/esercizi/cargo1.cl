@@ -2,20 +2,12 @@
  
 cargo(c1).
 cargo(c2).
-cargo(c3).
-cargo(c4).
 
 airport(sfo).
 airport(jfk).
-airport(lga).
-airport(lvg).
-airport(las).
-airport(was).
 
 plane(p1).
 plane(p2).
-plane(p3).
-plane(p4).
 
 #const lastlevel = 5.
 level(0..lastlevel).
@@ -24,12 +16,8 @@ status(0..lastlevel+1).
 % stato iniziale
 in(c1, sfo, 0).
 in(c2, jfk, 0).
-in(c3, was, 0).
-in(c4, lvg, 0).
 in(p1, sfo, 0).
 in(p2, jfk, 0).
-in(p3, las, 0).
-in(p4, lga, 0).
 
 % stato finale
 goal :- in(c1, jfk, lastlevel+1), in(c2, sfo, lastlevel+1).
