@@ -40,6 +40,9 @@ in(P, T_A, S+1) :- fly(P, F_A, T_A, S), status(S), plane(P), in(P, F_A, S), airp
 
 % PRECONDIZIONI
 :- fly(P, F_A, T_A, S), F_A = T_A.
+:- load(C, P, A, S), in(C1, P, S).
+:- unload(C, P, A, S), -in(C, P, S).
+ 
 
 
 % REGOLE DI PERSISTENZA
