@@ -27,22 +27,28 @@ rip(x3).
 
 % calcolo della somma per le quattro colonne
 
-:- val(o,Vo), val(r,Vr), val(x1,Vx1),
-	Vo+Vo != Vr+10*Vx1.
+:- val(o,Val_o), val(r,Val_r), val(x1,Val_x1), Val_o+Val_o != Val_r+10*Val_x1.
 	
-:- val(x1,Vx1), val(w,Vw), val(u,Vu), val(x2,Vx2),
-	Vx1+Vw+Vw != Vu+10*Vx2.
+:- val(w,Val_w), val(u,Val_u), val(x1,Val_x1), val(x2,Val_x2), Val_x1+Val_w+Val_w != Val_u+10*Val_x2.
 	
-:- val(x2,Vx2), val(t,Vt), val(o,Vo), val(x3,Vx3),
-	Vx2+Vt+Vt != Vo+10*Vx3.
+:- val(t,Val_t), val(o,Val_o), val(x2,Val_x2), val(x3,Val_x3), Val_x2+Val_t+Val_t != Val_o+10*Val_x3.
 
-:- val(x3,Vx3), val(f,Vf), Vx3 != Vf.
+:- val(f,Val_f), val(x3,Val_x3), Val_x3 != Val_f.
 
 
-#hide.
 #show val/2.
 
 
 % con un vincolo unico ci mette molto piu' tempo
 % :- val(t,Vt), val(w,Vw), val(f,Vf), val(o,Vo), val(u,Vu), val(r,Vr), 
 %	((Vt*100+Vw*10+Vo)+(Vt*100+Vw*10+Vo)) != (Vf*1000+Vo*100+Vu*10+Vr).
+
+
+
+
+%two +
+%765
+%two = 
+%765
+%four
+%1530
