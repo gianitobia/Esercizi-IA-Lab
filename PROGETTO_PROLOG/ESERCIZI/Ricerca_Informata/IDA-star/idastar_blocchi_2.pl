@@ -145,7 +145,7 @@ iter_deep(S,_,Act_List):-
 	writeln(F),
 	iter_deep(S,F,Act_List).
 	
-idastar :-
+find_solution :-
 	writeln('start'),
 	initial(S),
 	goal(G),

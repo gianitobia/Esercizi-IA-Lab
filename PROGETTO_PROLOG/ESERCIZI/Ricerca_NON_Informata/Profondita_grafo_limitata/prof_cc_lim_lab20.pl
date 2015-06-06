@@ -86,7 +86,7 @@ deep_graph_lim_search(S, Limit,Explored, [Action|Tail]) :-
 
 find_solution :-
 	initial(S),
-	Limit is 32,			%imposto il limite della profondita'
+	Limit is 39,			%imposto il limite della profondita'
 	statistics(walltime,[Start,_]),
 	deep_graph_lim_search(S, Limit,[], List),		% [] = lista degli stati esplorati, inizialmente vuota.
 	statistics(walltime,[End,_]),
