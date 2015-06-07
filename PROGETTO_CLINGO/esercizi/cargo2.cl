@@ -35,7 +35,7 @@ in(p4, lga, 0).
 goal :- in(c1, jfk, lastlevel+1), in(c2, sfo, lastlevel+1).
 :- not goal.
 
-% AZIONI (possono essere eseguite in parallelo) ed almeno una di esse deve essere eseguita
+% AZIONI una di esse deve essere eseguita
 
 1 {
 	load(C,P,A,S) : cargo(C), plane(P), airport(A); 
@@ -70,5 +70,3 @@ in(P, A, S+1) :- in(P, A, S), status(S), not -in(P, A, S+1).
 #show load/4.
 #show unload/4.
 #show fly/4.
-%#show in/3.
-%#show -in/3.
