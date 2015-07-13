@@ -97,5 +97,5 @@ find_solution :-
 	deep_graph_lim_search(S, Limit,[], List),		% [] = lista degli stati esplorati, inizialmente vuota.
 	statistics(walltime,[End,_]),
 	Time is End - Start,
-	write(List),
+	write(List),nl,
 	write(Time).

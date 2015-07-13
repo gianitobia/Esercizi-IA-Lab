@@ -100,7 +100,6 @@ deep_graph_lim_search(S,_,_,[]) :-
 	retract(actual_deep(I)),!.
 
 deep_graph_lim_search(S,Actual_Dist,Explored,[Act|Tail]) :-
-%	writeln(S),
 	Actual_Dist>1,
 	New_Dist is Actual_Dist-1,
 	apply(Act,S),
@@ -128,16 +127,13 @@ min(X,Y) :-
 
 %procedura iterativa che richiama deep_graph_lim_search
 %parametri di iter_deep: stato, profondità, lista_azioni		
-iter_deep(S,Actual_Dist,Act_List) :- deep_graph_lim_search(S,Actual_Dist,[],Act_List),writeln('qui'), !.
+iter_deep(S,Actual_Dist,Act_List) :- deep_graph_lim_search(S,Actual_Dist,[],Act_List), !.
 
 iter_deep(S,_,Act_List):-
 	retract(actual_deep(I)),
-	write(I),
-	tab(5),
 	new_deep(F),
 	retract(new_deep(F)),
 	assert(actual_deep(F)),
-	writeln(F),
 	iter_deep(S,F,Act_List).
 	
 find_solution :-

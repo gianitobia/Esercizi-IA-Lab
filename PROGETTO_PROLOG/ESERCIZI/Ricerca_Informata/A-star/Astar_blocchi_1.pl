@@ -76,7 +76,7 @@ calculates_heuristic(S,G,H):-
         member(X,G),
 	    ord_del_element(G,X,R),
 	    \+ member(X,S),!,
-	    calculates_heuristic(S,R,H1),
+		calculates_heuristic(S,R,H1),
 	    H is H1+1.
 
 calculates_heuristic(S,G,H):-
@@ -116,8 +116,7 @@ explore(node(F,G,S,Act_List),List_Succ) :-
 	successors(node(F,G,S,Act_List),Actions,List_Succ).
 	
 successors(_,[],[]).
-successors(node(F,G,S,Act_List),[Act|Tail],
-			[node(New_F,New_G,New_S,New_Act_List)|Other_Succ]) :-
+successors(node(F,G,S,Act_List),[Act|Tail], [node(New_F,New_G,New_S,New_Act_List)|Other_Succ]) :-
 	transform(Act,S,New_S),
 	append(Act_List,[Act],New_Act_List),
 	New_G is G+1,
