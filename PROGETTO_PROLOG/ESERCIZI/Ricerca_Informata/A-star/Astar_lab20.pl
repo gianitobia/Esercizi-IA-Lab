@@ -82,6 +82,7 @@ ric_astar(List_Open,_,Act_List):-
 	final(S).
 	
 ric_astar(List_Open,Explored,SOL) :-
+	statistics(walltime,[Inizio,_]),
 	member(node(F,G,S,Act_List),List_Open), % true se la lista non è vuota
 	ord_del_element(List_Open,node(F,G,S,Act_List),Tail), % rimuovo l'elemento dalla lista ordinata
 	\+ member(S,Explored), % true se lo stato S non è stato già visitato
@@ -89,6 +90,9 @@ ric_astar(List_Open,Explored,SOL) :-
 	append(Explored,[S],New_Explored),
 	list_to_ord_set(List_Succ,Successors), % ordino la lista trasformandola in un ordset
 	ord_union(Tail,Successors,New_Tail), % unisce gli elementi dei due ordset e li ordina
+	statistics(walltime,[Fine,_]),
+	Tempo is Fine - Inizio,
+	writeln(Tempo),
 	ric_astar(New_Tail,New_Explored,SOL).
 
 ric_astar(List_Open,Explored,SOL):-
