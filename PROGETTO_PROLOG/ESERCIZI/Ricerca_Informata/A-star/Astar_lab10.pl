@@ -53,7 +53,7 @@ wall(pos(4,8)).
 wall(pos(4,9)).
 wall(pos(4,10)).
 
-initial(pos(4,2)).
+initial(pos(4,3)).
 
 goal(pos(7,9)).
 
@@ -70,27 +70,22 @@ calculates_heuristic(pos(Ri,Ci),pos(Rf,Cf),H) :-
 % RICERCA A*
 % il secondo parametro è la lista degli stati visitati
 
-ric_astar(List_Open,_,Act_List):- 
-	member(node(_,_,S,Act_List),List_Open),
-	final(S).
+ric_astar([node(_,_,S,Act_List)|_],Explored,Act_List):- 
+	final(S), 
+	length(Explored, L_Exp), write('Numero di nodi esplorati: '), write(L_Exp),nl.
 	
-ric_astar(List_Open,Explored,SOL) :-
-	statistics(walltime,[Inizio,_]),
-	member(node(F,G,S,Act_List),List_Open), % true se la lista non è vuota
+ric_astar([node(F,G,S,Act_List)|List_Open],Explored,SOL) :-
 	ord_del_element(List_Open,node(F,G,S,Act_List),Tail), % rimuovo l'elemento dalla lista ordinata
 	\+ member(S,Explored), % true se lo stato S non è stato già visitato
 	explore(node(F,G,S,Act_List),List_Succ),
 	append(Explored,[S],New_Explored),
-	list_to_ord_set(List_Succ,Successors), % ordino la lista trasformandola in un ordset
+	clean_successors(List_Succ,Explored,New_List_Succ),
+	list_to_ord_set(New_List_Succ,Successors), % ordino la lista trasformandola in un ordset
 	ord_union(Tail,Successors,New_Tail), % unisce gli elementi dei due ordset e li ordina
-	statistics(walltime,[Fine,_]),
-	Tempo is Fine - Inizio,
-	write(Tempo),
 	ric_astar(New_Tail,New_Explored,SOL).
 
-ric_astar(List_Open,Explored,SOL):-
-	member(node(F,G,S,Act),List_Open),
-	ord_del_element(List_Open,node(F,G,S,Act),Tail),
+ric_astar([node(F,G,S,Act_List)|List_Open],Explored,SOL):-
+	ord_del_element(List_Open,node(F,G,S,Act_List),Tail),
 	member(S,Explored),
 	ric_astar(Tail,Explored,SOL).
 
@@ -110,6 +105,15 @@ successors(node(F,G,S,Act_List),[Act|Tail],
 	New_F is New_G+H,
 	successors(node(F,G,S,Act_List),Tail,Other_Succ).
 	
+clean_successors([],_,[]).	
+clean_successors([node(F,G,S,Act_List)|List_Succ],Explored,[node(F,G,S,Act_List)|New_List_Succ]):-
+	\+ member(S,Explored),
+	clean_successors(List_Succ,Explored,New_List_Succ).
+
+clean_successors([node(_,_,S,_)|List_Succ],Explored,New_List_Succ):-
+	member(S,Explored),
+	clean_successors(List_Succ,Explored,New_List_Succ).
+		
 find_solution :-
 	initial(S),
 	goal(G),
@@ -119,5 +123,6 @@ find_solution :-
 	ric_astar(Initial,[],SOL),
 	statistics(walltime,[End,_]),
 	Time is End - Start,
-	write(SOL),nl,
-	write(Time).
+	write('Tempo trascorso: '),
+	write(Time),nl,
+	write(SOL).

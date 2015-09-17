@@ -75,7 +75,8 @@ final(S):- goal(G), ord_subset(G,S).
 
 
 % PASSO BASE della ricorsione
-breadth_graph_search([node(S,Act_List)|_],Act_List,_):- final(S).
+breadth_graph_search([node(S,Act_List)|_],Act_List,_):- 
+	final(S).  
 
 % passo ricorsivo
 breadth_graph_search([node(S,Act_List)|Tail],SOL,Explored):-

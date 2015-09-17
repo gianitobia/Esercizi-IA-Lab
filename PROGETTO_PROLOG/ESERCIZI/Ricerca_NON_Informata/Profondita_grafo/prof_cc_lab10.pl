@@ -53,7 +53,7 @@ wall(pos(4,8)).
 wall(pos(4,9)).
 wall(pos(4,10)).
 
-initial(pos(4,2)).
+initial(pos(4,3)).
 
 final(pos(7,9)).
 

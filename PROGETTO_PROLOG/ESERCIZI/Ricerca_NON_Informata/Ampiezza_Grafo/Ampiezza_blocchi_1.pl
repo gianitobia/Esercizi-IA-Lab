@@ -74,7 +74,8 @@ final(S):- goal(G), ord_subset(G,S).
 % Stategia di ricerca in ampiezza sul grafo
 
 % PASSO BASE della ricorsione
-breadth_graph_search([node(S,Act_List)|_],Act_List,_):- final(S).
+breadth_graph_search([node(S,Act_List)|_],Act_List,_):- 
+	final(S).  
 
 % passo ricorsivo
 breadth_graph_search([node(S,Act_List)|Tail],SOL,Explored):-
@@ -106,5 +107,6 @@ find_solution :-
 	breadth_graph_search([node(S, [])], SOL, []),
 	statistics(walltime,[End,_]),
 	Time is End - Start,
+	write('Tempo trascorso: '),
 	write(Time),nl,
 	write(SOL).
